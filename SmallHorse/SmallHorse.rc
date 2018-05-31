@@ -1,0 +1,1264 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\SmallHorse.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\SmallHorse.ico"
+IDR_SmallHorseTYPE      ICON                    "res\\SmallHorseDoc.ico"
+IDI_ICON1               ICON                    "res\\Book01a.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_WORKSPACE           BITMAP                  "res\\workspace.bmp"
+IDB_BOOK                BITMAP                  "res\\bitmap1.bmp"
+IDB_TESTONLY            BITMAP                  "res\\test.bmp"
+IDR_MAINFRAME_BK        BITMAP                  "res\\bmp00001.bmp"
+IDB_ACTIVE              BITMAP                  "res\\RC_ACTIVE.bmp"
+IDB_INACTIVE            BITMAP                  "res\\RC_INACTIVE.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "数据库"
+    BEGIN
+        MENUITEM "备份数据库",                       ID_DATABASE_BACKUP
+        MENUITEM "比较数据库",                       ID_DATABASE_COMPARE
+        MENUITEM "修改密码",                        ID_DATABASE_MODIFY_PWD
+    END
+    POPUP "账户"
+    BEGIN
+        MENUITEM "新增加账户",                       ID_ACCOUNT_NEW
+        MENUITEM "显示已关账户",                      ID_ACCOUNT_SHOW_CLOSED
+        MENUITEM "显示所有子账户列表",                   ID_SUBCOUNT_LIST_ALL
+    END
+    POPUP "记录"
+    BEGIN
+        MENUITEM "增加记录",                        ID_RECORD_NEW
+        MENUITEM "删除选中记录",                      ID_RECORD_DEL_SELECTED
+        MENUITEM "导入记录",                        ID_RECORD_IMPORT
+        MENUITEM "导出记录",                        ID_RECORD_EXPORT
+    END
+    POPUP "显示方式"
+    BEGIN
+        MENUITEM "展开所有账户",                      ID_SUBCOUNT_EXPAND_ALL
+        MENUITEM "展开默认账户",                      ID_SUBCOUNT_EXPAND_DEFAULT
+        MENUITEM "收起所有账户",                      ID_SUBCOUNT_SHRINK_ALL
+        MENUITEM "展开活动账户",                      ID_SUBCOUNT_EXPAND_ACTIVE
+        MENUITEM "收起已关账户",                      ID_SUBCOUNT_SHRINK_CLOSED
+    END
+    POPUP "编辑"
+    BEGIN
+        MENUITEM "拷贝",                          ID_EDIT_COPY
+        MENUITEM "粘贴",                          ID_EDIT_PASTE
+        MENUITEM "计算余额",                        ID_EDIT_CAL_SUM
+        MENUITEM "修改记录",                        ID_EDIT_MODIFY_RECORD
+        MENUITEM "智能设置类型",                      ID_EDIT_SMART_TYPE
+    END
+    POPUP "查询"
+    BEGIN
+        MENUITEM "多条件查询",                       ID_QUERY
+        MENUITEM "金额查询",                        ID_QUERY_MONEY
+        MENUITEM "备注查询",                        ID_QUERY_COMMENT
+        MENUITEM "日期查询",                        ID_QUERY_DATE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About SmallHorse...",        ID_APP_ABOUT
+    END
+END
+
+IDR_CONTEXT_MENU MENU 
+BEGIN
+    POPUP "_POPUP_"
+    BEGIN
+        MENUITEM "Cu&t",                        ID_EDIT_CUT
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Paste",                      ID_EDIT_PASTE
+    END
+END
+
+IDR_POPUP_TOOLBAR MENU 
+BEGIN
+    POPUP "DUMMY"
+    BEGIN
+        MENUITEM "Standard Toolbar",            ID_VIEW_TOOLBAR
+        MENUITEM "&Workspace",                  ID_VIEW_WORKSPACE
+        MENUITEM "&Workspace 2",                ID_VIEW_WORKSPACE2
+        MENUITEM "&Output",                     ID_VIEW_OUTPUT
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR1
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR2
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR3
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR4
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR5
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR6
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR7
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR8
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR9
+        MENUITEM "<User Toolbar>",              ID_VIEW_USER_TOOLBAR10
+        MENUITEM SEPARATOR
+        MENUITEM "&Customize...",               ID_VIEW_CUSTOMIZE
+    END
+END
+
+IDR_BANKBOOK_MENU MENU 
+BEGIN
+    POPUP "DF "
+    BEGIN
+        MENUITEM "信息...",                       IDM_INFO
+        MENUITEM "修改信息...",                     IDM_RECTIFYINFO
+        MENUITEM "修改密码...",                     IDM_RECTIFYPASSWORD
+        MENUITEM SEPARATOR
+        MENUITEM "删除此折",                        IDM_DELETEBOOK, INACTIVE
+        MENUITEM "加入收支记录",                      IDM_ADDRECORD
+        MENUITEM "销折",                          ID_BANKBOOK_FREE
+        MENUITEM "设置为还贷卡",                      ID_SET_AS_AUTO_RETURN_CARD
+        MENUITEM "关联信用卡（被还）",                   ID_SET_AS_AUTORETURN_CREDIT
+        MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
+        MENUITEM SEPARATOR
+        MENUITEM "查找...",                       ID_FIND_BOOK
+        MENUITEM "打开所有子账户",                     ID_OPEN_SUBCOUNT_BY_ID
+        MENUITEM "添加信用卡还款周期",                   ID_ADD_CREDIT_PAY_INFO
+        MENUITEM "对账信息",                        ID_MENU_CREDIT_REPORT
+        MENUITEM "锁定账户",                        ID_COUNT_LOCK
+    END
+END
+
+IDR_RECORD_LIST_MENU MENU 
+BEGIN
+    POPUP "CREDIT"
+    BEGIN
+        MENUITEM "credit",                      ID_CAL_CREDIT
+        MENUITEM "智能设置类型",                      IDM_SMART_SET_TYPE
+        MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
+    END
+END
+
+IDR_TREEMENU MENU 
+BEGIN
+    POPUP "DF "
+    BEGIN
+        MENUITEM "信息...",                       IDM_INFO
+        MENUITEM "修改信息...",                     IDM_RECTIFYINFO
+        MENUITEM "修改密码...",                     IDM_RECTIFYPASSWORD
+        MENUITEM SEPARATOR
+        MENUITEM "删除此折",                        IDM_DELETEBOOK, INACTIVE
+        MENUITEM "加入收支记录",                      ID_RECORD_NEW
+        MENUITEM "销折",                          ID_BANKBOOK_FREE
+        MENUITEM "设置为还贷卡",                      ID_SET_AS_AUTO_RETURN_CARD
+        MENUITEM "关联信用卡（被还）",                   ID_SET_AS_AUTORETURN_CREDIT
+        MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
+        MENUITEM SEPARATOR
+        MENUITEM "查找...",                       ID_FIND_BOOK
+    END
+    POPUP "find"
+    BEGIN
+        MENUITEM "查找...",                       ID_FIND_BOOK
+    END
+END
+
+IDR_SUBCOUNT_MENU MENU 
+BEGIN
+    POPUP "D"
+    BEGIN
+        MENUITEM "修改",                          IDM_MODIFY_SUBCOUNT
+        MENUITEM "转存",                          IDM_RENEW_SUBCOUNT
+        MENUITEM "关掉子账户",                       ID_SUBCOUNT_CLOSE
+    END
+END
+
+IDR_MENU_QUERY MENU 
+BEGIN
+    MENUITEM "多条件查询",                       ID_QUERY
+    MENUITEM "金额查询",                        ID_QUERY_MONEY
+    MENUITEM "备注查询",                        ID_QUERY_COMMENT
+    MENUITEM "日期查询",                        ID_QUERY_DATE
+END
+
+IDR_MENU_COMPARE MENU 
+BEGIN
+    POPUP "d"
+    BEGIN
+        MENUITEM "<<<拷贝",                       ID_COMPARE_COPY_TO_LEFT
+        MENUITEM "<-合并",                        ID_COMPARE_MERGE
+        MENUITEM "X删除",                         ID_COMPARE_DELETE
+        MENUITEM "拷贝>>>",                       ID_COMPARE_COPY_TO_RIGHT
+        MENUITEM "改动存入",                        ID_COMPARE_SAVE
+        MENUITEM "join",                        ID_COMAPRE_JOIN
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About SmallHorse"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,7,7,21,20
+    LTEXT           "SmallHorse Version 1.0",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2018",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+    PUSHBUTTON      "http://www.<MyCompany>.com",IDC_COMPANY_URL,40,36,119,14
+END
+
+IDD_ADDNEWBANKBOOK DIALOG  0, 0, 234, 221
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "加入新的存折"
+FONT 10, "宋体"
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,61,190,50,14
+    PUSHBUTTON      "取消",IDCANCEL,122,190,50,14
+    EDITTEXT        IDC_NEWID,54,30,149,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_NEWNAME,54,54,149,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEWCOMIT,54,127,149,45,ES_AUTOHSCROLL
+    LTEXT           "帐号：",IDC_STATIC,26,33,25,8
+    LTEXT           "姓名：",IDC_STATIC,26,57,25,8
+    LTEXT           "银行：",IDC_STATIC,26,79,25,8
+    LTEXT           "备注：",IDC_STATIC,26,129,25,8
+    GROUPBOX        "存折内容：",IDC_STATIC,12,7,212,174
+    COMBOBOX        IDC_NEWBANK,54,77,149,59,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "类型：",IDC_STATIC,26,103,25,8
+    COMBOBOX        IDC_BOOK_TYPE,54,101,149,59,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_ENTRY DIALOG  0, 0, 135, 101
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "请输入密码:"
+FONT 10, "宋体"
+BEGIN
+    EDITTEXT        IDC_EDIT_USER,36,18,78,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PWD,36,41,78,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "确定",IDOK,14,67,50,14
+    PUSHBUTTON      "取消",IDCANCEL,70,67,50,14
+    LTEXT           "用户：",IDC_STATIC,8,20,23,8
+    LTEXT           "密码：",IDC_STATIC,8,41,23,8
+END
+
+IDD_PASSWORD DIALOG  0, 0, 147, 87
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入密码："
+FONT 10, "宋体"
+BEGIN
+    EDITTEXT        IDC_EDIT_PASSWORD,13,33,121,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "确定",IDOK,25,60,34,14
+    PUSHBUTTON      "取消",IDCANCEL,84,60,34,14
+    LTEXT           "Static",IDC_ID,13,10,121,18
+END
+
+IDD_QUERYEND DIALOG  0, 0, 280, 195
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "余额统计"
+FONT 9, "宋体"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,215,37,50,14
+    CONTROL         "List1",IDC_LIST,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,1,0,185,191
+    PUSHBUTTON      "存储结果",IDC_SAVE_RESULT,215,104,50,14
+END
+
+IDD_PERIOD_SETUP DIALOG  0, 0, 264, 231
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入日期"
+FONT 9, "宋体"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,164,39,20,20
+    LTEXT           "本月起始：",IDC_STATIC,32,26,50,8,SS_NOPREFIX
+    DEFPUSHBUTTON   "确定",IDOK,63,185,50,14,WS_GROUP
+    CONTROL         "DateTimePicker1",IDC_DATETIME_BEGIN,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,32,46,90,15
+    LTEXT           "本月结束：",IDC_STATIC,32,73,119,8,SS_NOPREFIX
+    LTEXT           "还款日：",IDC_STATIC,32,120,119,8,SS_NOPREFIX
+    CONTROL         "DateTimePicker1",IDC_DATETIME_END,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,32,93,90,15
+    CONTROL         "DateTimePicker1",IDC_DATETIME_PAY,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,32,140,90,15
+    DEFPUSHBUTTON   "取消",IDCANCEL,157,185,50,14,WS_GROUP
+    PUSHBUTTON      "下月",IDC_BUTTON_NEXT_MONTH,153,120,50,14
+    PUSHBUTTON      "上月",IDC_BUTTON_PREV_MONTH,153,85,50,14
+END
+
+IDD_FINDBOOK_SETUP DIALOG  0, 0, 230, 130
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "查找帐号"
+FONT 9, "宋体"
+BEGIN
+    ICON            IDR_MAINFRAME,-1,26,43,21,21
+    DEFPUSHBUTTON   "确定",IDOK,39,87,70,14,WS_GROUP
+    LTEXT           "查找:",-1,61,25,35,8,SS_NOPREFIX
+    DEFPUSHBUTTON   "取消",IDCANCEL,123,87,70,14,WS_GROUP
+    EDITTEXT        IDC_EDIT_FIND_STRING,60,48,132,14,ES_AUTOHSCROLL
+END
+
+IDD_ADDRECORD DIALOG  0, 0, 269, 242
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_THICKFRAME
+CAPTION "增加记录"
+FONT 10, "宋体"
+BEGIN
+    EDITTEXT        IDC_EDIT_MONEY,13,91,119,14,ES_AUTOHSCROLL | ES_NOHIDESEL
+    DEFPUSHBUTTON   "确定",IDOK,41,207,42,14
+    PUSHBUTTON      "下一笔",IDC_NEXTINPUT,113,207,42,14
+    PUSHBUTTON      "取消",IDCANCEL,185,207,42,14
+    LTEXT           "日期:",IDC_STATIC,13,41,21,8
+    LTEXT           "帐号：",IDC_STATIC,13,7,22,8
+    EDITTEXT        IDC_EDIT_ID,13,20,119,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_REMAIN,13,139,249,52,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "备注：",IDC_STATIC,13,122,23,8
+    COMBOBOX        IDC_COMBO_TYPE,153,93,109,250,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "DateTimePicker",IDC_DATETIMEPICKER,13,55,119,14
+    COMBOBOX        IDC_COMBO_SUB_COUNT,153,22,109,144,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "子帐号：",IDC_STATIC,153,7,38,8
+    LTEXT           "金额:",IDC_STATIC,13,79,38,8
+    LTEXT           "类型:",IDC_STATIC,153,76,38,8
+    COMBOBOX        IDC_COMBO_SITE,153,55,109,250,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "地点:",IDC_STATIC,153,40,21,8
+    PUSHBUTTON      "有票",IDC_ADD_DEFAULT_NOTE,198,119,50,14
+END
+
+IDD_IMPORT2 DIALOG  0, 0, 540, 350
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+FONT 10, "Tahoma"
+BEGIN
+    CONTROL         "List1",IDC_LIST_DATA,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,523,314
+    PUSHBUTTON      "全选",IDC_MARKALL,21,329,50,14
+    PUSHBUTTON      "全不选",IDC_UNMARKALL,87,329,50,14
+    PUSHBUTTON      "标选中的",IDC_MARKSELED,156,329,50,14
+    PUSHBUTTON      "去标选中的",IDC_UNMARKSELECTED,221,329,50,14
+END
+
+IDD_IMPORT1 DIALOGEX 0, 0, 540, 350
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+EXSTYLE WS_EX_ACCEPTFILES
+FONT 10, "Tahoma", 0, 0, 0x1
+BEGIN
+    LTEXT           "选择文件：",IDC_STATIC,55,50,59,8
+    EDITTEXT        IDC_EDIT_FILE,56,69,278,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "选择文件...",IDC_SELECTFILE,56,88,50,14
+END
+
+IDD_SET_RECORD_TYPE DIALOG  0, 0, 279, 204
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "智能属性设定"
+FONT 10, "宋体"
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,74,166,27,14
+    PUSHBUTTON      "取消",IDCANCEL,171,166,27,14
+    LTEXT           "备注中含有",IDC_STATIC,25,26,40,8
+    GROUPBOX        "把选中的记录的种?喔菀韵鹿嬖蛏瓒?:",IDC_STATIC,7,7,265,139
+    EDITTEXT        IDC_EDIT_HAVE_NOT,65,41,124,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MUST_HAVE,65,22,124,13,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_TYPE,65,97,124,250,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "但不含有",IDC_STATIC,25,43,38,8
+    LTEXT           "的记录设置为",IDC_STATIC,25,72,74,8
+    EDITTEXT        IDC_EDIT_SITE,65,116,124,13,ES_AUTOHSCROLL
+    CONTROL         "类型",IDC_CHECK_TYPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,96,31,10
+    CONTROL         "地点",IDC_CHECK_SITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,117,31,10
+END
+
+IDD_CHECKMONTHVALUE DIALOG  0, 0, 264, 197
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "对帐日期设置"
+FONT 9, "宋体"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,187,51,20,20
+    DEFPUSHBUTTON   "确定",IDOK,31,159,70,14,WS_GROUP
+    LTEXT           "结束日期：",IDC_STATIC,23,27,44,8,SS_NOPREFIX
+    LTEXT           "还款日：",IDC_STATIC,23,58,41,8,SS_NOPREFIX
+    COMBOBOX        IDC_COMBO_DATE_END,90,24,48,253,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_DATE_PAY,90,51,48,272,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "DateTimePicker1",IDC_DATETIME_BEGIN,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,90,78,74,15
+    LTEXT           "从：",IDC_STATIC,25,90,18,8,SS_NOPREFIX
+    CONTROL         "DateTimePicker1",IDC_DATETIME_END,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | WS_TABSTOP,90,108,74,15
+    LTEXT           "到：",IDC_STATIC,25,114,19,8,SS_NOPREFIX
+    DEFPUSHBUTTON   "取消",IDCANCEL,161,159,70,14,WS_GROUP
+END
+
+IDD_DINGQI_SAVE DIALOG  0, 0, 293, 246
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_THICKFRAME
+CAPTION "定期输入"
+FONT 10, "宋体"
+BEGIN
+    ICON            160,IDC_STATIC,35,190,20,20
+    EDITTEXT        IDC_EDIT_MONEY,13,131,119,14,ES_AUTOHSCROLL | ES_NOHIDESEL
+    DEFPUSHBUTTON   "确定",IDOK,90,205,42,14
+    PUSHBUTTON      "取消",IDCANCEL,153,205,42,14
+    LTEXT           "日期:",IDC_STATIC,13,43,21,8
+    LTEXT           "帐号：",IDC_STATIC,13,7,22,8
+    EDITTEXT        IDC_EDIT_ID,13,22,119,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_REMAIN,153,132,126,49,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "备注：",IDC_STATIC,153,116,23,8
+    PUSHBUTTON      "DateTimePicker",IDC_DATETIMEPICKER,13,58,119,14
+    LTEXT           "子帐号：",IDC_STATIC,153,7,38,8
+    LTEXT           "金额:",IDC_STATIC,13,116,38,8
+    EDITTEXT        IDC_EDIT_SUBCOUNT,153,22,126,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_RATE,13,167,119,14,ES_AUTOHSCROLL | ES_NOHIDESEL | WS_DISABLED
+    LTEXT           "利率:",IDC_STATIC,13,152,38,8
+    LTEXT           "存期:",IDC_STATIC,13,82,38,8
+    COMBOBOX        IDC_COMBO_TIMESPAN,13,97,119,142,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "本折转存",IDC_RADIO_TRANSFER,"Button",BS_AUTORADIOBUTTON | WS_GROUP,167,68,46,10
+    CONTROL         "新增",IDC_RADIO_NEW_SAVE,"Button",BS_AUTORADIOBUTTON,167,84,31,10
+    GROUPBOX        "",IDC_STATIC,153,51,126,58
+END
+
+IDD_COPY_RECORDS DIALOG  0, 0, 195, 134
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "拷贝记录到其他账户"
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,98,113,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,35,113,50,14
+    EDITTEXT        IDC_EDIT_SUBCOUNT,39,46,149,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MAINCOUNT,38,18,150,14,ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "转账模式（变负）",IDC_CHECK_TRANSFER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,50,81,80,10
+    LTEXT           "子账户",IDC_STATIC,7,49,27,8
+    LTEXT           "账户",IDC_STATIC,7,20,21,8
+END
+
+IDD_CLOSE_SUBCOUNT DIALOG  0, 0, 173, 160
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关闭子账户"
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,21,125,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,99,125,50,14
+    PUSHBUTTON      "DateTimePicker",IDC_DATETIMEPICKER,32,7,104,12
+    CONTROL         "存入活期内",IDC_CHECK_SAVETO_DEFAULT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,35,42,56,10
+END
+
+IDD_S1 DIALOG  0, 0, 217, 101
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+FONT 10, "System"
+BEGIN
+    LTEXT           "姓名：",IDC_STATIC,7,10,25,8
+    LISTBOX         IDC_LIST_SRC_NAME,35,7,80,87,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST_TARGET_NAME,130,7,80,87,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_S2 DIALOG  0, 0, 217, 101
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+FONT 10, "System"
+BEGIN
+    LTEXT           "日期:",IDC_STATIC,7,10,28,8
+    CONTROL         "所有日期",IDC_CHECK_ALLDATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,84,48,10
+    CONTROL         "DateTimePicker1",IDC_DATETIMEPICKER1,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,112,14,76,12
+    CONTROL         "DateTimePicker1",IDC_DATETIMEPICKER2,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,112,41,76,12
+    LTEXT           "开始",IDC_STATIC,87,15,20,8
+    LTEXT           "结束",IDC_STATIC,87,44,20,8
+END
+
+IDD_S3 DIALOG  0, 0, 217, 101
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+FONT 10, "System"
+BEGIN
+    LISTBOX         IDC_LIST_TARGET_TYPE,118,7,92,81,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST_SRC_TYPE,23,7,92,81,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_S5 DIALOG  0, 0, 217, 101
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+FONT 10, "System"
+BEGIN
+    EDITTEXT        IDC_COMMENT,26,34,167,14,ES_AUTOHSCROLL
+    LTEXT           "备注中含有：",IDC_STATIC,25,18,49,8
+END
+
+IDD_QUERY_FROM_MONEY DIALOG  0, 0, 319, 162
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "查询所有收支"
+FONT 10, "Arial"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,79,133,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,190,133,50,14
+    EDITTEXT        IDC_EDIT_GREAT,77,36,46,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SMALL,77,71,46,12,ES_AUTOHSCROLL
+    CONTROL         "大于",IDC_CHECK_GREAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,42,38,32,10
+    CONTROL         "小于",IDC_CHECK_SMALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,42,73,32,10
+    CONTROL         "且",IDC_RADIO_AND,"Button",BS_AUTORADIOBUTTON | WS_GROUP,54,54,24,10
+    CONTROL         "或",IDC_RADIO_OR,"Button",BS_AUTORADIOBUTTON,81,54,24,10
+    CONTROL         "自由设置",IDC_RADIO_RANGE_FREE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,19,7,53,10
+    CONTROL         "以基数为中心",IDC_RADIO_RANGE_SIMPLE,"Button",BS_AUTORADIOBUTTON,171,7,71,10
+    EDITTEXT        IDC_EDIT_INFO,17,99,283,20,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_EDIT_MONEY_RANGE,220,56,46,12,ES_AUTOHSCROLL
+    CONTROL         "Spin1",IDC_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_ARROWKEYS,266,57,9,12
+    EDITTEXT        IDC_EDIT_EQUAL,221,36,46,12,ES_AUTOHSCROLL
+    GROUPBOX        "自由设置",IDC_STATIC,17,23,135,69
+    LTEXT           "上下浮动",IDC_STATIC,180,59,38,8
+    GROUPBOX        "基数为中心",IDC_STATIC,165,23,135,69
+    LTEXT           "基数",IDC_STATIC,181,37,19,8
+END
+
+IDD_QUERY_FROM_DATE DIALOG  0, 0, 251, 119
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "时间查询设置"
+FONT 10, "Arial"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,62,83,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,131,83,50,14
+    EDITTEXT        IDC_EDIT_INFO,7,7,237,12,ES_AUTOHSCROLL | ES_READONLY
+    CONTROL         "DateTimePicker1",IDC_DATETIMEPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,18,38,100,15
+    EDITTEXT        IDC_EDIT_DATE_BOUND,152,38,40,14,ES_AUTOHSCROLL
+    CONTROL         "Spin2",IDC_SPIN2,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,196,38,9,14
+    GROUPBOX        "时间跨度",IDC_STATIC,141,25,103,37
+    GROUPBOX        "基准时间",IDC_STATIC,7,25,121,37
+END
+
+IDD_QUERY_FROM_COMMENT DIALOG  0, 0, 187, 82
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "查询所有注释"
+FONT 10, "Arial"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,41,49,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,96,49,50,14
+    EDITTEXT        IDC_EDIT_COMMENT,22,17,139,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "00409004e4"
+        BEGIN
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "SmallHorse.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "SmallHorse.exe"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_ADDNEWBANKBOOK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 12
+        VERTGUIDE, 203
+        VERTGUIDE, 224
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 204
+    END
+
+    IDD_ENTRY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 128
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_PASSWORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 140
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+
+    IDD_QUERYEND, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 273
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 188
+    END
+
+    IDD_PERIOD_SETUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 257
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 224
+    END
+
+    IDD_FINDBOOK_SETUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 223
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 123
+    END
+
+    IDD_ADDRECORD, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 262
+        VERTGUIDE, 13
+        VERTGUIDE, 132
+        VERTGUIDE, 153
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 235
+        HORZGUIDE, 91
+    END
+
+    IDD_IMPORT2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 530
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 343
+    END
+
+    IDD_IMPORT1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 528
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 343
+    END
+
+    IDD_SET_RECORD_TYPE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 272
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 197
+    END
+
+    IDD_CHECKMONTHVALUE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 257
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 190
+    END
+
+    IDD_DINGQI_SAVE, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 279
+        VERTGUIDE, 13
+        VERTGUIDE, 132
+        VERTGUIDE, 153
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 239
+    END
+
+    IDD_CLOSE_SUBCOUNT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 166
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 153
+    END
+
+    IDD_S1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_S2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_S3, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_S5, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_QUERY_FROM_MONEY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 312
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 155
+    END
+
+    IDD_QUERY_FROM_DATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+
+    IDD_QUERY_FROM_COMMENT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 75
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME_BK TOOLBAR  35, 15
+BEGIN
+    BUTTON      IDM_ADDNEWBOOK
+    BUTTON      IDM_DELETEBOOK
+    BUTTON      IDC_CALSUM
+    BUTTON      IDC_RECTIFYPASSWORD
+    SEPARATOR
+    BUTTON      IDC_DISGRAPHY
+    BUTTON      IDC_DISGRAPHY_SPEND
+    BUTTON      IDC_DISGRAPHY_SAVE
+    BUTTON      IDM_ADDRECORD
+    BUTTON      IDC_DELETEITEM
+    BUTTON      ID_EDIT_MODIFY_RECORD
+    BUTTON      ID_QUERY
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    BUTTON      ID_EXPORT_CSV
+    BUTTON      ID_BACKUP
+    BUTTON      ID_TEST
+    BUTTON      IDC_LOAD_CSV
+    BUTTON      ID_CAL_CREDIT
+    BUTTON      ID_CHECK
+    BUTTON      IDC_LOAD_SUBCOUNT_CSV
+    BUTTON      ID_EDIT_ONLINE
+    BUTTON      ID_APP_SHOW_NO_EXIST
+    BUTTON      ID_VIEW_REFRESH
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_ADDNEWBANKBOOK DLGINIT
+BEGIN
+    IDC_NEWBANK, 0x403, 1, 0
+"\000" 
+    IDC_BOOK_TYPE, 0x403, 7, 0
+0xa2b4, 0xeed0, 0xa8bf, "\000" 
+    IDC_BOOK_TYPE, 0x403, 9, 0
+0xeebb, 0xdac6, 0xe6b4, 0xdbd5, "\000" 
+    IDC_BOOK_TYPE, 0x403, 7, 0
+0xc5d0, 0xc3d3, 0xa8bf, "\000" 
+    0
+END
+
+IDD_CHECKMONTHVALUE DLGINIT
+BEGIN
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0035, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0036, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0037, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0038, 
+    IDC_COMBO_DATE_END, 0x403, 2, 0
+0x0039, 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3031, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3131, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3231, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3331, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3431, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3531, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3631, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3731, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3831, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3931, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3032, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3132, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3232, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3332, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3432, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3532, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3632, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3732, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3832, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3932, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3033, "\000" 
+    IDC_COMBO_DATE_END, 0x403, 3, 0
+0x3133, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0031, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0032, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0033, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0034, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0035, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0036, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0037, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0038, 
+    IDC_COMBO_DATE_PAY, 0x403, 2, 0
+0x0039, 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3031, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3131, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3231, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3331, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3431, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3531, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3631, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3731, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3831, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3931, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3032, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3132, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3232, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3332, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3432, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3532, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3632, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3732, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3832, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3932, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3033, "\000" 
+    IDC_COMBO_DATE_PAY, 0x403, 3, 0
+0x3133, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_NULL                CURSOR                  "res\\handpoin.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "SmallHorse\n\nSmallHorse\n\n\nSmallHorse.Document\nSmallHorse.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "SmallHorse"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+    ID_FILE_NEW_FRAME       "Create a new frame\nNew Frame"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_CUSTOMIZE       "Customize toolbars and menus.\nCustomize"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_MAIN_TOOLBAR        "Standard"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_USER_TOOLBAR1   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR2   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR3   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR4   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR5   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR6   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR7   "Show or hide the user toolbar\nToggle User ToolBar"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_USER_TOOLBAR8   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR9   "Show or hide the user toolbar\nToggle User ToolBar"
+    ID_VIEW_USER_TOOLBAR10  "Show or hide the user toolbar\nToggle User ToolBar"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TASKPANE        "Show or hide the tasks pane\nToggle TaskPane"
+END
+
+#endif    // 中文(中华人民共和国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(美国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TOOLBARCOLD256      BITMAP                  "res\\ToolbarCold256.bmp"
+IDB_TOOLBAR256          BITMAP                  "res\\toolbar2.bmp"
+IDB_MENU256             BITMAP                  "res\\menu256.bmp"
+IDB_MENU16              BITMAP                  "res\\menu16.bmp"
+IDR_MAINFRAME           BITMAP                  "res\\mainfram.bmp"
+IDB_TASKS               BITMAP                  "res\\tasks.bmp"
+IDB_LIST_IMAGES         BITMAP                  "res\\list.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_HISTORY_POPUP MENU 
+BEGIN
+    MENUITEM "<History>",                   ID_COMMAND_HISTORY
+END
+
+IDR_VIEWS_POPUP MENU 
+BEGIN
+    MENUITEM "&Large Icons",                ID_VIEW_LARGEICON
+    MENUITEM "&Small Icons",                ID_VIEW_SMALLICON
+    MENUITEM "L&ist",                       ID_VIEW_LIST
+    MENUITEM "&Details",                    ID_VIEW_DETAILS
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  24, 24
+BEGIN
+    BUTTON      ID_GO_BACK
+    BUTTON      ID_GO_FORWARD
+    BUTTON      ID_FOLDER_UP
+    SEPARATOR
+    BUTTON      ID_VIEW_FOLDERS
+    SEPARATOR
+    BUTTON      ID_MOVE_TO
+    BUTTON      ID_COPY_TO
+    SEPARATOR
+    BUTTON      ID_VIEW_VIEWS
+END
+
+#endif    // 英语(美国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\SmallHorse.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
