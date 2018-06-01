@@ -8,8 +8,8 @@
 #define LOAD_DATEBASE
 #include "resource.h"       // main symbols
 #include <afxdb.h>
-#include "idset.h"       
-#include "idset.h"       
+    
+#include "idset.h"
 #include "listset.h"       
 #include "SubCountSet.h"       
 #include "RateSet.h"       

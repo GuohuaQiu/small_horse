@@ -29,6 +29,7 @@ public:
 
 // Implementation
 public:
+	BOOL ShowAccountInfo(CIDSet *pSet);
 	CBankbookTree* GetBookTree();
 	virtual ~CMainFrame();
 #ifdef _DEBUG

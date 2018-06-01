@@ -501,3 +501,17 @@ void CMainFrame::OnUpdateAppLook(CCmdUI* pCmdUI)
 }
 
 
+
+/*******************************************
+    Function Name : 
+    author        : Qiu Guohua
+    Date          : 2009-2-14 14:19:00
+    Description   : 
+    Return type  : 
+    Argument      : 
+********************************************/
+BOOL CMainFrame::ShowAccountInfo(CIDSet *pSet)
+{
+	return m_wndTaskPane.ShowAccountInfo(pSet);
+}
+

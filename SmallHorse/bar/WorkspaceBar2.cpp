@@ -191,7 +191,7 @@ void CWorkspaceBar2::OnDblclkList2(NMHDR* pNMHDR, LRESULT* pResult)
 	if(pActive->iItem != -1)
 	{
 		CString strID = m_wndList.GetItemText(pActive->iItem,0);
-		// Simon theApp.OpenBankbook(strID);
+		theApp.OpenBankbook(strID);
 	}
 
 	*pResult = 0;
@@ -233,7 +233,7 @@ void CWorkspaceBar2::OnRectifyinfo()
     {
         int n = m_wndList.GetNextSelectedItem(pos);
         CString strid = m_wndList.GetItemText(n,0);
-        //Simon theApp.RectifyBookInfo(strid);
+        theApp.RectifyBookInfo(strid);
     }
 }
 
@@ -285,7 +285,7 @@ void CWorkspaceBar2::OnInfo()
     CString strid;
     if(GetSelectedID(strid))
     {
-        //Simon theApp.DisplayBookInformation(strid);
+        theApp.DisplayBookInformation(strid);
     }
 }
 
@@ -336,7 +336,7 @@ void CWorkspaceBar2::OnOpenSubcountById()
     CString strid;
     if(GetSelectedID(strid))
     { 
-        //Simon theApp.OpenSubCountbyId(strid);
+        theApp.OpenSubCountbyId(strid);
     }
 }
 

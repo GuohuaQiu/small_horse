@@ -657,7 +657,7 @@ BOOL CSmallHorseApp::ShowAccountInfo(const CString &strID)
 {
 	if(!m_IDSet.MovetoCurID(strID))
 		return FALSE;
-	//Simon return ((CMainFrame*)m_pMainWnd)->ShowAccountInfo(&m_IDSet);
+	return ((CMainFrame*)m_pMainWnd)->ShowAccountInfo(&m_IDSet);
 }
 
 #include <afxcoll.h>

@@ -11,6 +11,7 @@
 
 #include "CurveBar.h"
 #include "Convertdata.h"
+#include "database_setup.h"
 
 class CReportFrame : public CBCGPMDIChildWnd
 {

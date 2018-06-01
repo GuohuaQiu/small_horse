@@ -130,7 +130,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;file-support"
+				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;&quot;file-support&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -296,7 +296,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="database;control;dialog;datastruct;view;file-support"
+				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;&quot;file-support&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
