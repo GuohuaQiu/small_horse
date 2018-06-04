@@ -1049,6 +1049,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\toolbar1.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\toolbar2.bmp"
 				>
 			</File>

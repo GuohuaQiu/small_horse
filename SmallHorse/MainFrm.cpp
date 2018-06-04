@@ -379,29 +379,50 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 	// Replace "Back" and "Forward" buttons by the menu buttons
 	// with the history lists:
 
-	CMenu menuHistory;
-	menuHistory.LoadMenu (IDR_HISTORY_POPUP);
-
-	CBCGPToolbarMenuButton btnBack (ID_GO_BACK, menuHistory, 
-					CImageHash::GetImageOfCommand (ID_GO_BACK), _T("Back"));
-	btnBack.m_bText = TRUE;
-	m_wndToolBar.ReplaceButton (ID_GO_BACK, btnBack);
-
-	m_wndToolBar.ReplaceButton (ID_GO_FORWARD,
-		CBCGPToolbarMenuButton (ID_GO_FORWARD, menuHistory, 
-					CImageHash::GetImageOfCommand (ID_GO_FORWARD), _T("Forward")));
+// 	CMenu menuHistory;
+// 	menuHistory.LoadMenu (IDR_HISTORY_POPUP);
+// 
+// 	CBCGPToolbarMenuButton btnBack (ID_GO_BACK, menuHistory, 
+// 					CImageHash::GetImageOfCommand (ID_GO_BACK), _T("Back"));
+// 	btnBack.m_bText = TRUE;
+// 	m_wndToolBar.ReplaceButton (ID_GO_BACK, btnBack);
+// 
+// 	m_wndToolBar.ReplaceButton (ID_GO_FORWARD,
+// 		CBCGPToolbarMenuButton (ID_GO_FORWARD, menuHistory, 
+// 					CImageHash::GetImageOfCommand (ID_GO_FORWARD), _T("Forward")));
 
 	// "Folders" button has a text label:
-	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_VIEW_FOLDERS),
-		_T("Folders"));
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_RECORD_NEW),
+		_T("新建记录"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_RECORD_DEL_SELECTED),
+		_T("删除记录"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_RECORD_MODIFY),
+		_T("修改记录"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_RECORD_COPY),
+		_T("拷贝"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_RECORD_PASTE),
+		_T("粘贴"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_SUBCOUNT_EXPAND_ALL),
+		_T("展开"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_QUERY),
+		_T("查询"));
+	// "Folders" button has a text label:
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_EDIT_CAL_SUM),
+		_T("计算余额"));
 
 	// Replace "Views" button by the menu button:
-	CMenu menuViews;
-	menuViews.LoadMenu (IDR_VIEWS_POPUP);
-
-	m_wndToolBar.ReplaceButton (ID_VIEW_VIEWS,
-		CBCGPToolbarMenuButton (-1, menuViews, 
-					CImageHash::GetImageOfCommand (ID_VIEW_VIEWS), _T("Views")));
+// 	CMenu menuViews;
+// 	menuViews.LoadMenu (IDR_VIEWS_POPUP);
+// 
+// 	m_wndToolBar.ReplaceButton (ID_VIEW_VIEWS,
+// 		CBCGPToolbarMenuButton (-1, menuViews, 
+// 					CImageHash::GetImageOfCommand (ID_VIEW_VIEWS), _T("Views")));
 
 	return 0;
 }

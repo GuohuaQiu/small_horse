@@ -110,7 +110,6 @@ public:
 	void ForceUpdateViews();
 	static void SelectPeriod(CComboBox *pCmbBox,int nMonth);
 	BOOL FreeBook(const CString& strID);
-	void DisplayBookInformation(const CString& strID);
 	BOOL RectifyBookInfo(const CString& strID);
 	BOOL DeleteBook(const CString& strID);
     void RectifyBookinfo(const CString& strID);

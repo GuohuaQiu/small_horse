@@ -119,7 +119,7 @@ BEGIN
         MENUITEM "拷贝",                          ID_EDIT_COPY
         MENUITEM "粘贴",                          ID_EDIT_PASTE
         MENUITEM "计算余额",                        ID_EDIT_CAL_SUM
-        MENUITEM "修改记录",                        ID_EDIT_MODIFY_RECORD
+        MENUITEM "修改记录",                        ID_RECORD_MODIFY
         MENUITEM "智能设置类型",                      ID_EDIT_SMART_TYPE
     END
     POPUP "查询"
@@ -848,7 +848,7 @@ BEGIN
     BUTTON      IDC_DISGRAPHY_SAVE
     BUTTON      IDM_ADDRECORD
     BUTTON      IDC_DELETEITEM
-    BUTTON      ID_EDIT_MODIFY_RECORD
+    BUTTON      ID_RECORD_MODIFY
     BUTTON      ID_QUERY
     BUTTON      ID_EDIT_COPY
     BUTTON      ID_EDIT_PASTE
@@ -1225,16 +1225,16 @@ END
 
 IDR_MAINFRAME TOOLBAR  24, 24
 BEGIN
-    BUTTON      ID_GO_BACK
-    BUTTON      ID_GO_FORWARD
-    BUTTON      ID_FOLDER_UP
+    BUTTON      ID_RECORD_NEW
+    BUTTON      ID_RECORD_DEL_SELECTED
+    BUTTON      ID_RECORD_MODIFY
     SEPARATOR
-    BUTTON      ID_VIEW_FOLDERS
+    BUTTON      ID_RECORD_COPY
+    BUTTON      ID_RECORD_PASTE
     SEPARATOR
-    BUTTON      ID_MOVE_TO
-    BUTTON      ID_COPY_TO
-    SEPARATOR
-    BUTTON      ID_VIEW_VIEWS
+    BUTTON      ID_SUBCOUNT_EXPAND_ALL
+    BUTTON      ID_QUERY
+    BUTTON      ID_EDIT_CAL_SUM
 END
 
 #endif    // 英语(美国) resources

@@ -371,7 +371,7 @@ void CBankbookTree::OnInfo()
     if(IsBandbook(GetSelectedItem()))
     {
         CString strID = GetSelectedText();
-        theApp.DisplayBookInformation(strID);
+        theApp.ShowAccountInfo(strID);
     }
     return;
 #endif
@@ -415,16 +415,6 @@ BOOL CBankbookTree::IsBandbook()
 		return TRUE;
 #endif
 	return FALSE;
-}
-
-
-void CBankbookTree::DisplayBookInfo()
-{
-	CMainFrame * pFWnd = (CMainFrame *)AfxGetMainWnd();
-	
-	//Simon CIDSet* pIdSet = theApp.GetIDSet();
-
-
 }
 
 

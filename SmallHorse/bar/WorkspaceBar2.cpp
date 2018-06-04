@@ -285,7 +285,7 @@ void CWorkspaceBar2::OnInfo()
     CString strid;
     if(GetSelectedID(strid))
     {
-        theApp.DisplayBookInformation(strid);
+        theApp.ShowAccountInfo(strid);
     }
 }
 

@@ -156,7 +156,7 @@
 #define ID_VIEW_WORKSPACE               32803
 #define ID_VIEW_OUTPUT                  32804
 #define ID_TEST                         32805
-#define ID_EDIT_MODIFY_RECORD           32806
+#define ID_RECORD_MODIFY                32806
 #define ID_QUERY                        32808
 #define ID_BANKBOOK_FREE                32810
 #define ID_EXPORT_CSV                   32811
@@ -166,9 +166,7 @@
 #define ID_CAL_CREDIT                   32822
 #define ID_FOLDER_UP                    32823
 #define IDM_SMART_SET_TYPE              32823
-#define ID_GO_BACK                      32824
 #define ID_ADD_RETURN_RECORD            32824
-#define ID_GO_FORWARD                   32825
 #define ID_SET_AS_AUTO_RETURN_CARD      32825
 #define ID_VIEW_APPLOOK_2000            32826
 #define ID_MOVE_TO                      32826
@@ -255,13 +253,15 @@
 #define ID_SUBCOUNT_LIST_ALL            32944
 #define ID_32945                        32945
 #define ID_EDIT_SMART_TYPE              32946
+#define ID_RECORD_COPY                  32949
+#define ID_RECORD_PASTE                 32950
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        197
-#define _APS_NEXT_COMMAND_VALUE         32947
+#define _APS_NEXT_RESOURCE_VALUE        200
+#define _APS_NEXT_COMMAND_VALUE         32953
 #define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           109
 #endif

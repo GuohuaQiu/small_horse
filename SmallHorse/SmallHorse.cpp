@@ -32,7 +32,7 @@ BEGIN_MESSAGE_MAP(CSmallHorseApp, CWinApp)
     ON_UPDATE_COMMAND_UI(ID_ACCOUNT_SHOW_CLOSED, OnUpdateShowNoExistBook)
 	ON_COMMAND(ID_ACCOUNT_SHOW_CLOSED, OnShowNoExistBook)
 	//ON_COMMAND(ID_FILE_NEW_FRAME, OnFileNewFrame)
-	ON_COMMAND(ID_GO_BACK, OnFileNew)
+	//ON_COMMAND(ID_GO_BACK, OnFileNew)
 	ON_COMMAND(ID_QUERY_COMMENT, OnQueryComment)
 	ON_COMMAND(ID_QUERY_DATE, OnQueryDate)
 	ON_COMMAND(ID_QUERY_MONEY, OnQueryMoney)
@@ -1472,18 +1472,6 @@ BOOL CSmallHorseApp::RectifyBookInfo(const CString &strID)
 }
 
 
-/*******************************************
-    Function Name : 
-    author        : Qiu Guohua
-    Date          : 2009-6-9 22:39:23
-    Description   : 
-    Return type   : 
-    Argument      : 
-********************************************/
-void CSmallHorseApp::DisplayBookInformation(const CString &strID)
-{
-    ShowAccountInfo(strID);
-}
 
 
 /*******************************************

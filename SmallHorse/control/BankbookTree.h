@@ -44,7 +44,6 @@ public:
 	void QueryPeople(CString strname,BOOL bDisBill=FALSE);
 	void AddTreeItem(HTREEITEM hparent,CString str);
 	void AddTreeGroup(HTREEITEM htree);
-	void DisplayBookInfo();
 	void DeleteBook();
 	BOOL IsBandbook();
 	void AddNewItem(BOOL bFirstItem=FALSE);

@@ -228,7 +228,7 @@ ON_COMMAND(ID_RECORD_IMPORT, OnLoadCsv)
 ON_COMMAND(IDM_ADDRECORD, OnAddRecord)
 ON_COMMAND(IDM_RECTIFYPASSWORD, OnRectifyPassword)
 ON_COMMAND(ID_RECORD_DEL_SELECTED, OnDeleteRecord)
-ON_COMMAND(ID_EDIT_MODIFY_RECORD, OnEditRecord)
+ON_COMMAND(ID_RECORD_MODIFY, OnEditRecord)
 ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 ON_COMMAND(IDC_LOAD_SUBCOUNT_CSV, OnLoadSubCountCsv)
@@ -1826,7 +1826,7 @@ void CReportDemoView::OnInfo()
     
     if(pSel != NULL)
     {
-        theApp.DisplayBookInformation((LPCTSTR) (_bstr_t)pSel->GetItem(VALUE_MAINCOUNT_TYPE_MAINCOUNT)->GetValue());
+        theApp.ShowAccountInfo((LPCTSTR) (_bstr_t)pSel->GetItem(VALUE_MAINCOUNT_TYPE_MAINCOUNT)->GetValue());
     }
 
 }
