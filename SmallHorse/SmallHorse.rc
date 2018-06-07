@@ -135,14 +135,16 @@ BEGIN
     END
 END
 
-IDR_CONTEXT_MENU MENU 
+IDR_RECORD_MENU MENU 
 BEGIN
-    POPUP "_POPUP_"
-    BEGIN
-        MENUITEM "Cu&t",                        ID_EDIT_CUT
-        MENUITEM "&Copy",                       ID_EDIT_COPY
-        MENUITEM "&Paste",                      ID_EDIT_PASTE
-    END
+        MENUITEM "复制",                          ID_EDIT_COPY
+        MENUITEM "粘贴",                          ID_EDIT_PASTE
+        MENUITEM "修改记录",                        ID_RECORD_MODIFY
+        MENUITEM "智能设置类型",                      IDM_SMART_SET_TYPE
+        MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
+        MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
+        MENUITEM "信用卡账单",                       ID_CAL_CREDIT
+        MENUITEM "拷贝选定记录到",                     IDM_COPY_RECORDS_TO
 END
 
 IDR_POPUP_TOOLBAR MENU 
@@ -603,6 +605,26 @@ BEGIN
     EDITTEXT        IDC_EDIT_COMMENT,22,17,139,14,ES_AUTOHSCROLL
 END
 
+IDD_ADDCREDITCARD DIALOG  0, 0, 254, 306
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "加入新的信用卡"
+FONT 10, "宋体"
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,61,275,50,14
+    PUSHBUTTON      "取消",IDCANCEL,122,275,50,14
+    EDITTEXT        IDC_COMMENT,57,190,173,64,ES_AUTOHSCROLL
+    LTEXT           "帐号：",IDC_STATIC,26,33,26,8
+    LTEXT           "生效：",IDC_STATIC,26,57,25,8
+    LTEXT           "结账日：",IDC_STATIC,27,170,31,8
+    LTEXT           "备注：",IDC_STATIC,26,193,25,8
+    GROUPBOX        "结账周期：",IDC_STATIC,12,7,218,257
+    LTEXT           "还款日：",IDC_STATIC,145,170,30,8
+    COMBOBOX        IDC_NEWCARD,57,30,173,59,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_STATEMENT_DATE,65,164,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PAY_DATE,183,164,40,14,ES_AUTOHSCROLL
+    CONTROL         "MonthCalendar2",IDC_MONTHCALENDAR,"SysMonthCal32",WS_TABSTOP,57,52,173,100
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -827,6 +849,15 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 75
     END
+
+    IDD_ADDCREDITCARD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 12
+        VERTGUIDE, 230
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1009,6 +1040,13 @@ BEGIN
 0x3033, "\000" 
     IDC_COMBO_DATE_PAY, 0x403, 3, 0
 0x3133, "\000" 
+    0
+END
+
+IDD_ADDCREDITCARD DLGINIT
+BEGIN
+    IDC_NEWCARD, 0x403, 1, 0
+"\000" 
     0
 END
 

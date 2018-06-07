@@ -262,7 +262,7 @@ void CWorkspaceBar2::OnSetAsAutoreturnCredit()
     CString strid;
     if(GetSelectedID(strid))
     {
-        //Simon theApp.SetAutoReturnCreditCard(strid);
+        theApp.SetAutoReturnCreditCard(strid);
     }
 //        ::MessageBox(this->m_hWnd,g_strAutoReturnCreditCard,"CWorkspaceBar2",IDOK);
 	
@@ -273,7 +273,7 @@ void CWorkspaceBar2::OnTransferDingqi()
     CString strid;
     if(GetSelectedID(strid))
     {
-        //Simon theApp.TransferDingqi(strid);
+        theApp.TransferDingqi(strid);
     }
 }
 
@@ -345,7 +345,7 @@ void CWorkspaceBar2::OnAddCreditPayInfo()
     CString strid;
     if(GetSelectedID(strid))
     { 
-        //Simon theApp.AddCreditPayInfo(strid);
+        theApp.AddCreditPayInfo(strid);
     }
 	
 }
@@ -380,7 +380,7 @@ void CWorkspaceBar2::OnMenuCreditReport()
     CString strid;
     if(GetSelectedID(strid))
     { 
-        //Simon theApp.OpenReportView(strid);
+        theApp.OpenReportView(strid);
     }
 }
 

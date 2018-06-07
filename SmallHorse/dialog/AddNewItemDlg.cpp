@@ -133,7 +133,7 @@ BOOL CAddNewItemDlg::OnInitDialog()
 	m_wndDateTimePicker.SizeToContent();
 	UpdateData(FALSE);
   m_cmbSite.Init(GetDlgItem(IDC_COMBO_SITE));
-  //Simon theApp.LoadAllSite(m_cmbSite.GetStringList());
+  theApp.LoadAllSite(m_cmbSite.GetStringList());
 
 
 

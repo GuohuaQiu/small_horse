@@ -104,9 +104,11 @@ public:
 	BOOL IsSubcountActive(const CString &strMainCount, const CString &strSubCount);
 	BOOL CloseSubCount(const CString& strMainCount,const CString& strSubCount);
 	int  GetBookType(const CString& strId);
+	void AddCreditPayInfo(const CString& strID);
 	void OpenSubCountbyId(const CString& strId);
 	void ModifySubCount(const CString &strId, const CString &strSubId,COleDateTime* pOleDate = NULL, float* pvalue = NULL);
 	void DeleteRecords(const CDWordArray& dbAry);
+	void LoadAllSite(CStringArray& arySites);
 	void ForceUpdateViews();
 	static void SelectPeriod(CComboBox *pCmbBox,int nMonth);
 	BOOL FreeBook(const CString& strID);

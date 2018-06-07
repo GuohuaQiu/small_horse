@@ -769,7 +769,7 @@ BOOL CBankbookTree::OnEraseBkgnd(CDC* pDC)
 void CBankbookTree::OnAddCreditPayInfo() 
 {
     CString strID = GetSelectedText();
-    //Simon theApp.AddCreditPayInfo(strID);
+    theApp.AddCreditPayInfo(strID);
 }
 
 

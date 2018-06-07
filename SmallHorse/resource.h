@@ -7,7 +7,7 @@
 #define IDS_MAIN_TOOLBAR                101
 #define IDR_MAINFRAME                   128
 #define IDR_SmallHorseTYPE              129
-#define IDR_CONTEXT_MENU                130
+#define IDR_RECORD_MENU                 130
 #define IDR_POPUP_TOOLBAR               131
 #define IDB_BOOK                        133
 #define IDI_ICON1                       134
@@ -43,6 +43,7 @@
 #define IDD_FINDBOOK_SETUP              180
 #define IDD_DINGQI_SAVE                 181
 #define IDD_S5                          182
+#define IDD_ADDCREDITCARD               183
 #define IDD_QUERY_FROM_MONEY            184
 #define IDB_INACTIVE                    185
 #define IDD_QUERY_FROM_COMMENT          185
@@ -63,6 +64,7 @@
 #define IDC_BOOK_TYPE                   1015
 #define IDC_EDIT_ID                     1015
 #define IDC_EDIT_SUBCOUNT               1016
+#define IDC_NEWCARD                     1016
 #define IDC_NEXTINPUT                   1017
 #define IDC_EDIT_MAINCOUNT              1017
 #define IDC_EDIT_PASSWORD               1018
@@ -106,6 +108,9 @@
 #define IDC_EDIT_GREAT                  1055
 #define IDC_RADIO_TRANSFER              1056
 #define IDC_RADIO_NEW_SAVE              1057
+#define IDC_EDIT_STATEMENT_DATE         1060
+#define IDC_EDIT_PAY_DATE               1061
+#define IDC_MONTHCALENDAR               1063
 #define IDC_EDIT_DATE_BOUND             1064
 #define IDC_SPIN                        1065
 #define IDC_EDIT_INFO                   1066
@@ -182,6 +187,22 @@
 #define ID_COMMAND_HISTORY              32829
 #define ID_VIEW_APPLOOK_VS2005          32830
 #define ID_VIEW_APPLOOK_2007            32831
+#define ID_FILE_MRU_QUERY0              32850
+#define ID_FILE_MRU_QUERY1              32851
+#define ID_FILE_MRU_QUERY2              32852
+#define ID_FILE_MRU_QUERY3              32853
+#define ID_FILE_MRU_QUERY4              32854
+#define ID_FILE_MRU_QUERY5              32855
+#define ID_FILE_MRU_QUERY6              32856
+#define ID_FILE_MRU_QUERY7              32857
+#define ID_FILE_MRU_QUERY8              32858
+#define ID_FILE_MRU_QUERY9              32859
+#define ID_FILE_MRU_QUERY10             32860
+#define ID_FILE_MRU_QUERY11             32861
+#define ID_FILE_MRU_QUERY12             32862
+#define ID_FILE_MRU_QUERY13             32863
+#define ID_FILE_MRU_QUERY14             32864
+#define ID_FILE_MRU_QUERY15             32865
 #define ID_TRANSFER_DINGQI              32867
 #define IDC_LOAD_SUBCOUNT_CSV           32868
 #define ID_EDIT_ONLINE                  32873
@@ -260,7 +281,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        200
+#define _APS_NEXT_RESOURCE_VALUE        201
 #define _APS_NEXT_COMMAND_VALUE         32953
 #define _APS_NEXT_CONTROL_VALUE         1092
 #define _APS_NEXT_SYMED_VALUE           109

@@ -417,6 +417,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dialog\CreditPayDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\database\CreditPaySet.cpp"
 				>
 			</File>
@@ -740,6 +744,10 @@
 			</File>
 			<File
 				RelativePath=".\dialog\CopyRecordsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dialog\CreditPayDlg.h"
 				>
 			</File>
 			<File

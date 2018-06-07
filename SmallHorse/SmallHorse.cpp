@@ -9,6 +9,8 @@
 #include "typeSet.h"
 #include "AddNewItemDlg.h"
 #include "DingQiInputDlg.h"
+#include "CreditPayDlg.h"
+#include "CreditPaySet.h"
 #include "QueryFromDateDlg.h"
 #include "QueryFromMoneyDlg.h"
 #include "QueryFromCommentDlg.h"
@@ -325,7 +327,7 @@ void CSmallHorseApp::OnFileNew()
 
 void CSmallHorseApp::PreLoadState ()
 {
-	GetContextMenuManager()->AddMenu (_T("My menu"), IDR_CONTEXT_MENU);
+	GetContextMenuManager()->AddMenu (_T("My menu"), IDR_RECORD_MENU);
 	GetContextMenuManager()->AddMenu (_T("My menu2"), IDR_BANKBOOK_MENU);
     GetContextMenuManager()->AddMenu (_T("My menu3"), IDR_SUBCOUNT_MENU);
     GetContextMenuManager()->AddMenu (_T("My menu4"), IDR_MENU_COMPARE);
@@ -1575,6 +1577,32 @@ BOOL CSmallHorseApp::RenewSubCount(const CString &strID, const CString &strSubID
 
 
 
+void CSmallHorseApp::LoadAllSite(CStringArray &arySites)
+{
+ //   TRACE(_T("СаЃК%s\n"),strColumn);
+    CDatabase dtbs;
+    BOOL b = dtbs.OpenEx(DATA_SOURCE_NAME,CDatabase::openReadOnly|CDatabase::noOdbcDialog);
+    CRecordset set(&dtbs);
+    
+    b = set.Open(CRecordset::snapshot,SQL_SELECT_ALL_SITE);
+
+  if(set.GetRecordCount()>0)
+  {
+    CString strTemp;
+    arySites.SetSize(0,16);
+      set.MoveFirst();
+      while(!set.IsEOF())
+      {
+        set.GetFieldValue((short)0,strTemp);
+        arySites.Add(strTemp);
+        set.MoveNext();
+      }
+  }
+  set.Close();
+  dtbs.Close();
+}
+
+
 /*******************************************
     Function Name :	 
     Create by     :	  Qiu Simon
@@ -1753,6 +1781,33 @@ void CSmallHorseApp::OnUpdateShowNoExistBook(CCmdUI* pCmdUI)
     pCmdUI->SetCheck(m_bShowNoExistBook);
 }
 
+
+/*******************************************
+    Function Name :	 
+    Create by     :	  Qiu Simon
+    Input         :   
+    Output        :   
+    Description   :   
+    Date          :   2010-8-26 16:36:37
+********************************************/
+void CSmallHorseApp::AddCreditPayInfo(const CString &strID)
+{
+    CCreditPayDlg dlg;
+    dlg.m_strID = strID;
+    if(dlg.DoModal()==IDOK)
+    {
+        CCreditPaySet set;
+        set.Open();
+        set.AddNew();
+        set.m_BookID = strID;
+        set.m_Comment = dlg.m_strComment;
+        set.m_PaymentDueDate = dlg.m_datePay;
+        set.m_StartMonth = dlg.m_EffectYearMonth.GetMonth();
+        set.m_StartYear = dlg.m_EffectYearMonth.GetYear();
+        set.m_StatementDate = dlg.m_dateStatement;
+        set.Update();
+    }
+}
 
 /*******************************************
     Function Name : 

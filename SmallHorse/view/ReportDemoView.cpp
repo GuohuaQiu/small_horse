@@ -390,8 +390,8 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
             {
 				TRACE("gogo SIMON!~\n");
 				CMenu menu;
-				menu.LoadMenu(IDR_CONTEXT_MENU);
-				CMenu* pMenu = menu.GetSubMenu(0);
+				menu.LoadMenu(IDR_RECORD_MENU);
+				CMenu* pMenu = &menu;
 				//To find the menu.
 				int n = pMenu->GetMenuItemCount();
 				
