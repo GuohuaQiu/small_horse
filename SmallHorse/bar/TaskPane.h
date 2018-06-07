@@ -35,7 +35,7 @@ protected:
 
 // Implementation
 public:
-	//int AddQueryList (int nGroup, int nMaxFiles = 16);
+	int AddQueryList (int nGroup, int nMaxFiles = 16);
 	BOOL ShowAccountInfo(CIDSet* pSet);
 	virtual ~CTaskPane();
 

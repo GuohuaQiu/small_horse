@@ -29,6 +29,7 @@ public:
 
 // Implementation
 public:
+	void UpdateQueryList();
 	BOOL ShowAccountInfo(CIDSet *pSet);
 	CBankbookTree* GetBookTree();
 	virtual ~CMainFrame();

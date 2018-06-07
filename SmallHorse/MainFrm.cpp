@@ -536,3 +536,8 @@ BOOL CMainFrame::ShowAccountInfo(CIDSet *pSet)
 	return m_wndTaskPane.ShowAccountInfo(pSet);
 }
 
+void CMainFrame::UpdateQueryList()
+{
+	m_wndTaskPane.UpdateMRUFilesList();
+
+}

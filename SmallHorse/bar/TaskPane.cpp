@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
+#include "..\SmallHorse.h"
 #include "TaskPane.h"
-#include "..\resource.h"//for resource ids
 #include "idset.h"
 
 #ifdef _DEBUG
@@ -54,7 +54,7 @@ int CTaskPane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 //	AddTask (m_nDocumentsGroup, _T("导入记录"), 0, IDC_LOAD_CSV);
 //	AddTask (m_nDocumentsGroup, _T("导入子账户"), 0, IDC_LOAD_SUBCOUNT_CSV);
 //	AddTask (m_nDocumentsGroup, _T("打开所有子账户"), 0, IDC_OPEN_SUB_COUNTS);
-	//AddQueryList(m_nDocumentsGroup);
+	AddQueryList(m_nDocumentsGroup);
 
 	m_nAccountGroup = AddGroup (_T("账号"));
 
@@ -67,7 +67,7 @@ int CTaskPane::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CTaskPane::UpdateMRUFilesList ()
 {
-	//Simon AddQueryList(m_nDocumentsGroup);
+	AddQueryList(m_nDocumentsGroup);
 	RedrawWindow ();
 }
 
@@ -105,7 +105,7 @@ BOOL CTaskPane::ShowAccountInfo(CIDSet *pSet)
 	RedrawWindow();
 	return TRUE;
 }
-#if 0
+
 int CTaskPane::AddQueryList(int nGroup, int nMaxFiles)
 {
 	POSITION pos = m_lstTaskGroups.FindIndex (nGroup);
@@ -169,4 +169,3 @@ int CTaskPane::AddQueryList(int nGroup, int nMaxFiles)
 	return (int) pGroup->m_lstTasks.GetCount () - 1;
 }
 
-#endif

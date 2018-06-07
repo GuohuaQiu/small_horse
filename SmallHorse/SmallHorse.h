@@ -13,6 +13,7 @@
 #include "listset.h"       
 #include "SubCountSet.h"       
 #include "RateSet.h"       
+#include "QueryHistoryList.h"     
 #include "BookTypeSet.h"
 #include "RecordList.h"
 #include "convertdata.h"
@@ -67,6 +68,7 @@ public:
 	afx_msg void OnQuery();
     afx_msg void OnUpdateShowNoExistBook(CCmdUI* pCmdUI);
 	afx_msg void OnShowNoExistBook();
+	afx_msg BOOL OnOpenQueryFile (UINT nID);
 	afx_msg void OnOpenSubCounts();
 	afx_msg void OnFileNew();
 	afx_msg void OnQueryComment();
@@ -131,6 +133,7 @@ public:
 public:
 	afx_msg void OnAccountNew();
     BOOL m_bShowNoExistBook;
+	CQueryItemList m_querylist;
 };
 
 extern CSmallHorseApp theApp;

@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CSmallHorseApp, CWinApp)
 	ON_COMMAND(ID_QUERY, OnQuery)
     ON_UPDATE_COMMAND_UI(ID_ACCOUNT_SHOW_CLOSED, OnUpdateShowNoExistBook)
 	ON_COMMAND(ID_ACCOUNT_SHOW_CLOSED, OnShowNoExistBook)
+	ON_COMMAND_EX_RANGE(ID_FILE_MRU_QUERY0, ID_FILE_MRU_QUERY15, OnOpenQueryFile)
 	//ON_COMMAND(ID_FILE_NEW_FRAME, OnFileNewFrame)
 	//ON_COMMAND(ID_GO_BACK, OnFileNew)
 	ON_COMMAND(ID_QUERY_COMMENT, OnQueryComment)
@@ -113,6 +114,7 @@ BOOL CSmallHorseApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("BCGP AppWizard-Generated Applications"));
 	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
+	m_querylist.Load();
 
 	SetRegistryBase (_T("Settings"));
 
@@ -200,7 +202,7 @@ BOOL CSmallHorseApp::InitInstance()
 int CSmallHorseApp::ExitInstance() 
 {
 	BCGCBProCleanUp();
-
+	m_querylist.Save();
 	if(m_pCompareTemplate)
 	{
 		delete m_pCompareTemplate;
@@ -740,6 +742,32 @@ void CSmallHorseApp::SetBookFilter(const CString strID)
 }
 
 
+/*******************************************
+    Function Name : 
+    author        : Qiu Guohua
+    Date          : 2009-4-20 21:32:05
+    Description   : 
+    Return type  : 
+    Argument      : 
+********************************************/
+BOOL CSmallHorseApp::OnOpenQueryFile (UINT nID)
+{
+	ASSERT_VALID(this);
+
+	ASSERT(nID >= ID_FILE_MRU_QUERY0);
+	ASSERT(nID < ID_FILE_MRU_QUERY0 + (UINT)m_querylist.GetCount());
+	int nIndex = nID - ID_FILE_MRU_QUERY0;
+
+
+	CQueryItem* pItem = m_querylist.Get(nIndex);
+	if(pItem)
+	{
+		OpenView(pItem->strFilter,_T("OperDate,Index"),FALSE,pItem->strName);
+	}
+
+	return TRUE;
+}
+
 void CSmallHorseApp::OnShowNoExistBook() 
 {
     m_bShowNoExistBook = !m_bShowNoExistBook;
@@ -932,8 +960,8 @@ BOOL CSmallHorseApp::OpenView(const CString &strFilter, const CString &strOrder,
 	m_pDocTemplate->InitialUpdateFrame(pcframe, pdoc);
 	if(bSaveHistory)
 	{
-		//Simon m_querylist.AddNewQuery(strFilter,lpstrName);
-		//Simon ((CMainFrame*)m_pMainWnd)->UpdateQueryList();
+		m_querylist.AddNewQuery(strFilter,lpstrName);
+		((CMainFrame*)m_pMainWnd)->UpdateQueryList();
 	}
 	return TRUE;
 }
