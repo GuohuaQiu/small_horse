@@ -82,7 +82,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CList<UINT, UINT>	lstBasicCommands;
 
-	lstBasicCommands.AddTail (ID_VIEW_TOOLBARS);
 	lstBasicCommands.AddTail (ID_APP_EXIT);
 	lstBasicCommands.AddTail (ID_APP_ABOUT);
 	lstBasicCommands.AddTail (ID_VIEW_TOOLBAR);
@@ -116,10 +115,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	UINT uiToolbarHotID = bIsHighColor ? IDB_TOOLBAR256 : 0;
 	UINT uiToolbarColdID = bIsHighColor ? IDB_TOOLBARCOLD256 : 0;
-	UINT uiMenuID = bIsHighColor ? IDB_MENU256 : IDB_MENU16;
+//	UINT uiMenuID = bIsHighColor ? IDB_MENU256 : IDB_MENU16;
 
 	if (!m_wndToolBar.CreateEx(this) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME, uiToolbarColdID, uiMenuID, FALSE, 0, 0, uiToolbarHotID))
+		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME, uiToolbarColdID, uiToolbarColdID, FALSE, 0, 0, uiToolbarHotID))
 	{
 		TRACE0("Failed to create toolbar\n");
 		return -1;      // fail to create
@@ -376,21 +375,6 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 		return 0;
 	}
 
-	// Replace "Back" and "Forward" buttons by the menu buttons
-	// with the history lists:
-
-// 	CMenu menuHistory;
-// 	menuHistory.LoadMenu (IDR_HISTORY_POPUP);
-// 
-// 	CBCGPToolbarMenuButton btnBack (ID_GO_BACK, menuHistory, 
-// 					CImageHash::GetImageOfCommand (ID_GO_BACK), _T("Back"));
-// 	btnBack.m_bText = TRUE;
-// 	m_wndToolBar.ReplaceButton (ID_GO_BACK, btnBack);
-// 
-// 	m_wndToolBar.ReplaceButton (ID_GO_FORWARD,
-// 		CBCGPToolbarMenuButton (ID_GO_FORWARD, menuHistory, 
-// 					CImageHash::GetImageOfCommand (ID_GO_FORWARD), _T("Forward")));
-
 	// "Folders" button has a text label:
 	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_RECORD_NEW),
 		_T("新建记录"));
@@ -416,13 +400,23 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_EDIT_CAL_SUM),
 		_T("计算余额"));
 
-	// Replace "Views" button by the menu button:
-// 	CMenu menuViews;
-// 	menuViews.LoadMenu (IDR_VIEWS_POPUP);
-// 
-// 	m_wndToolBar.ReplaceButton (ID_VIEW_VIEWS,
-// 		CBCGPToolbarMenuButton (-1, menuViews, 
-// 					CImageHash::GetImageOfCommand (ID_VIEW_VIEWS), _T("Views")));
+	// 	CMenu menuHistory;
+	// 	menuHistory.LoadMenu (IDR_HISTORY_POPUP);
+	// 
+	CMenu menuBrowse;
+	menuBrowse.CreatePopupMenu( );
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_1,_T("2017"));
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_2,_T("2016"));
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_3,_T("2015"));
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_4,_T("2014"));
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_5,_T("2013"));
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_6,_T("2012"));
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_7,_T("2011"));
+
+	CBCGPToolbarMenuButton btnBrowse(ID_THIS_YEAR, menuBrowse, 
+	 					CImageHash::GetImageOfCommand (ID_THIS_YEAR), _T("2018"));
+	btnBrowse.m_bText = TRUE;
+	m_wndToolBar.ReplaceButton (ID_THIS_YEAR, btnBrowse);
 
 	return 0;
 }

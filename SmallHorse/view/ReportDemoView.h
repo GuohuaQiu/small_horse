@@ -164,11 +164,7 @@ protected:
 	afx_msg void OnExpandAllItem();
 	afx_msg void OnCollapseAllItem();
 	afx_msg void OnCollapseInactiveInactive();
-	afx_msg void OnBrowseYear();
-	afx_msg void OnBrowseYear1();
-	afx_msg void OnBrowseYear2();
-	afx_msg void OnBrowseYear3();
-	afx_msg void OnBrowseYear4();
+	afx_msg void OnBrowseYear(UINT nID);
 	afx_msg void OnUpdateAddReturnRecord(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateTransferDingqi(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateCalCredit(CCmdUI* pCmdUI);

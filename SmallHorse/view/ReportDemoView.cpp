@@ -225,7 +225,7 @@ ON_COMMAND(ID_REPORT_COLLAPSE_ALL, OnReportCollapseAll)
 ON_COMMAND(ID_EDIT_CAL_SUM, OnCalsum)
 ON_COMMAND(ID_RECORD_EXPORT, OnExportCsv)
 ON_COMMAND(ID_RECORD_IMPORT, OnLoadCsv)
-ON_COMMAND(IDM_ADDRECORD, OnAddRecord)
+ON_COMMAND(ID_RECORD_NEW, OnAddRecord)
 ON_COMMAND(IDM_RECTIFYPASSWORD, OnRectifyPassword)
 ON_COMMAND(ID_RECORD_DEL_SELECTED, OnDeleteRecord)
 ON_COMMAND(ID_RECORD_MODIFY, OnEditRecord)
@@ -259,11 +259,7 @@ ON_COMMAND(ID_SUBCOUNT_EXPAND_ACTIVE, OnExpandActiveItem)
 ON_COMMAND(ID_SUBCOUNT_EXPAND_ALL, OnExpandAllItem)
 ON_COMMAND(ID_SUBCOUNT_SHRINK_ALL, OnCollapseAllItem)
 ON_COMMAND(ID_SUBCOUNT_SHRINK_CLOSED, OnCollapseInactiveInactive)
-ON_COMMAND(ID_THIS_YEAR, OnBrowseYear)
-ON_COMMAND(ID_THIS_YEAR_1, OnBrowseYear1)
-ON_COMMAND(ID_THIS_YEAR_2, OnBrowseYear2)
-ON_COMMAND(ID_THIS_YEAR_3, OnBrowseYear3)
-ON_COMMAND(ID_THIS_YEAR_4, OnBrowseYear4)
+ON_COMMAND_RANGE(ID_THIS_YEAR, ID_THIS_YEAR_7,OnBrowseYear)
 ON_UPDATE_COMMAND_UI(ID_ADD_RETURN_RECORD, OnUpdateAddReturnRecord)
 ON_UPDATE_COMMAND_UI(ID_TRANSFER_DINGQI, OnUpdateTransferDingqi)
 ON_UPDATE_COMMAND_UI(ID_CAL_CREDIT, OnUpdateCalCredit)
@@ -2140,30 +2136,11 @@ void CReportDemoView::BrowseToBackYear(int backYear)
 	
 }
 
-void CReportDemoView::OnBrowseYear() 
+void CReportDemoView::OnBrowseYear(UINT nID) 
 {
-    BrowseToBackYear(0);
+    BrowseToBackYear(nID - ID_THIS_YEAR);
 }
 
-void CReportDemoView::OnBrowseYear1() 
-{
-    BrowseToBackYear(1);
-}
-
-void CReportDemoView::OnBrowseYear2() 
-{
-    BrowseToBackYear(2);
-}
-
-void CReportDemoView::OnBrowseYear3() 
-{
-    BrowseToBackYear(3);
-}
-
-void CReportDemoView::OnBrowseYear4() 
-{
-    BrowseToBackYear(4);
-}
 
 
 void CReportDemoView::OnCopyRecordsTo(UINT nID)

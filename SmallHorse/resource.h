@@ -20,9 +20,7 @@
 #define IDB_TOOLBARCOLD256              152
 #define IDR_HISTORY_POPUP               154
 #define IDD_QUERYEND                    154
-#define IDB_MENU256                     155
 #define IDR_VIEWS_POPUP                 155
-#define IDB_MENU16                      156
 #define IDB_TASKS                       160
 #define IDR_BANKBOOK_MENU               162
 #define IDR_SUBCOUNT_MENU               163
@@ -134,8 +132,6 @@
 #define IDM_COPY_RECORDS_TO             32000
 #define IDM_COPY_RECORDS_TO_END         32010
 #define ID_VIEW_CUSTOMIZE               32770
-#define ID_VIEW_TOOLBARS                32771
-#define IDM_ADDRECORD                   32771
 #define IDC_DELETEITEM                  32774
 #define IDC_CALSUM                      32779
 #define IDC_RECTIFYPASSWORD             32781
@@ -234,8 +230,9 @@
 #define ID_THIS_YEAR_2                  32903
 #define ID_THIS_YEAR_3                  32904
 #define ID_THIS_YEAR_4                  32905
-#define ID_32907                        32907
-#define ID_32908                        32908
+#define ID_THIS_YEAR_5                  32906
+#define ID_THIS_YEAR_6                  32907
+#define ID_THIS_YEAR_7                  32908
 #define ID_DATABASE_BACKUP              32909
 #define ID_DATABASE_COMPARE             32910
 #define ID_32911                        32911

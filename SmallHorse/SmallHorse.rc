@@ -137,14 +137,14 @@ END
 
 IDR_RECORD_MENU MENU 
 BEGIN
-        MENUITEM "复制",                          ID_EDIT_COPY
-        MENUITEM "粘贴",                          ID_EDIT_PASTE
-        MENUITEM "修改记录",                        ID_RECORD_MODIFY
-        MENUITEM "智能设置类型",                      IDM_SMART_SET_TYPE
-        MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
-        MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
-        MENUITEM "信用卡账单",                       ID_CAL_CREDIT
-        MENUITEM "拷贝选定记录到",                     IDM_COPY_RECORDS_TO
+    MENUITEM "复制",                          ID_EDIT_COPY
+    MENUITEM "粘贴",                          ID_EDIT_PASTE
+    MENUITEM "修改记录",                        ID_RECORD_MODIFY
+    MENUITEM "智能设置类型",                      IDM_SMART_SET_TYPE
+    MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
+    MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
+    MENUITEM "信用卡账单",                       ID_CAL_CREDIT
+    MENUITEM "拷贝选定记录到",                     IDM_COPY_RECORDS_TO
 END
 
 IDR_POPUP_TOOLBAR MENU 
@@ -179,7 +179,7 @@ BEGIN
         MENUITEM "修改密码...",                     IDM_RECTIFYPASSWORD
         MENUITEM SEPARATOR
         MENUITEM "删除此折",                        IDM_DELETEBOOK, INACTIVE
-        MENUITEM "加入收支记录",                      IDM_ADDRECORD
+        MENUITEM "加入收支记录",                      ID_RECORD_NEW
         MENUITEM "销折",                          ID_BANKBOOK_FREE
         MENUITEM "设置为还贷卡",                      ID_SET_AS_AUTO_RETURN_CARD
         MENUITEM "关联信用卡（被还）",                   ID_SET_AS_AUTORETURN_CREDIT
@@ -877,7 +877,7 @@ BEGIN
     BUTTON      IDC_DISGRAPHY
     BUTTON      IDC_DISGRAPHY_SPEND
     BUTTON      IDC_DISGRAPHY_SAVE
-    BUTTON      IDM_ADDRECORD
+    BUTTON      ID_RECORD_NEW
     BUTTON      IDC_DELETEITEM
     BUTTON      ID_RECORD_MODIFY
     BUTTON      ID_QUERY
@@ -1231,8 +1231,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDB_TOOLBARCOLD256      BITMAP                  "res\\ToolbarCold256.bmp"
 IDB_TOOLBAR256          BITMAP                  "res\\toolbar2.bmp"
-IDB_MENU256             BITMAP                  "res\\menu256.bmp"
-IDB_MENU16              BITMAP                  "res\\menu16.bmp"
 IDR_MAINFRAME           BITMAP                  "res\\mainfram.bmp"
 IDB_TASKS               BITMAP                  "res\\tasks.bmp"
 IDB_LIST_IMAGES         BITMAP                  "res\\list.bmp"
@@ -1273,6 +1271,7 @@ BEGIN
     BUTTON      ID_SUBCOUNT_EXPAND_ALL
     BUTTON      ID_QUERY
     BUTTON      ID_EDIT_CAL_SUM
+    BUTTON      ID_THIS_YEAR
 END
 
 #endif    // 英语(美国) resources
