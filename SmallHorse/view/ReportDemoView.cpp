@@ -759,7 +759,8 @@ void CReportDemoView::OnEditRecord()
     //cant use app default CListSet to edit. when CCurveView update, 
     //the object editMode change to noMode, this made the Update fail.
     //2012-06-04
-#ifdef USE_APP_LIST_SET
+//#ifdef USE_APP_LIST_SET
+#if  1
 			CListSet* pListSet = theApp.GetListSet();
 #else
             CListSet setEdit;

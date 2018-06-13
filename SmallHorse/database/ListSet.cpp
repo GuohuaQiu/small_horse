@@ -900,15 +900,7 @@ void CListSet::Move(long nRows, WORD wFetchType)
 	m_LockModify.Unlock();
 }
 
-// BOOL CListSet::Modify_Site(const CString& strSite)
-// {
-// 	m_LockModify.Lock();
-// 	Edit();
-// 	m_strSite = strSite;
-// 	BOOL b = Update();
-// 	m_LockModify.Unlock();
-// 	return b;
-// }
+
 
 
 void CListSet::Trace(void)
@@ -935,8 +927,16 @@ int CListSet::Modify_Type_ByComment(int type,const CString& strNoHas, const CStr
 	CDatabaseUtility::Generate_modify_int("Type",type,strSQL);
 	CDatabaseUtility::Append_Condition_Int_Array("Index",strSQL,dbArray,count);
 	CString strTemp;
-	strTemp.Format(" and Comment like \'%%%s\%%\' and Comment not like \'%%%s%%\'",strHas,strNoHas);
-	strSQL += strTemp;
+	if(strHas.GetLength() >0)
+	{
+		strTemp.Format(" and Comment like \'%%%s\%%\'",strHas);
+		strSQL += strTemp;
+	}
+	if(strNoHas.GetLength() >0)
+	{
+		strTemp.Format(" and Comment not like \'%%%s%%\'",strNoHas);
+		strSQL += strTemp;
+	}
 	TRACE("%s\n",strSQL);
 	m_pDatabase->ExecuteSQL(strSQL);
 
@@ -949,7 +949,16 @@ int CListSet::Modify_Site_ByComment(const CString&strSite,const CString& strNoHa
 	CDatabaseUtility::Generate_modify_string("Site",strSite,strSQL);
 	CDatabaseUtility::Append_Condition_Int_Array("Index",strSQL,dbArray,count);
 	CString strTemp;
-	strTemp.Format(" and Comment like \'%%%s\%%\' and Comment not like \'%%%s%%\'",strHas,strNoHas);
+	if(strHas.GetLength() >0)
+	{
+		strTemp.Format(" and Comment like \'%%%s\%%\'",strHas);
+		strSQL += strTemp;
+	}
+	if(strNoHas.GetLength() >0)
+	{
+		strTemp.Format(" and Comment not like \'%%%s%%\'",strNoHas);
+		strSQL += strTemp;
+	}
 	strSQL += strTemp;
 	TRACE("%s\n",strSQL);
 	m_pDatabase->ExecuteSQL(strSQL);

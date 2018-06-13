@@ -65,7 +65,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\SmallHorse.ico"
-IDR_SmallHorseTYPE      ICON                    "res\\SmallHorseDoc.ico"
 IDI_ICON1               ICON                    "res\\Book01a.ico"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +75,6 @@ IDI_ICON1               ICON                    "res\\Book01a.ico"
 IDB_WORKSPACE           BITMAP                  "res\\workspace.bmp"
 IDB_BOOK                BITMAP                  "res\\bitmap1.bmp"
 IDB_TESTONLY            BITMAP                  "res\\test.bmp"
-IDR_MAINFRAME_BK        BITMAP                  "res\\bmp00001.bmp"
 IDB_ACTIVE              BITMAP                  "res\\RC_ACTIVE.bmp"
 IDB_INACTIVE            BITMAP                  "res\\RC_INACTIVE.bmp"
 
@@ -141,11 +139,12 @@ BEGIN
     MENUITEM "复制",                          ID_EDIT_COPY
     MENUITEM "粘贴",                          ID_EDIT_PASTE
     MENUITEM "修改记录",                        ID_RECORD_MODIFY
-    MENUITEM "智能设置类型",                      IDM_SMART_SET_TYPE
+    MENUITEM "智能设置类型",                      ID_EDIT_SMART_TYPE
     MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
     MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
     MENUITEM "信用卡账单",                       ID_CAL_CREDIT
     MENUITEM "拷贝选定记录到",                     IDM_COPY_RECORDS_TO
+    MENUITEM "替换注释",                        ID_EDIT_REPLACE_COMMENT
 END
 
 IDR_POPUP_TOOLBAR MENU 
@@ -182,7 +181,6 @@ BEGIN
         MENUITEM "删除此折",                        IDM_DELETEBOOK, INACTIVE
         MENUITEM "加入收支记录",                      ID_RECORD_NEW
         MENUITEM "销折",                          ID_BANKBOOK_FREE
-        MENUITEM "设置为还贷卡",                      ID_SET_AS_AUTO_RETURN_CARD
         MENUITEM "关联信用卡（被还）",                   ID_SET_AS_AUTORETURN_CREDIT
         MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
         MENUITEM SEPARATOR
@@ -191,16 +189,6 @@ BEGIN
         MENUITEM "添加信用卡还款周期",                   ID_ADD_CREDIT_PAY_INFO
         MENUITEM "对账信息",                        ID_MENU_CREDIT_REPORT
         MENUITEM "锁定账户",                        ID_COUNT_LOCK
-    END
-END
-
-IDR_RECORD_LIST_MENU MENU 
-BEGIN
-    POPUP "CREDIT"
-    BEGIN
-        MENUITEM "credit",                      ID_CAL_CREDIT
-        MENUITEM "智能设置类型",                      IDM_SMART_SET_TYPE
-        MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
     END
 END
 
@@ -215,7 +203,6 @@ BEGIN
         MENUITEM "删除此折",                        IDM_DELETEBOOK, INACTIVE
         MENUITEM "加入收支记录",                      ID_RECORD_NEW
         MENUITEM "销折",                          ID_BANKBOOK_FREE
-        MENUITEM "设置为还贷卡",                      ID_SET_AS_AUTO_RETURN_CARD
         MENUITEM "关联信用卡（被还）",                   ID_SET_AS_AUTORETURN_CREDIT
         MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
         MENUITEM SEPARATOR
@@ -409,18 +396,7 @@ BEGIN
     PUSHBUTTON      "有票",IDC_ADD_DEFAULT_NOTE,198,119,50,14
 END
 
-IDD_IMPORT2 DIALOG  0, 0, 540, 350
-STYLE DS_SETFONT | WS_CHILD | WS_BORDER
-FONT 10, "Tahoma"
-BEGIN
-    CONTROL         "List1",IDC_LIST_DATA,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,523,314
-    PUSHBUTTON      "全选",IDC_MARKALL,21,329,50,14
-    PUSHBUTTON      "全不选",IDC_UNMARKALL,87,329,50,14
-    PUSHBUTTON      "标选中的",IDC_MARKSELED,156,329,50,14
-    PUSHBUTTON      "去标选中的",IDC_UNMARKSELECTED,221,329,50,14
-END
-
-IDD_IMPORT1 DIALOGEX 0, 0, 540, 350
+IDD_IMPORT1 DIALOGEX 0, 0, 540, 252
 STYLE DS_SETFONT | WS_CHILD | WS_BORDER
 EXSTYLE WS_EX_ACCEPTFILES
 FONT 10, "Tahoma", 0, 0, 0x1
@@ -428,6 +404,17 @@ BEGIN
     LTEXT           "选择文件：",IDC_STATIC,55,50,59,8
     EDITTEXT        IDC_EDIT_FILE,56,69,278,12,ES_AUTOHSCROLL
     PUSHBUTTON      "选择文件...",IDC_SELECTFILE,56,88,50,14
+END
+
+IDD_IMPORT2 DIALOGEX 0, 0, 540, 252
+STYLE DS_SETFONT | WS_CHILD | WS_BORDER
+FONT 10, "Tahoma", 0, 0, 0x0
+BEGIN
+    CONTROL         "List1",IDC_LIST_DATA,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,523,216
+    PUSHBUTTON      "全选",IDC_MARKALL,21,231,50,14
+    PUSHBUTTON      "全不选",IDC_UNMARKALL,87,231,50,14
+    PUSHBUTTON      "标选中的",IDC_MARKSELED,156,231,50,14
+    PUSHBUTTON      "去标选中的",IDC_UNMARKSELECTED,221,231,50,14
 END
 
 IDD_SET_RECORD_TYPE DIALOG  0, 0, 279, 204
@@ -438,7 +425,7 @@ BEGIN
     DEFPUSHBUTTON   "确定",IDOK,74,166,27,14
     PUSHBUTTON      "取消",IDCANCEL,171,166,27,14
     LTEXT           "备注中含有",IDC_STATIC,25,26,40,8
-    GROUPBOX        "把选中的记录的种?喔菀韵鹿嬖蛏瓒?:",IDC_STATIC,7,7,265,139
+    GROUPBOX        "把选中的记录的种类根据以下规则设定:",IDC_STATIC,7,7,265,139
     EDITTEXT        IDC_EDIT_HAVE_NOT,65,41,124,13,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_MUST_HAVE,65,22,124,13,ES_AUTOHSCROLL
     COMBOBOX        IDC_COMBO_TYPE,65,97,124,250,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
@@ -757,20 +744,20 @@ BEGIN
         HORZGUIDE, 91
     END
 
-    IDD_IMPORT2, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 530
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 343
-    END
-
     IDD_IMPORT1, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 528
         TOPMARGIN, 7
-        BOTTOMMARGIN, 343
+        BOTTOMMARGIN, 245
+    END
+
+    IDD_IMPORT2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 528
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 245
     END
 
     IDD_SET_RECORD_TYPE, DIALOG
@@ -882,40 +869,6 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Toolbar
-//
-
-IDR_MAINFRAME_BK TOOLBAR  35, 15
-BEGIN
-    BUTTON      IDM_ADDNEWBOOK
-    BUTTON      IDM_DELETEBOOK
-    BUTTON      IDC_CALSUM
-    BUTTON      IDC_RECTIFYPASSWORD
-    SEPARATOR
-    BUTTON      IDC_DISGRAPHY
-    BUTTON      IDC_DISGRAPHY_SPEND
-    BUTTON      IDC_DISGRAPHY_SAVE
-    BUTTON      ID_RECORD_NEW
-    BUTTON      IDC_DELETEITEM
-    BUTTON      ID_RECORD_MODIFY
-    BUTTON      ID_QUERY
-    BUTTON      ID_EDIT_COPY
-    BUTTON      ID_EDIT_PASTE
-    BUTTON      ID_EXPORT_CSV
-    BUTTON      ID_BACKUP
-    BUTTON      ID_TEST
-    BUTTON      IDC_LOAD_CSV
-    BUTTON      ID_CAL_CREDIT
-    BUTTON      ID_CHECK
-    BUTTON      IDC_LOAD_SUBCOUNT_CSV
-    BUTTON      ID_EDIT_ONLINE
-    BUTTON      ID_APP_SHOW_NO_EXIST
-    BUTTON      ID_VIEW_REFRESH
-END
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1265,14 +1218,6 @@ IDB_LIST_IMAGES         BITMAP                  "res\\list.bmp"
 IDR_HISTORY_POPUP MENU 
 BEGIN
     MENUITEM "<History>",                   ID_COMMAND_HISTORY
-END
-
-IDR_VIEWS_POPUP MENU 
-BEGIN
-    MENUITEM "&Large Icons",                ID_VIEW_LARGEICON
-    MENUITEM "&Small Icons",                ID_VIEW_SMALLICON
-    MENUITEM "L&ist",                       ID_VIEW_LIST
-    MENUITEM "&Details",                    ID_VIEW_DETAILS
 END
 
 
