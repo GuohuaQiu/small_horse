@@ -50,6 +50,7 @@
 #define IDR_MENU_COMPARE                190
 #define IDD_COPY_RECORDS                195
 #define IDR_MAINFRAME_BK                196
+#define IDD_REPLACE_STRING              196
 #define IDB_LIST_IMAGES                 197
 #define IDC_EDIT_MONEY_RANGE            1000
 #define IDC_EDIT_MONEY                  1001
@@ -129,6 +130,8 @@
 #define IDC_CHECK_TYPE                  1088
 #define IDC_CHECK_SITE                  1089
 #define IDC_CHECK_TRANSFER              1091
+#define IDC_EDIT_OLD_STR                1092
+#define IDC_EDIT_NEW_STR                1093
 #define IDM_COPY_RECORDS_TO             32000
 #define IDM_COPY_RECORDS_TO_END         32010
 #define ID_VIEW_CUSTOMIZE               32770
@@ -273,14 +276,15 @@
 #define ID_EDIT_SMART_TYPE              32946
 #define ID_RECORD_COPY                  32949
 #define ID_RECORD_PASTE                 32950
+#define ID_EDIT_REPLACE_COMMENT         32954
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        201
-#define _APS_NEXT_COMMAND_VALUE         32953
-#define _APS_NEXT_CONTROL_VALUE         1092
+#define _APS_NEXT_COMMAND_VALUE         32955
+#define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

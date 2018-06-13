@@ -23,6 +23,7 @@
 #include "CreditPaySet.h"
 #include "SmartDate.h"
 #include "CopyRecordsDlg.h"
+#include "ReplaceStringDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -235,6 +236,7 @@ ON_COMMAND(IDC_LOAD_SUBCOUNT_CSV, OnLoadSubCountCsv)
 ON_COMMAND(ID_CAL_CREDIT, OnCalCredit)
 ON_COMMAND(ID_CHECK, OnCheck)
 ON_COMMAND(ID_EDIT_SMART_TYPE, OnSmartSetType)
+ON_COMMAND(ID_EDIT_REPLACE_COMMENT, OnReplaceComment)
 ON_COMMAND(ID_ADD_RETURN_RECORD, OnAddReturnRecord)
 ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdateEditCopy)
 ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, OnUpdateEditPaste)
@@ -1526,6 +1528,25 @@ void CReportDemoView::OnSmartSetType()
 		{
 			pListSet->Modify_Type_ByComment(dlg.m_nTypeIndex,dlg.m_strNoString,dlg.m_strYesString,RowArray,nSelectedCount);
 		}
+        theApp.ForceUpdateViews();
+	}
+}
+
+void CReportDemoView::OnReplaceComment() 
+{
+	CDWordArray  RowArray;
+	CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl ();
+	int nSelectedCount = pReportCtrl->GetSelectedRows(RowArray);
+	if(nSelectedCount == 0)
+	{
+		return;
+	}
+	
+    CReplaceStringDlg dlg;
+	if(dlg.DoModal() ==IDOK)
+	{
+		CListSet* pListSet = theApp.GetListSet();
+		pListSet->Replace_Comment(dlg.m_strOldString,dlg.m_strNewString,RowArray,nSelectedCount);
         theApp.ForceUpdateViews();
 	}
 }

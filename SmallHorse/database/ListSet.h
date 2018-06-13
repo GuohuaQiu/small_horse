@@ -100,6 +100,7 @@ public:
 	void Trace(void);
 	int Modify_Type_ByComment(int type,const CString& strNoHas, const CString& strHas,const CDWordArray& dbArray,int count);
 	int Modify_Site_ByComment(const CString&strSite,const CString& strNoHas, const CString& strHas,const CDWordArray& dbArray,int count);
+	int Replace_Comment(const CString& strOldString, const CString& strNewString,const CDWordArray& dbArray,int count);
 };
 
 //{{AFX_INSERT_LOCATION}}

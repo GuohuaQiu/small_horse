@@ -121,6 +121,7 @@ BEGIN
         MENUITEM "计算余额",                        ID_EDIT_CAL_SUM
         MENUITEM "修改记录",                        ID_RECORD_MODIFY
         MENUITEM "智能设置类型",                      ID_EDIT_SMART_TYPE
+        MENUITEM "替换备注",                        ID_EDIT_REPLACE_COMMENT
     END
     POPUP "查询"
     BEGIN
@@ -625,6 +626,19 @@ BEGIN
     CONTROL         "MonthCalendar2",IDC_MONTHCALENDAR,"SysMonthCal32",WS_TABSTOP,57,52,173,100
 END
 
+IDD_REPLACE_STRING DIALOGEX 0, 0, 279, 101
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "替换字符串"
+FONT 10, "宋体", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,85,63,27,14
+    PUSHBUTTON      "取消",IDCANCEL,164,63,27,14
+    LTEXT           "原字符串",-1,18,16,40,8
+    EDITTEXT        IDC_EDIT_NEW_STR,66,33,187,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_OLD_STR,66,15,187,13,ES_AUTOHSCROLL
+    LTEXT           "替换为",-1,18,33,38,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -857,6 +871,14 @@ BEGIN
         VERTGUIDE, 230
         TOPMARGIN, 7
         BOTTOMMARGIN, 289
+    END
+
+    IDD_REPLACE_STRING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 272
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
     END
 END
 #endif    // APSTUDIO_INVOKED

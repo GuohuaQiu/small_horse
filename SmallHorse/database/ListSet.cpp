@@ -956,3 +956,19 @@ int CListSet::Modify_Site_ByComment(const CString&strSite,const CString& strNoHa
 
 	return 0;
 }
+
+int CListSet::Replace_Comment(const CString& strOldString, const CString& strNewString,const CDWordArray& dbArray,int count)
+{
+	//"UPDATE tableName SET recordName=REPLACE(recordName,'abc','ddd')"
+	CString strSQL="update Items set Comment=REPLACE(Comment,\'";
+	strSQL += strOldString;
+	strSQL += "\',\'";
+	strSQL += strNewString;
+	strSQL += "\')";
+
+	CDatabaseUtility::Append_Condition_Int_Array("Index",strSQL,dbArray,count);
+	TRACE("%s\n",strSQL);
+	m_pDatabase->ExecuteSQL(strSQL);
+
+	return 0;
+}

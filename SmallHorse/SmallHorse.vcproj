@@ -585,6 +585,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\dialog\ReplaceStringDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\view\ReportDemoView.cpp"
 				>
 			</File>
@@ -916,6 +920,10 @@
 			</File>
 			<File
 				RelativePath=".\datastruct\RecordList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dialog\ReplaceStringDlg.h"
 				>
 			</File>
 			<File
