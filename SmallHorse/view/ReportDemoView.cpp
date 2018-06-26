@@ -224,6 +224,7 @@ ON_COMMAND(ID_REPORT_EXPAND_ALL, OnReportExpandAll)
 ON_COMMAND(ID_REPORT_COLLAPSE_ALL, OnReportCollapseAll)
 #endif
 ON_COMMAND(ID_EDIT_CAL_SUM, OnCalsum)
+ON_COMMAND(ID_QUERY_ONE_DAY, OnQueryThisDay)
 ON_COMMAND(ID_RECORD_EXPORT, OnExportCsv)
 ON_COMMAND(ID_RECORD_IMPORT, OnLoadCsv)
 ON_COMMAND(ID_RECORD_NEW, OnAddRecord)
@@ -701,6 +702,22 @@ void CReportDemoView::OnCalsum()
 	{
 		theApp.CalSum(m_pParent->m_strID);
 	}
+}
+
+//2018-6-26 17:27
+void CReportDemoView::OnQueryThisDay() 
+{
+	CDWordArray  RowArray;
+	CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl ();
+	int nSelectedCount = pReportCtrl->GetSelectedRows(RowArray);
+	if(nSelectedCount != 1)
+	{
+		return;
+	}
+	CBCGPGridRow* pRow = pReportCtrl->GetFirstSelectedRow();
+	CBCGPGridItem* pItem = pRow->GetItem (COLUMN_DATE__);
+	COleDateTime date = (DATE)pItem->GetValue();
+	theApp.QueryOneDay(date);
 }
 
 void CReportDemoView::OnRectifyPassword() 

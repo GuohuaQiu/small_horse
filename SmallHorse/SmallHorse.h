@@ -130,6 +130,7 @@ public:
 	void FillPeriodtoCombox(CComboBox* pCmbBox);
 	CSubCountSet* GetSubCountSet();
 	BOOL RenewSubCount(const CString& strID, const CString& strSubID);
+	void QueryOneDay(COleDateTime day);
 public:
 	afx_msg void OnAccountNew();
     BOOL m_bShowNoExistBook;

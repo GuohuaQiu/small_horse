@@ -239,13 +239,14 @@
 #define ID_EDIT_REPLACE_COMMENT         32954
 #define ID_EDIT_CREDIT_PERIOD           32956
 #define ID_BOOK_DOUNT_STATIC            32958
+#define ID_QUERY_ONE_DAY                32960
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        201
-#define _APS_NEXT_COMMAND_VALUE         32959
+#define _APS_NEXT_COMMAND_VALUE         32961
 #define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           109
 #endif

@@ -1896,6 +1896,24 @@ void CSmallHorseApp::OnQueryDate()
     }
     
 }
+/*******************************************
+Function Name :	 
+Create by     :	  Qiu Simon
+Input         :   
+Output        :   
+Description   :   
+Date          :   06/26/2018 16:58:40
+********************************************/
+void CSmallHorseApp::QueryOneDay(COleDateTime day) 
+{
+	CString strDay = day.Format("%Y-%m-%d");
+	CString strInfo;
+	strInfo.Format("OperDate BETWEEN #%s 00:00# and  #%s 23:59#",strDay,strDay);
+
+	CString strSort;
+	strSort=_T("OperDate,Index");
+	OpenView(strInfo,strSort);
+}
 
 
 /*******************************************

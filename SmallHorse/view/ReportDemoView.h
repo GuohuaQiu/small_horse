@@ -128,6 +128,7 @@ protected:
 	afx_msg void OnReportCollapseAll();
 	afx_msg void OnAddRecord();
 	afx_msg void OnCalsum();
+	afx_msg void OnQueryThisDay();
 	afx_msg void OnRectifyPassword();
 	afx_msg void OnDeleteRecord();
 	afx_msg void OnEditRecord();
