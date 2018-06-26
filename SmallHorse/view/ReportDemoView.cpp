@@ -232,7 +232,6 @@ ON_COMMAND(ID_RECORD_DEL_SELECTED, OnDeleteRecord)
 ON_COMMAND(ID_RECORD_MODIFY, OnEditRecord)
 ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
-ON_COMMAND(IDC_LOAD_SUBCOUNT_CSV, OnLoadSubCountCsv)
 ON_COMMAND(ID_CAL_CREDIT, OnCalCredit)
 ON_COMMAND(ID_EDIT_CREDIT_PERIOD, OnCreditPeroid)
 ON_COMMAND(ID_EDIT_SMART_TYPE, OnSmartSetType)
@@ -240,7 +239,6 @@ ON_COMMAND(ID_EDIT_REPLACE_COMMENT, OnReplaceComment)
 ON_COMMAND(ID_ADD_RETURN_RECORD, OnAddReturnRecord)
 ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdateEditCopy)
 ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, OnUpdateEditPaste)
-ON_COMMAND(ID_EDIT_ONLINE, OnEditOnline)
 ON_COMMAND(IDM_DELETEBOOK, OnDeletebook)
 ON_UPDATE_COMMAND_UI(IDM_DELETEBOOK, OnUpdateDeletebook)
 ON_COMMAND(IDM_RECTIFYINFO, OnRectifyinfo)
@@ -265,7 +263,6 @@ ON_COMMAND_RANGE(ID_THIS_YEAR, ID_THIS_YEAR_7,OnBrowseYear)
 ON_UPDATE_COMMAND_UI(ID_ADD_RETURN_RECORD, OnUpdateAddReturnRecord)
 ON_UPDATE_COMMAND_UI(ID_TRANSFER_DINGQI, OnUpdateTransferDingqi)
 ON_UPDATE_COMMAND_UI(ID_CAL_CREDIT, OnUpdateCalCredit)
-ON_COMMAND(ID_VIEW_REFRESH, OnViewRefresh)
 ON_COMMAND(ID_CHECK_BILL, OnCheckBill)
 ON_COMMAND_RANGE(IDM_COPY_RECORDS_TO, IDM_COPY_RECORDS_TO_END,OnCopyRecordsTo)
 //}}AFX_MSG_MAP
@@ -848,13 +845,7 @@ void CReportDemoView::OnEditPaste()
 		//2012-06-04
 		if (OpenClipboard())
 		{
-#ifdef USE_APP_LIST_SET
 			CListSet* pListSet = theApp.GetListSet();
-#else
-			CListSet setForEdit;
-			setForEdit.Open();
-			CListSet* pListSet = &setForEdit;
-#endif
 			HANDLE hData = ::GetClipboardData(CSmallHorseApp::m_DataFormat);
 			CloseClipboard();
 			
@@ -1010,29 +1001,29 @@ void CReportDemoView::OnLoadCsv()
 }
 
 
-/*******************************************
-    Function Name : 
-    author        : Qiu Guohua
-    Date          : 2009-4-27 22:41:41
-    Description   : 
-    Return type  : 
-    Argument      : 
-********************************************/
-void CReportDemoView::OnLoadSubCountCsv() 
-{
-	if(m_pParent->m_strID != _T(""))
-	{
-		CImportSheet sheet(_T(""),theApp.GetSubCountSet(),IMPORT_TYPE_SUBCONT);
-		sheet.m_strMainCount = m_pParent->m_strID;
-		sheet.DoModal();
-		theApp.ForceUpdateViews();
-	}
-	else
-	{
-		AfxMessageBox(_T("只能加入到一个账户中,请先选择一个账户!"));
-		return;
-	}
-}
+// /*******************************************
+//     Function Name : 
+//     author        : Qiu Guohua
+//     Date          : 2009-4-27 22:41:41
+//     Description   : 
+//     Return type  : 
+//     Argument      : 
+// ********************************************/
+// void CReportDemoView::OnLoadSubCountCsv() 
+// {
+// 	if(m_pParent->m_strID != _T(""))
+// 	{
+// 		CImportSheet sheet(_T(""),theApp.GetSubCountSet(),IMPORT_TYPE_SUBCONT);
+// 		sheet.m_strMainCount = m_pParent->m_strID;
+// 		sheet.DoModal();
+// 		theApp.ForceUpdateViews();
+// 	}
+// 	else
+// 	{
+// 		AfxMessageBox(_T("只能加入到一个账户中,请先选择一个账户!"));
+// 		return;
+// 	}
+// }
 
 void CReportDemoView::OnCalCredit() 
 {
@@ -1790,21 +1781,21 @@ void CReportDemoView::OnUpdateEditPaste(CCmdUI* pCmdUI)
     }
 }
 
-
-
-/*******************************************
-    Function Name : 
-    author        : Qiu Guohua
-    Date          : 2009-5-30 22:15:55
-    Description   : 
-    Return type  : 
-    Argument      : 
-********************************************/
-void CReportDemoView::OnEditOnline() 
-{
-    CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl ();
-    pReportCtrl->ToggleEditInPlace();
-}
+// 
+// 
+// /*******************************************
+//     Function Name : 
+//     author        : Qiu Guohua
+//     Date          : 2009-5-30 22:15:55
+//     Description   : 
+//     Return type  : 
+//     Argument      : 
+// ********************************************/
+// void CReportDemoView::OnEditOnline() 
+// {
+//     CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl ();
+//     pReportCtrl->ToggleEditInPlace();
+// }
 
 void CReportDemoView::OnDeletebook() 
 {
@@ -2231,13 +2222,6 @@ void CReportDemoView::FillItems()
 	}
 }
 
-void CReportDemoView::OnViewRefresh()
-{
-    CListSet* pListSet = theApp.GetListSet();
-	pListSet->m_strFilter = "";
-	
-	FillItems();
-}
 
 #if 0
 void CReportDemoView::CheckBill(const COleDateTime &timeBegin, const COleDateTime &timeEnd,const COleDateTime& timePay)

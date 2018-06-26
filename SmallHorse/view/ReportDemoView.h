@@ -135,7 +135,6 @@ protected:
 	afx_msg void OnEditCopy();
 	afx_msg void OnExportCsv();
 	afx_msg void OnLoadCsv();
-	afx_msg void OnLoadSubCountCsv();
 	afx_msg void OnCalCredit();
 	afx_msg void OnCreditPeroid();
 	afx_msg void OnSmartSetType();
@@ -143,7 +142,6 @@ protected:
 	afx_msg void OnAddReturnRecord();
 	afx_msg void OnUpdateEditCopy(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateEditPaste(CCmdUI* pCmdUI);
-	afx_msg void OnEditOnline();
 	afx_msg void OnDeletebook();
 	afx_msg void OnUpdateDeletebook(CCmdUI* pCmdUI);
 	afx_msg void OnRectifyinfo();
@@ -169,7 +167,6 @@ protected:
 	afx_msg void OnUpdateAddReturnRecord(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateTransferDingqi(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateCalCredit(CCmdUI* pCmdUI);
-	afx_msg void OnViewRefresh();
 	afx_msg void OnCheckBill();
 	afx_msg void OnCopyRecordsTo(UINT nID);
 	//}}AFX_MSG
