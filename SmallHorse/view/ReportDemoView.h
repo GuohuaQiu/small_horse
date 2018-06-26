@@ -137,7 +137,7 @@ protected:
 	afx_msg void OnLoadCsv();
 	afx_msg void OnLoadSubCountCsv();
 	afx_msg void OnCalCredit();
-	afx_msg void OnCheck();
+	afx_msg void OnCreditPeroid();
 	afx_msg void OnSmartSetType();
 	afx_msg void OnReplaceComment();
 	afx_msg void OnAddReturnRecord();

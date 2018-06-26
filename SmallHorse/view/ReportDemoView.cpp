@@ -234,7 +234,7 @@ ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
 ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 ON_COMMAND(IDC_LOAD_SUBCOUNT_CSV, OnLoadSubCountCsv)
 ON_COMMAND(ID_CAL_CREDIT, OnCalCredit)
-ON_COMMAND(ID_CHECK, OnCheck)
+ON_COMMAND(ID_EDIT_CREDIT_PERIOD, OnCreditPeroid)
 ON_COMMAND(ID_EDIT_SMART_TYPE, OnSmartSetType)
 ON_COMMAND(ID_EDIT_REPLACE_COMMENT, OnReplaceComment)
 ON_COMMAND(ID_ADD_RETURN_RECORD, OnAddReturnRecord)
@@ -1056,7 +1056,7 @@ void CReportDemoView::OnCalCredit()
 
 
 
-void CReportDemoView::OnCheck() 
+void CReportDemoView::OnCreditPeroid() 
 {
 	CCheckCountDateSetup dlg;
 	if(dlg.DoModal() == IDOK)
