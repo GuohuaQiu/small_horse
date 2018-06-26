@@ -2550,3 +2550,49 @@ void CSmallHorseApp::OnAccountNew()
 	}
 #endif
 }
+
+int CSmallHorseApp::StaticDoubtItems(CString& nID)
+{
+	CListSet* set = GetListSet();
+	CString strfil=_T("\'")+nID+_T("\'");
+	set->m_strFilter=_T("Item_Book_ID=")+ strfil;
+//	set->m_strFilter+=_T(" and Type=\'0\'");
+	TRACE(set->m_strFilter);
+	TRACE("\n");
+
+//	set->m_strFilter =_T("Item_Book_ID=")+ nID+_T(" and Type=0");// '379 70052992*3'
+//	set->m_strFilter ="Type=0";
+//	set->m_strFilter ="Item_Book_ID=" + nID;// '379 70052992*3'
+	set->Requery();
+
+	set->MoveFirst();
+	int nCountAdd = 0;
+	int nCountDec = 0;
+	float fAdd =0.0;
+	float fDec =0.0;
+	int nCountTotal = 0;
+	while(!set->IsEOF())
+	{
+		if(set->m_bType == 0)
+		{
+			float value = set->GetAddorSubValue();
+			if(value<0.0000000)
+			{
+				nCountDec++;
+				fDec += value;
+			}
+			else
+			{
+				nCountAdd++;
+				fAdd += value;
+			}
+		}
+		nCountTotal++;
+		set->MoveNext();
+	}
+	CString strStatic;
+	strStatic.Format("ID:%s:\nTotal Item:%d\nIncome: %d items, total value %.2f\n Output: %d items, total value %.2f\n",nID,nCountTotal,nCountAdd,fAdd,nCountDec,fDec);
+	TRACE(strStatic);
+	AfxMessageBox(strStatic);
+	return 0;
+}

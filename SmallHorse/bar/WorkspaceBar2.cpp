@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CWorkspaceBar2, CBCGPDockingControlBar)
 	ON_COMMAND(ID_SET_AS_AUTORETURN_CREDIT, OnSetAsAutoreturnCredit)
 	ON_COMMAND(ID_TRANSFER_DINGQI, OnTransferDingqi)
 	ON_COMMAND(IDM_INFO, OnInfo)
+	ON_COMMAND(ID_BOOK_DOUNT_STATIC, OnDoubtInfo)
 	ON_COMMAND(ID_RECORD_NEW, OnAddrecord)
 	ON_COMMAND(ID_OPEN_SUBCOUNT_BY_ID, OnOpenSubcountById)
 	ON_COMMAND(ID_ADD_CREDIT_PAY_INFO, OnAddCreditPayInfo)
@@ -287,6 +288,15 @@ void CWorkspaceBar2::OnInfo()
     {
         theApp.ShowAccountInfo(strid);
     }
+}
+
+void CWorkspaceBar2::OnDoubtInfo() 
+{
+	CString strid;
+	if(GetSelectedID(strid))
+	{
+		theApp.StaticDoubtItems(strid);
+	}
 }
 
 

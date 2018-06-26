@@ -134,6 +134,8 @@ public:
 	afx_msg void OnAccountNew();
     BOOL m_bShowNoExistBook;
 	CQueryItemList m_querylist;
+public:
+	int StaticDoubtItems(CString& nID);
 };
 
 extern CSmallHorseApp theApp;

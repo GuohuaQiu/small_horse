@@ -189,6 +189,7 @@ BEGIN
         MENUITEM "添加信用卡还款周期",                   ID_ADD_CREDIT_PAY_INFO
         MENUITEM "对账信息",                        ID_MENU_CREDIT_REPORT
         MENUITEM "锁定账户",                        ID_COUNT_LOCK
+        MENUITEM "统计无法确认项目",                    ID_BOOK_DOUNT_STATIC
     END
 END
 

@@ -60,6 +60,7 @@ protected:
 	afx_msg void OnSetAsAutoreturnCredit();
 	afx_msg void OnTransferDingqi();
 	afx_msg void OnInfo();
+	afx_msg void OnDoubtInfo();
 	afx_msg void OnAddrecord();
 	afx_msg void OnOpenSubcountById();
 	afx_msg void OnAddCreditPayInfo();

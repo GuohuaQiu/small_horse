@@ -237,13 +237,14 @@
 #define ID_RECORD_COPY                  32949
 #define ID_RECORD_PASTE                 32950
 #define ID_EDIT_REPLACE_COMMENT         32954
+#define ID_BOOK_DOUNT_STATIC            32958
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        201
-#define _APS_NEXT_COMMAND_VALUE         32955
+#define _APS_NEXT_COMMAND_VALUE         32959
 #define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
