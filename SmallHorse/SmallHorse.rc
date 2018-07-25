@@ -35,7 +35,6 @@ END
 2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
-    "\0"
 END
 
 3 TEXTINCLUDE 
@@ -50,8 +49,8 @@ BEGIN
     "#include ""res\\SmallHorse.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
     "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#include ""BCGCBPro.rc""\r\n"
     "#endif\r\n"
-    "\0"
 END
 
 #endif    // APSTUDIO_INVOKED
@@ -1264,6 +1263,7 @@ LANGUAGE 4, 2
 #include "res\SmallHorse.rc2"  // non-Microsoft Visual C++ edited resources
 #include "afxres.rc"         // Standard components
 #include "afxprint.rc"       // printing/print preview resources
+#include "BCGCBPro.rc"
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
