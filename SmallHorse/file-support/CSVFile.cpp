@@ -254,11 +254,20 @@ int CCSVFile::Save(CMailReportCtrl *pReportCtrl, CString &strfile, BOOL bFailIfE
     
     for(int line=0;line<linecount;line++)
     {
-        for(int col=0;col<count;col++)
-        {
-            CString strVal = (LPCTSTR) (_bstr_t) (pReportCtrl->GetRow(line)->GetItem(col)->GetValue());
-            WriteAString(&csvfile,(LPSTR)(LPCTSTR)strVal,col==(count-1));
-        }
+		CBCGPGridRow* pRow = pReportCtrl->GetRow(line);
+		if(pRow->IsGroup())
+		{
+			TRACE("EXPROT GROUP \n");
+		}
+		else
+		{
+			int item_count = pRow->GetItemCount();
+			for(int col=0;col<item_count;col++)
+			{
+				CString strVal = (LPCTSTR) (_bstr_t) (pReportCtrl->GetRow(line)->GetItem(col)->GetValue());
+				WriteAString(&csvfile,(LPSTR)(LPCTSTR)strVal,col==(item_count-1));
+			}
+		}
     }
     csvfile.Close();
     return CSV_SUCCESS;
