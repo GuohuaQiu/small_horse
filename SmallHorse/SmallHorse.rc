@@ -102,6 +102,7 @@ BEGIN
         MENUITEM "删除选中记录",                      ID_RECORD_DEL_SELECTED
         MENUITEM "导入记录",                        ID_RECORD_IMPORT
         MENUITEM "导出记录",                        ID_RECORD_EXPORT
+        MENUITEM "移动选中的记录",                     ID_RECORD_MOVE
     END
     POPUP "显示方式"
     BEGIN

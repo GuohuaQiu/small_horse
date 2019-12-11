@@ -266,6 +266,7 @@ ON_UPDATE_COMMAND_UI(ID_TRANSFER_DINGQI, OnUpdateTransferDingqi)
 ON_UPDATE_COMMAND_UI(ID_CAL_CREDIT, OnUpdateCalCredit)
 ON_COMMAND(ID_CHECK_BILL, OnCheckBill)
 ON_COMMAND_RANGE(IDM_COPY_RECORDS_TO, IDM_COPY_RECORDS_TO_END,OnCopyRecordsTo)
+ON_COMMAND_RANGE(IDM_MOVE_RECORDS_TO, IDM_MOVE_RECORDS_TO_END,OnMoveRecordsTo)
 //}}AFX_MSG_MAP
 ON_WM_CONTEXTMENU()
 // Standard printing commands
@@ -397,17 +398,30 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
 
 					CMenu sMenu;
 					sMenu.CreatePopupMenu();
+
+					CMenu moveMenu;
+					moveMenu.CreatePopupMenu();
+
 					POSITION pos = g_CountIdList.GetHeadPosition();
 					int n = 0;
 					while (pos) {
 						CString strId = g_CountIdList.GetNext(pos);
 						sMenu.AppendMenu(MF_STRING,IDM_COPY_RECORDS_TO + n,(LPCTSTR)strId);
+						moveMenu.AppendMenu(MF_STRING,IDM_MOVE_RECORDS_TO + n,(LPCTSTR)strId);
 						n++;
 					}
 					HMENU hMenu = sMenu.Detach();
-					
+
+
 					pMenu->InsertMenu(n,MF_BYPOSITION|MF_POPUP|MF_STRING,
 						(UINT)hMenu,"拷贝选定记录到");
+
+					hMenu = moveMenu.Detach();
+
+					pMenu->AppendMenu(MF_BYPOSITION|MF_POPUP|MF_STRING,
+						(UINT)hMenu,"移动选定记录到");
+
+
 					
 				}
 				
@@ -2496,4 +2510,53 @@ void CReportDemoView::CopyRecordsTo(const CString &strCount)
 			theApp.CopyRecordsTo(dbAry,strCount,dlg.m_SubCount,dlg.m_bTransfer);
 		}
 	}
+}
+
+
+/*******************************************
+    Function Name : 
+    author        : Qiu Guohua
+    Date          : 2017/8/8 22:27:10
+    Description   : 
+    Return type   : 
+    Argument      : 
+********************************************/
+void CReportDemoView::MoveRecordsTo(const CString &strCount)
+{
+	CCopyRecordsDlg dlg;
+	dlg.m_mainCount = strCount;
+	if(dlg.DoModal() != IDOK)
+	{
+		return;
+	}
+	CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
+	CDWordArray dbAry;
+	int count = pReportCtrl->GetSelectedRows(dbAry);
+	if(count>0)
+	{
+		CListSet* pListSet = theApp.GetListSet();
+		pListSet->MoveRecordsTo(strCount, dlg.m_SubCount,dbAry, count);
+	}
+}
+
+
+void CReportDemoView::OnMoveRecordsTo(UINT nID)
+{
+	int nIndex = nID - IDM_MOVE_RECORDS_TO;
+	CStringList list;
+
+	POSITION pos= g_CountIdList.GetHeadPosition();
+	CString strId;
+	while(nIndex >= 0 && pos)
+	{
+		strId = g_CountIdList.GetNext(pos);
+		nIndex--;
+	}
+	if(strId.GetLength()>0)
+	{
+		MoveRecordsTo(strId);
+	}
+	g_CountIdList.RemoveAll();
+
+
 }

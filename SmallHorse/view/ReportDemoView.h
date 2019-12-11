@@ -94,6 +94,7 @@ public:
 // Implementation
 public:
 	void CopyRecordsTo(const CString& strCount);
+	void MoveRecordsTo(const CString& strCount);
 	BOOL DisplayReport();
 #if 0
 	void CheckBill(int nYear, int nMonth,COleDateTime& timeBegin);
@@ -170,6 +171,7 @@ protected:
 	afx_msg void OnUpdateCalCredit(CCmdUI* pCmdUI);
 	afx_msg void OnCheckBill();
 	afx_msg void OnCopyRecordsTo(UINT nID);
+	afx_msg void OnMoveRecordsTo(UINT nID);
 	//}}AFX_MSG
 	afx_msg void OnContextMenu(CWnd*, CPoint point);
 	afx_msg void OnFilePrintPreview();

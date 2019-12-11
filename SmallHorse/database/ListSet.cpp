@@ -190,7 +190,7 @@ CString CListSet::GetDate()
 // }
 
 
-BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5])
+BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5],const CString& strId)
 {
 	int nCount = pctrl->GetItemCount();
 	CString strDate;
@@ -202,14 +202,7 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5])
 	nHour = 0;
 	nMinute = 0;
 	nSec = 0;
-    CString strID;
-	BOOL b  = GetCurrentBookId(strID);
-	if(!b)
-	{
-		AfxMessageBox(_T("当前数据库不是在单一折子的状态,不能添加!"));
-		return FALSE;
-	}
-	CString strStamp;
+    CString strStamp;
 	COleDateTime time = COleDateTime::GetCurrentTime();
 	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
 		
@@ -219,9 +212,8 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5])
 	{
 		if(pctrl->GetCheck(i))
 		{
-//			AddNew();
 			CListSet listData;
-			listData.m_ID = strID;
+			listData.m_ID = strId;
 			if(nType[VALUE_TYPE_DATE]>=0)
 			{
                 strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
@@ -230,33 +222,6 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5])
 				nSec = 0;
 
 				int ret = theApp.GetDate(strDate,nYear,nMonth,nDay,nHour, nMinute,nSec);
-/*				
-                if(strDate.FindOneOf("-")!=-1)
-                {
-					if(strDate.FindOneOf(":")!=-1 )
-					{
-						_stscanf(strDate,_T("%d-%d-%d %d:%d:%d"),&nYear,&nMonth,&nDay,&nHour,&nMinute,&nSec);
-					}
-					else
-					{
-						_stscanf(strDate,_T("%d-%d-%d"),&nYear,&nMonth,&nDay);
-					}
-                    
-                }
-                else if(strDate.GetLength() == 8)//"20100203"
-                {
-                    _stscanf(strDate,_T("%4d%2d%2d"),&nYear,&nMonth,&nDay);
-                }
-                else if(strDate.GetLength() == 5)//"09/23"
-                {
-                    _stscanf(strDate,_T("%2d//%2d"),&nMonth,&nDay);
-					nYear = time.GetYear();
-                }
-                else
-                {
-                    AfxMessageBox("日期格式不合法！");
-                    return FALSE;
-                }*/
 
 				if(ret == 0)
 				{
@@ -976,6 +941,24 @@ int CListSet::Replace_Comment(const CString& strOldString, const CString& strNew
 	strSQL += "\')";
 
 	CDatabaseUtility::Append_Condition_Int_Array("Index",strSQL,dbArray,count);
+	TRACE("%s\n",strSQL);
+	m_pDatabase->ExecuteSQL(strSQL);
+
+	return 0;
+}
+
+
+
+int CListSet::MoveRecordsTo(const CString& Count, const CString& SubCount,const CDWordArray& dbArray,int count)
+{
+	CString strSQL="update Items set ";
+	CDatabaseUtility::Generate_modify_string("Item_Book_ID",Count,strSQL);
+	if(SubCount.GetLength()>0)
+	{
+		CDatabaseUtility::Generate_modify_string("SubCountID",SubCount,strSQL);
+	}
+	CDatabaseUtility::Append_Condition_Int_Array("Index",strSQL,dbArray,count);
+
 	TRACE("%s\n",strSQL);
 	m_pDatabase->ExecuteSQL(strSQL);
 
