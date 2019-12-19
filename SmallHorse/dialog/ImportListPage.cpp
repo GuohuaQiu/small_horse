@@ -195,7 +195,7 @@ BOOL CImportListPage::SaveDataToDataLib()
 			//		return FALSE;
 		}
 		
-		return m_pParent->m_pListSet->AddItems(&m_listctrl,nTypeArry);
+		return m_pParent->m_pListSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount);
 	}
 	else
 	{

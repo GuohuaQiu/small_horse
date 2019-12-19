@@ -5,6 +5,7 @@
 #include "..\SmallHorse.h"
 #include "CreditPaySet.h"
 #include "database_setup.h"
+#include "smartdate.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -124,13 +125,25 @@ BOOL CCreditPaySet::GetPayInfo(const CString& strID,int nYear, int nMonth, COleD
     {
         if(nPreStatementDay == -1)
         {
-            dayEnd.SetDateTime(nYear,nMonth,nStatementDay-1,23,59,59);
+			int thisYear = nYear;
+			int thisMonth = nMonth;
+			int thisDay = nStatementDay-1;
+
+			CSmartDate::Validate(thisYear,thisMonth,thisDay);
+
+			int status = dayEnd.SetDateTime(thisYear,thisMonth,thisDay,23,59,59);
+			if(status != 0)
+			{
+				ASSERT(FALSE);
+			}
+
+            thisYear = nMonth==1 ? nYear-1 : nYear;
+            thisMonth = nMonth==1 ? 12 : nMonth - 1;
+            thisDay = nStatementDay;
+
+			CSmartDate::Validate(thisYear,thisMonth,thisDay);
             
-            int thisYear = nMonth==1 ? nYear-1 : nYear;
-            int thisMonth = nMonth==1 ? 12 : nMonth - 1;
-            int thisDay = nStatementDay;
-            
-            int status = dayBegin.SetDateTime(thisYear,thisMonth,thisDay,0,0,0);
+            status = dayBegin.SetDateTime(thisYear,thisMonth,thisDay,0,0,0);
 			if(status != 0)
 			{
 				thisDay = 1;
@@ -164,15 +177,23 @@ BOOL CCreditPaySet::GetPayInfo(const CString& strID,int nYear, int nMonth, COleD
                 AddMonth(thisYear,thisMonth,-1);
             }
             
-            dayBegin.SetDateTime(thisYear,thisMonth,thisDay,0,0,0);
-            
+            int status = dayBegin.SetDateTime(thisYear,thisMonth,thisDay,0,0,0);
+			if(status != 0)
+			{
+				ASSERT(FALSE);
+			}
+           
             if(nStatementDay > nPayDay)
             {
                 thisYear = nYear;
                 thisMonth = this->m_StartMonth;
                 AddMonth(thisYear,thisMonth,1);
-                dayPay.SetDate(thisYear,thisMonth,nPayDay);
-            }
+                int status = dayPay.SetDate(thisYear,thisMonth,nPayDay);
+				if(status != 0)
+				{
+					ASSERT(FALSE);
+				}
+			}
             else
             {
                 dayPay = dayEnd;
@@ -181,6 +202,7 @@ BOOL CCreditPaySet::GetPayInfo(const CString& strID,int nYear, int nMonth, COleD
         }
         return TRUE;
     }
+	return FALSE;
 }
 
 void CCreditPaySet::trace()

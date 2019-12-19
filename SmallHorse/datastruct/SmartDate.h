@@ -23,10 +23,13 @@ public:
 	BYTE month;
 	BYTE day;
 	int  test;
+	
 	CSmartDate();
 	CSmartDate(int y,int m, int d);
 	CSmartDate(const COleDateTime& date);
+	void Set(int y,int m, int d);
 	virtual ~CSmartDate();
+	static void Validate(int& y,int& m,int& d);
 };
 
 #endif // !defined(AFX_SMARTDATA_H__03A9C745_0AA2_4E17_90D7_06F7C9D3818A__INCLUDED_)

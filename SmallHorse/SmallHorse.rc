@@ -143,7 +143,7 @@ BEGIN
     MENUITEM "添加信用卡记录",                     ID_ADD_RETURN_RECORD
     MENUITEM "转存定期",                        ID_TRANSFER_DINGQI
     MENUITEM "信用卡账单",                       ID_CAL_CREDIT
-    MENUITEM "拷贝选定记录到",                     IDM_COPY_RECORDS_TO
+    MENUITEM "拷贝选定记录到",                     IDM_COPY_RECORDS_TO_END
     MENUITEM "替换注释",                        ID_EDIT_REPLACE_COMMENT
     MENUITEM "查询当日所有账目",                    ID_QUERY_ONE_DAY
 END
