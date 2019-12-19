@@ -6,7 +6,7 @@
 	ProjectGUID="{5636499A-5B0C-4197-9A24-D31BB5888792}"
 	RootNamespace="SmallHorse"
 	Keyword="MFCProj"
-	AssemblyReferenceSearchPaths="&quot;.\bar&quot;;&quot;.\database&quot;"
+	AssemblyReferenceSearchPaths="&quot;.\bar&quot;;&quot;.\database&quot;;&quot;c:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro&quot;"
 	>
 	<Platforms>
 		<Platform
@@ -130,7 +130,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;&quot;file-support&quot;"
+				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;&quot;file-support&quot;;&quot;C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -147,7 +147,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
+				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro&quot;;&quot;$(IntDir)&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -296,7 +296,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;&quot;file-support&quot;"
+				AdditionalIncludeDirectories="compare;bar;database;control;dialog;datastruct;view;&quot;file-support&quot;;&quot;C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -312,7 +312,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(IntDir)"
+				AdditionalIncludeDirectories="&quot;C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro&quot;;&quot;$(IntDir)&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
