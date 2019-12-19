@@ -377,30 +377,43 @@ int CSmallHorseApp::GetDate(CString strDate, int &y, int &m, int &d,int& hh, int
 		_stscanf(strDate,_T("%d-%d-%d"),&y,&m,&d);
 		
 	}
-	else if(strDate.GetLength() == 8)//"20100203"
-	{
-		_stscanf(strDate,_T("%4d%2d%2d"),&y,&m,&d);
-	}
-	else if(strDate.GetLength() == 5)//"09/23"
-	{
-		_stscanf(strDate,_T("%2d/%2d"),&m,&d);
-		COleDateTime time = COleDateTime::GetCurrentTime();
-		y = time.GetYear();
-		int currentM = time.GetMonth();
-		if(m>currentM)
-		{
-			y--;
-		}
-	}
-	else if(strDate.GetLength() >16)//20150921  01:40:22
-	{
-		_stscanf(strDate,_T("%4d%2d%2d %d:%d:%d"),&y,&m,&d,&hh,&mm,&ss);
-		return 2;
-	}
 	else
 	{
-		return 0;
+		int date_len = strDate.GetLength();
+		if(date_len >13)
+		{
+			if(strDate.Find('\/')>0)//2018/9/18  18:20:30
+			{
+				_stscanf(strDate,_T("%d\/%d\/%d %d:%d:%d"),&y,&m,&d,&hh,&mm,&ss);
+			}
+			else//20150921  01:40:22
+			{
+				_stscanf(strDate,_T("%4d%2d%2d %d:%d:%d"),&y,&m,&d,&hh,&mm,&ss);
+			}
+			return 2;
+		}
+		else if(date_len >= 8)//"20100203"
+		{
+			_stscanf(strDate,_T("%4d%2d%2d"),&y,&m,&d);
+		}
+		else if(date_len == 5)//"09/23"
+		{
+			_stscanf(strDate,_T("%2d/%2d"),&m,&d);
+			COleDateTime time = COleDateTime::GetCurrentTime();
+			y = time.GetYear();
+			int currentM = time.GetMonth();
+			if(m>currentM)
+			{
+				y--;
+			}
+		} 
+		else
+		{
+			return 0;
+		}
+
 	}
+
 	return 1;
 }
 
@@ -2349,8 +2362,19 @@ float CSmallHorseApp::GetRepay(CListSet* pListSet,const CString &strid, const CO
 		y++;
 		m=1;
 	}
+	//Feb is a special month , it may have 28 or 29 days.
+	int d = timeBegin.GetDay();
+	if(m == 2 && d > 28)
+	{
+		d = 29;
+		if(y%4!=0 ||(y%100==0 && y%400!=0) )
+		{
+			d = 28;
+		}
+	}
+
 	
-	COleDateTime tEnd(y,m,timeBegin.GetDay(),23,59,59);
+	COleDateTime tEnd(y,m,d,23,59,59);
 	
 	float fThisPaySum;
 	float fUse = 0.0;
