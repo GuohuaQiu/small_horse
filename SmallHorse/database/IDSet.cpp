@@ -286,6 +286,7 @@ void CIDSet::RevertExist()
 {
 	CString strSQL;
 	m_bExist = !m_bExist;
-	strSQL.Format("update Books set Book_Exist=%d where Book_ID=",m_bExist,m_ID);
+	strSQL.Format("update Books set Book_Exist=%d where Book_ID=\'%s\'",m_bExist,m_ID);
+	TRACE("%s \n",strSQL);
 	m_pDatabase->ExecuteSQL(strSQL);
 }
