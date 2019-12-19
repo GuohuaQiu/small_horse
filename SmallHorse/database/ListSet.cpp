@@ -190,7 +190,7 @@ CString CListSet::GetDate()
 // }
 
 
-BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5],const CString& strId)
+BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
 {
 	int nCount = pctrl->GetItemCount();
 	CString strDate;
@@ -217,6 +217,11 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5],const CString& strId)
 			if(nType[VALUE_TYPE_DATE]>=0)
 			{
                 strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
+				if(nType[VALUE_TYPE_ONLYTIME]>=0)
+				{
+					strDate += " ";
+					strDate += pctrl->GetItemText(i,nType[VALUE_TYPE_ONLYTIME]);
+				}
 				nHour = 8;
 				nMinute = 0;
 				nSec = 0;
@@ -272,8 +277,15 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[5],const CString& strId)
 				}
 
                 listData.m_remain = str;
-                listData.m_remain += strStamp;
             }
+			if(nType[VALUE_TYPE_SUM]>=0)
+			{
+				CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
+				CString strSum;
+				strSum.Format("(R:%s)",str);
+				listData.m_remain += strSum;
+			}
+			listData.m_remain += strStamp;
             if(nType[VALUE_TYPE_SITE]>=0)
             {
                 listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);

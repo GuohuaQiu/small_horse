@@ -13,7 +13,9 @@ TCHAR cRegion[VALUE_TYPE_number][FIELD_NAME_LEN]=
 	_T("子账户"),
 	_T("地点"),
     //add new value here...
-	_T("备注")
+	_T("备注"),
+	_T("余额"),
+    _T("当日时间")
 };
 
 //0  可有可无,要提醒
@@ -28,7 +30,9 @@ int nRegionAttr[VALUE_TYPE_number]=
     0,//"子账户",
     0,//"地点"
     //add new value here...
-	0//"备注"
+	0,//"备注"
+	0,//"余额"
+	0//"当日时间"
 };
 
 TCHAR cSubCountRegionName[VALUE_SUBCOUNT_TYPE_number][FIELD_NAME_LEN]=
@@ -40,7 +44,8 @@ TCHAR cSubCountRegionName[VALUE_SUBCOUNT_TYPE_number][FIELD_NAME_LEN]=
 	_T("利率"),
 	_T("存期"),
     //add new value here...
-	_T("备注")
+	_T("备注"),
+	_T("余额")
 };
 
 int nSubCountRegionAttr[VALUE_SUBCOUNT_TYPE_number]=
@@ -52,7 +57,8 @@ int nSubCountRegionAttr[VALUE_SUBCOUNT_TYPE_number]=
 	1,//"利率",
 	2,//"存期",
     //add new value here...
-	0//"备注"
+	0,//"备注"
+	0//"余额"
 };
 
 TCHAR cMainCountRegionName[VALUE_MAINCOUNT_TYPE_number][FIELD_NAME_LEN]=
