@@ -946,7 +946,7 @@ void CReportDemoView::OnEditPaste()
 	}
 	else if(IsClipboardFormatAvailable(CF_UNICODETEXT) )
 	{
-		CImportSheet sheet(theApp.GetListSet());
+		CImportSheet sheet(theApp.GetListSet(),m_pParent->m_strID);
 		sheet.DoModal();
 		theApp.ForceUpdateViews();
 	}
@@ -1020,7 +1020,7 @@ void CReportDemoView::OnLoadCsv()
 		CListSet* pSet = theApp.GetListSet();
 		pSet->m_strFilter = m_pParent->m_strFilter;
 		pSet->Requery();
-		CImportSheet sheet(_T(""),pSet);
+		CImportSheet sheet(_T(""),pSet,m_pParent->m_strID);
 		sheet.DoModal();
         theApp.ForceUpdateViews();
 	}
@@ -2045,7 +2045,7 @@ void CReportDemoView::OnDropFiles(HDROP hDropInfo)
 		return;
 	}
 	//	CImportSheet sheet("C:\\Documents and Settings\\guohua.qiu\\Desktop\\Book1.csv",&pDoc->m_listset);
-    CImportSheet sheet(szFileName,theApp.GetListSet());
+    CImportSheet sheet(szFileName,theApp.GetListSet(),m_pParent->m_strID);
     sheet.DoModal();
     theApp.ForceUpdateViews();
 }

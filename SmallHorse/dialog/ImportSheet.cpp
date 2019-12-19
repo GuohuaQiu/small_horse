@@ -26,7 +26,7 @@ CImportSheet::CImportSheet(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
 	m_bFromFile = TRUE;
 }
 
-CImportSheet::CImportSheet(LPCTSTR pszFullPath,CRecordset* pSet,int nImportType)
+CImportSheet::CImportSheet(LPCTSTR pszFullPath,CRecordset* pSet,const CString& strId,int nImportType)
 :CPropertySheet(_T("导入数据"), NULL, 0),m_FilePage(this),m_ListPage(this)
 {
 	m_psh.dwFlags|=PSH_WIZARDHASFINISH|PSH_PROPSHEETPAGE;
@@ -44,9 +44,10 @@ CImportSheet::CImportSheet(LPCTSTR pszFullPath,CRecordset* pSet,int nImportType)
 		m_pSubCountSet = (CSubCountSet*)pSet;
 	}
 	m_nImportType = nImportType;
+	m_strMainCount = strId;
 	m_bFromFile=TRUE;
 }
-CImportSheet::CImportSheet(CRecordset* pSet)
+CImportSheet::CImportSheet(CRecordset* pSet,const CString& strId)
 	:CPropertySheet(_T("粘贴记录"), NULL, 0),m_ListPage(this)
 {
 	m_psh.dwFlags|=PSH_WIZARDHASFINISH|PSH_PROPSHEETPAGE;
@@ -55,6 +56,7 @@ CImportSheet::CImportSheet(CRecordset* pSet)
 	m_bLoadOK = FALSE;
 	m_nImportType = IMPORT_TYPE_RECORD;
 	m_pListSet = (CListSet*)pSet;
+	m_strMainCount = strId;
 
 	m_bFromFile=FALSE;
 }
