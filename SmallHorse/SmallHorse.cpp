@@ -2468,7 +2468,8 @@ void CSmallHorseApp::GetAllOpendCount(CStringList& list)
 {
 	CDocument * pdoc = GetDoc();
     POSITION pos = pdoc->GetFirstViewPosition(); 
-	while (pos) 
+	list.RemoveAll();
+	while (pos)
 	{
 		CView *pView = pdoc->GetNextView(pos); 
 		CReportFrame* pfrm = (CReportFrame*)pView->GetParent();
