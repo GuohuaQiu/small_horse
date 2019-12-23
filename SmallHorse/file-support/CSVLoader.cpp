@@ -95,6 +95,7 @@ BOOL CCSVLoader::Load(const CString &strFile)
 	}
 	m_pBuffer = new TCHAR[m_nBufLen + 1];
 	file.Read(m_pBuffer,m_nBufLen);
+	m_pBuffer[m_nBufLen] = 0;
 	file.Close();
 	return TRUE;
 }
@@ -114,6 +115,11 @@ NEXT_TYPE CCSVLoader::GetNextString(CString &strGet)
 		return TYPE_ERROR;
 	char* pEnd = FindStringEnd(m_pWorkPtr);
 	int nLen = pEnd - m_pWorkPtr;
+	if(nLen == 0)
+	{
+		strGet.Empty();
+		return TYPE_END;
+	}
 	char *pDest = strGet.GetBuffer(nLen + 1);
 	strncpy(pDest,m_pWorkPtr,nLen);
 	pDest[nLen] = 0;

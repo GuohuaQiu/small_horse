@@ -126,11 +126,14 @@ void CImportListPage::ReFill()
 	CString strGet;
 	NEXT_TYPE type;
 	int nGrid = 0;
-	
+	int col_num = 0;
 	while(1)
 	{
 		type = pLoader->GetNextString(strGet);
-		m_listctrl.InsertColumn(nGrid,strGet,LVCFMT_CENTER,70);
+
+		TRACE("HEADER:%d %s\n",	col_num,strGet);
+		m_listctrl.InsertColumn(col_num++,strGet,LVCFMT_CENTER,70);
+
 		if(type == TYPE_LINE)
 		{
 			break;
@@ -139,16 +142,28 @@ void CImportListPage::ReFill()
 		{
 			break;
 		}
-        nGrid++;
+		//No content , only headers.
+		if(type == TYPE_END)
+		{
+			return;
+		}
 	}
+
 	int nItems = 0;
 	while(1)
 	{
 		type = pLoader->GetNextString(strGet);
+		TRACE("ROW:%d %s\n",	nItems,strGet);
+		if(type == TYPE_END)
+		{
+			TRACE("ROW:%s we dont accept this row.", strGet);
+			return;
+		}
 		m_listctrl.InsertItem(nItems,strGet);
 		nGrid = 1;
 		while(1)
 		{
+			TRACE("type :%d\n",type);
 			if(type == TYPE_LINE)
 			{
 				break;
@@ -158,13 +173,28 @@ void CImportListPage::ReFill()
 				break;
 			}
 			type = pLoader->GetNextString(strGet);
-			m_listctrl.SetItemText(nItems,nGrid,strGet);
-			nGrid++;
+			if(nGrid>=col_num)
+			{
+				TRACE("HEADER:%d %s\n",	col_num,strGet);
+				m_listctrl.InsertColumn(col_num++,strGet,LVCFMT_CENTER,70);
+
+			}
+			m_listctrl.SetItemText(nItems,nGrid++,strGet);
 		}
-		nItems++;
+		//filter noused information.
+		if(nGrid<2)
+		{
+			TRACE("ROW DEL:%d \n",	nItems);
+			m_listctrl.DeleteItem(nItems);
+		}
+		else
+		{
+			nItems++;
+		}
 		if(type == TYPE_END)
 		{
-			break;
+			TRACE("ROW:%s we dont accept this row.", strGet);
+			return;
 		}
 		if(type == TYPE_ERROR)
 		{
