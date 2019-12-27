@@ -675,6 +675,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\database\TodoSet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\dialog\TypePage.cpp"
 				>
 			</File>
@@ -982,6 +986,10 @@
 			</File>
 			<File
 				RelativePath=".\bar\TaskPane.h"
+				>
+			</File>
+			<File
+				RelativePath=".\database\TodoSet.h"
 				>
 			</File>
 			<File

@@ -12,10 +12,10 @@
 
 #else
 #ifdef _DEBUG
-#define DATA_SOURCE_NAME_ODBC  _T("DSN=simon_test_64;DBQ=D:\\test\\bankbook.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;")
+#define DATA_SOURCE_NAME_ODBC  _T("DSN=test;DBQ=C:\\guohua\\finance\\test.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;")
 #define DATA_SOURCE_NAME DATA_SOURCE_NAME_ODBC
 #else
-#define DATA_SOURCE_NAME_ODBC  _T("DSN=simon_test_64;DBQ=D:\\test\\bankbook.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;")
+#define DATA_SOURCE_NAME_ODBC  _T("DSN=simon_test_64;DBQ=C:\\guohua\\finance\\bankbook.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;")
 #define DATA_SOURCE_NAME DATA_SOURCE_NAME_ODBC
 #endif
 #endif
