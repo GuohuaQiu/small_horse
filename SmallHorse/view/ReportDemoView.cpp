@@ -2111,42 +2111,39 @@ void CReportDemoView::OnCollapseInactiveInactive()
 }
 void CReportDemoView::BrowseToBackYear(int backYear) 
 {
- 	COleDateTime now = COleDateTime::GetCurrentTime();
-	int year = now.GetYear();
-	year -= backYear;
+    COleDateTime now = COleDateTime::GetCurrentTime();
+    int year = now.GetYear();
+    year -= backYear;
 
-	
-	
-	CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
-	CBCGPGridRow* targetRow = NULL;
-	int nCount = pReportCtrl->GetRowCount();
+    CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
+    CBCGPGridRow* targetRow = NULL;
+    int nCount = pReportCtrl->GetRowCount();
 
-	int sss = 99999;
+    int last_diff = 1000;
 
-	for(int index = 0;index < nCount;index++)
-	{
-	    CBCGPGridRow* pRow = pReportCtrl->GetRow(index);
-		if(pRow->IsGroup())
-		{
-			continue;
-		}
-		CBCGPGridItem* pItem = pRow->GetItem(COLUMN_DATE__);
-		COleDateTime date = (DATE)pItem->GetValue();
+    for(int index = 0;index < nCount;index++)
+    {
+        CBCGPGridRow* pRow = pReportCtrl->GetRow(index);
+        if(pRow->IsGroup())
+        {
+            continue;
+        }
+        CBCGPGridItem* pItem = pRow->GetItem(COLUMN_DATE__);
+        COleDateTime date = (DATE)pItem->GetValue();
 
 
-		int thisyear = date.GetYear();
-		int thisnear = thisyear > year? thisyear-year:year-thisyear;
-		if(thisnear < sss)
-		{
-			targetRow = pRow;
-			sss = thisnear;
-		}
-		if(sss == 0){
-			break;
-		}
-	}
-	pReportCtrl->EnsureVisible(targetRow);
-	
+        int thisyear = date.GetYear();
+        int this_diff = thisyear > year? thisyear-year:year-thisyear;
+        if(this_diff > last_diff )
+        {
+            break;
+        }
+        targetRow = pRow;
+        TRACE("Browse year is %d\n", thisyear);
+        last_diff = this_diff;
+    }
+    pReportCtrl->EnsureVisible(targetRow);
+
 }
 
 void CReportDemoView::OnBrowseYear(UINT nID) 

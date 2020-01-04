@@ -403,18 +403,33 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 	// 	CMenu menuHistory;
 	// 	menuHistory.LoadMenu (IDR_HISTORY_POPUP);
 	// 
+    COleDateTime now = COleDateTime::GetCurrentTime();
+    int year = now.GetYear();
+    CString strYearThis;
+    strYearThis.Format("%d",year);
+    CString strYear;
+
+
 	CMenu menuBrowse;
 	menuBrowse.CreatePopupMenu( );
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_1,_T("2017"));
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_2,_T("2016"));
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_3,_T("2015"));
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_4,_T("2014"));
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_5,_T("2013"));
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_6,_T("2012"));
-	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_7,_T("2011"));
 
-	CBCGPToolbarMenuButton btnBrowse(ID_THIS_YEAR, menuBrowse, 
-	 					CImageHash::GetImageOfCommand (ID_THIS_YEAR), _T("2018"));
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_1,strYear);
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_2,strYear);
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_3,strYear);
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_4,strYear);
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_5,strYear);
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_6,strYear);
+    strYear.Format("%d",year--);
+    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_7,strYear);
+
+    CBCGPToolbarMenuButton btnBrowse(ID_THIS_YEAR, menuBrowse, 
+        CImageHash::GetImageOfCommand (ID_THIS_YEAR), strYearThis);
 	btnBrowse.m_bText = TRUE;
 	m_wndToolBar.ReplaceButton (ID_THIS_YEAR, btnBrowse);
 
