@@ -56,9 +56,17 @@ enum
 
 enum COLUMN_QUERY
 {
-    COLUMN_BOOK_ID = COLUMN_BASE_NUMBER,
-		COLUMN_BOOK_BANK,
-		COLUMN_QUERY_NUMBER
+	COLUMN_BOOK_ID = COLUMN_BASE_NUMBER,
+	COLUMN_BOOK_BANK,
+	COLUMN_QUERY_NUMBER
+};
+
+
+enum COLUMN_TODO
+{
+    COLUMN_TODO_ID,
+    COLUMN_TODO_BODY,
+    COLUMN_TODO_NUMBER
 };
 
 enum COLUMN_ONE_BOOK
@@ -75,27 +83,22 @@ enum
 		COLUMN_MAINCOUNT_VALUE       ,
 		COLUMN_MAINCOUNT_NUMBER
 };
-/*
-COLUMN_COUNT_DATE_START,
-COLUMN_COUNT_DATE_END__,
-COLUMN_COUNT_RATE______,
-COLUMN_COUNT_PERIOD____,
-COLUMN_COUNT_COMMENT___,
-*/
+
+
 
 enum
 {
 	COLUMN_SUBCOUNT_MAINCOUNT   , //_T("CountID"),
-		COLUMN_SUBCOUNT_SUBCOUNT	,   //_T("SubCountID"),
-		COLUMN_SUBCOUNT_BANK		,     //_T("Book_Bank"),
-		COLUMN_SUBCOUNT_OWNER		,     //_T("Book_Owner"),
-		COLUMN_SUBCOUNT_VALUE		,     //_T("BeginValue"),
-		COLUMN_SUBCOUNT_DATE_START	, //_T("StartDate"),
-		COLUMN_SUBCOUNT_DATE_END	,   //_T("EndDate"),
-		COLUMN_SUBCOUNT_RATE		,     //_T("YearRate"),
-		COLUMN_SUBCOUNT_PERIOD		,   //_T("TimeSpan"),
-		COLUMN_SUBCOUNT_COMMENT		,   //_T("Comment"),
-		COLUMN_SUBCOUNT_NUMBER
+	COLUMN_SUBCOUNT_SUBCOUNT	,   //_T("SubCountID"),
+	COLUMN_SUBCOUNT_BANK		,     //_T("Book_Bank"),
+	COLUMN_SUBCOUNT_OWNER		,     //_T("Book_Owner"),
+	COLUMN_SUBCOUNT_VALUE		,     //_T("BeginValue"),
+	COLUMN_SUBCOUNT_DATE_START	, //_T("StartDate"),
+	COLUMN_SUBCOUNT_DATE_END	,   //_T("EndDate"),
+	COLUMN_SUBCOUNT_RATE		,     //_T("YearRate"),
+	COLUMN_SUBCOUNT_PERIOD		,   //_T("TimeSpan"),
+	COLUMN_SUBCOUNT_COMMENT		,   //_T("Comment"),
+	COLUMN_SUBCOUNT_NUMBER
 };
 
 const TCHAR cSubCountFieldName[COLUMN_SUBCOUNT_NUMBER][32] =
@@ -447,51 +450,7 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
         }
     }
 }
-#if 0//no need Simon
-BOOL CReportDemoView::AddMail (int nIcon, LPCTSTR strFrom, LPCTSTR strTo,
-							   LPCTSTR strSubject, COleDateTime dateCreated, COleDateTime dateReceived, long lSize, 
-							   IMPORTANCE importance/* = IMPORTANCE_NORMAL*/,
-							   BOOL bHasAttachment/* = FALSE*/,
-							   int nFlag/* = 0*/)
-{
-	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
-	CBCGPGridRow* pRow = pReportCtrl->CreateRow (pReportCtrl->GetColumnCount ());
-	
-	//----------------
-	// Set importance:
-	//----------------
-	int nImportanceIcon = -1;
-	switch (importance)
-	{
-	case IMPORTANCE_HIGH:
-		nImportanceIcon = 2;
-		break;
-		
-	case IMPORTANCE_LOW:
-		nImportanceIcon = 3;
-		break;
-	}
-	
-	pRow->GetItem (0)->SetImage (nImportanceIcon, FALSE);
-	pRow->GetItem (1)->SetImage (nIcon, FALSE);
-	pRow->GetItem (2)->SetImage (bHasAttachment ? 5 : -1, FALSE);
-	
-	pRow->GetItem (3)->SetValue (strFrom, FALSE);
-	pRow->GetItem (4)->SetValue (strSubject, FALSE);
-	pRow->GetItem (5)->SetValue (strTo, FALSE);
-	
-	pRow->ReplaceItem (7, new CBCGPGridDateTimeItem (dateCreated), FALSE);
-	pRow->ReplaceItem (8, new CBCGPGridDateTimeItem (dateReceived), FALSE);
-	
-	pRow->GetItem (9)->SetValue (lSize, FALSE);
-	
-	pRow->ReplaceItem (11, new CFlagItem (m_Flags, nFlag), FALSE);
-	
-	pReportCtrl->AddRow (pRow, FALSE);
-	
-	return TRUE;
-}
-#endif
+
 inline int Rand (int nMax)
 {
 	int nRes = rand () % nMax;
@@ -514,6 +473,7 @@ int CReportDemoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pParent = (CReportFrame*)GetParent();
 	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
 	pReportCtrl->SetSingleSel(FALSE);
+	//TODO_TODO only single card can accept imported items.
    	DragAcceptFiles(TRUE);
 	
 	return 0;
@@ -1268,21 +1228,26 @@ void CReportDemoView::CreateListCtrl()
 		pReportCtrl->InsertColumn (COLUMN_ID____, _T("序号"), 15);
 		pReportCtrl->InsertColumn (COLUMN_REASON, _T("事由"), 120);
 		pReportCtrl->InsertColumn (COLUMN_TYPE__, _T("类型"), 20);
-        pReportCtrl->InsertColumn (COLUMN_SITE__, _T("地点"), 30);
+		pReportCtrl->InsertColumn (COLUMN_SITE__, _T("地点"), 30);
 		pReportCtrl->InsertColumn (COLUMN_SUBCOUNT, _T("子账号"), 1);
 
 		if(m_ViewType == VIEW_TYPE_RECORD_IN_ONE_COUNT)
 		{
-		    pReportCtrl->InsertColumn (COLUMN_REMAIN, _T("余额"), 30);
+			pReportCtrl->InsertColumn (COLUMN_REMAIN, _T("余额"), 30);
 			pReportCtrl->SetColumnVisible (COLUMN_SUBCOUNT, FALSE);
 			pReportCtrl->InsertGroupColumn (0, COLUMN_SUBCOUNT );
 		}
-        else if(m_ViewType == VIEW_TYPE_RECORD_QUERY)
-        {
-            pReportCtrl->InsertColumn (COLUMN_BOOK_ID, _T("账户"), 40);
-            pReportCtrl->InsertColumn (COLUMN_BOOK_BANK, _T("银行"), 30);
-        }
+		else if(m_ViewType == VIEW_TYPE_RECORD_QUERY)
+		{
+			pReportCtrl->InsertColumn (COLUMN_BOOK_ID, _T("账户"), 40);
+			pReportCtrl->InsertColumn (COLUMN_BOOK_BANK, _T("银行"), 30);
+		}
 	}
+    else if(IS_TODO(m_pParent->m_ViewType))
+    {
+        pReportCtrl->InsertColumn (COLUMN_TODO_ID, _T("序号"), 15);
+        pReportCtrl->InsertColumn (COLUMN_TODO_BODY, _T("内容"), 30);
+    }
 	else
 	{
 		if(m_ViewType == VIEW_TYPE_MAIN_COUNTS)
@@ -2251,6 +2216,10 @@ void CReportDemoView::FillItems()
 	{
 		DisplayRecord();
 	}
+    else if(IS_TODO(m_pParent->m_ViewType))
+    {
+        DisplayTodo();
+    }
 	else
 	{
         DisplayCount();
@@ -2387,6 +2356,29 @@ BOOL CReportDemoView::CheckBill(int nYear, int nMonth, COleDateTime &timeBegin, 
 		pListSet->MoveNext();
 	}
 	return TRUE;
+}
+
+
+BOOL CReportDemoView::DisplayTodo()
+{
+    CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
+    pReportCtrl->RemoveAll ();
+
+    CTodoSet* pSet = theApp.GetTodoSet();
+    pSet->Requery();
+    pSet->MoveFirst();
+    while(!pSet->IsEOF())
+    {
+        CBCGPGridRow* pRow = pReportCtrl->CreateRow (COLUMN_TODO_NUMBER);
+        pRow->GetItem (COLUMN_TODO_ID)->SetValue (pSet->m_id, FALSE);
+        pRow->GetItem (COLUMN_TODO_BODY)->SetValue ((LPCTSTR)pSet->m_body, FALSE);
+        pReportCtrl->AddRow (pRow, FALSE);
+        pSet->MoveNext();
+    }
+
+    AdjustColumnWidth();
+    pReportCtrl->AdjustLayout ();
+    return TRUE;
 }
 
 BOOL CReportDemoView::DisplayReport()

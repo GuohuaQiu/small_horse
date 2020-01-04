@@ -18,7 +18,7 @@ public:
 
 // Field/Param Data
 	//{{AFX_FIELD(CTodoSet, CRecordset)
-	int m_id;
+	long	m_id;
 	CString	m_body;
 	//}}AFX_FIELD
 

@@ -31,6 +31,7 @@ CString g_strAutoReturnCreditCard;
 BEGIN_MESSAGE_MAP(CSmallHorseApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	ON_COMMAND(ID_QUERY, OnQuery)
+	ON_COMMAND(ID_TODO, OnTodo)
     ON_UPDATE_COMMAND_UI(ID_ACCOUNT_SHOW_CLOSED, OnUpdateShowNoExistBook)
 	ON_COMMAND(ID_ACCOUNT_SHOW_CLOSED, OnShowNoExistBook)
 	ON_COMMAND_EX_RANGE(ID_FILE_MRU_QUERY0, ID_FILE_MRU_QUERY15, OnOpenQueryFile)
@@ -805,8 +806,14 @@ void CSmallHorseApp::OnQuery()
         Search(strIDList,strTypeList,&dlg.m_beginTime,&dlg.m_endTime,strQueryName,dlg.m_strCommentLike.GetLength()>0 ? (LPCTSTR)dlg.m_strCommentLike : NULL);
 	else
 		Search(strIDList,strTypeList,NULL,NULL,strQueryName,dlg.m_strCommentLike.GetLength()>0 ? (LPCTSTR)dlg.m_strCommentLike : NULL);
-	
+
 }
+
+void CSmallHorseApp::OnTodo()
+{
+    OpenTodoView();
+}
+
 void CSmallHorseApp::Search(const CStringList &idlist, const CStringList &typelist, COleDateTime *pBeginTime, COleDateTime *pEndTime, LPCTSTR lpstrName,LPCTSTR lpstrCommentLike)
 {
 	CString strfil;
@@ -2022,6 +2029,14 @@ CRateSet* CSmallHorseApp::GetRateSet()
 }
 
 
+CTodoSet* CSmallHorseApp::GetTodoSet()
+{
+    if(!m_TodoSet.IsOpen())
+        m_TodoSet.Open();
+
+    return &m_TodoSet;
+}
+
 /*******************************************
     Function Name :	 
     Create by     :	  Qiu Simon
@@ -2638,4 +2653,37 @@ int CSmallHorseApp::StaticDoubtItems(CString& nID)
 	TRACE(strStatic);
 	AfxMessageBox(strStatic);
 	return 0;
+}
+
+BOOL CSmallHorseApp::OpenTodoView(void)
+{
+    CMainFrame* pfrm=(CMainFrame*)AfxGetMainWnd();
+
+    CDocument* pdoc=GetDoc();
+    if(pdoc)
+    {
+        POSITION pos=pdoc->GetFirstViewPosition();
+        CView* pview;
+        while(pos)
+        {
+            pview=pdoc->GetNextView(pos);
+            CReportFrame* psfrm=(CReportFrame*)pview->GetParent();
+            //the view has created activate it.
+            if(IS_TODO(psfrm->m_ViewType))
+            {
+                ((CFrameWnd*)psfrm)->ActivateFrame();
+                return TRUE;
+            }
+        }
+    }
+    else
+    {
+        pdoc= m_pDocTemplate->CreateNewDocument();
+    }
+
+    CReportFrame* pcframe=(CReportFrame*)m_pDocTemplate->CreateNewFrame(pdoc,NULL);
+    pcframe->SetTodoType();
+
+    m_pDocTemplate->InitialUpdateFrame(pcframe, pdoc);
+    return TRUE;
 }

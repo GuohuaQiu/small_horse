@@ -179,6 +179,12 @@ void CReportFrame::SetFilter(const CString &strFilter, const CString &strSort)
 
 }
 
+void CReportFrame::SetTodoType()
+{
+    m_ViewType = VIEW_TYPE_TODO;
+    m_strTitle = "TODO LIST";
+}
+
 void CReportFrame::OnViewFilter() 
 {
 	AfxMessageBox(m_strFilter);

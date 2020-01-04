@@ -96,6 +96,7 @@ public:
 	void CopyRecordsTo(const CString& strCount);
 	void MoveRecordsTo(const CString& strCount);
 	BOOL DisplayReport();
+	BOOL DisplayTodo();
 #if 0
 	void CheckBill(int nYear, int nMonth,COleDateTime& timeBegin);
 #endif

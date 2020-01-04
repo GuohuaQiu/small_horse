@@ -48,8 +48,8 @@ void CTodoSet::DoFieldExchange(CFieldExchange* pFX)
 {
 	//{{AFX_FIELD_MAP(CTodoSet)
 	pFX->SetFieldType(CFieldExchange::outputColumn);
-	RFX_Int(pFX, _T("[id]"), m_id);
-	RFX_Text(pFX, _T("[todo]"), m_body);
+	RFX_Long(pFX, _T("[id]"), m_id);
+	RFX_Text(pFX, _T("[to_do]"), m_body);
 	//}}AFX_FIELD_MAP
 }
 

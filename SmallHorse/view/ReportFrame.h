@@ -47,6 +47,7 @@ public:
 	void SetCountsFilter(const CString &strFilter,VIEW_TYPE view_Type, LPCTSTR lpStrName);
 	VIEW_TYPE GetViewType();
 	void SetFilter(const CString& strFilter, const CString& strSort);
+	void SetTodoType();
 	virtual ~CReportFrame();
 #ifdef _DEBUG
 	virtual void AssertValid() const;

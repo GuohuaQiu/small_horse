@@ -132,6 +132,7 @@ BEGIN
     BEGIN
         MENUITEM "&About SmallHorse...",        ID_APP_ABOUT
     END
+	MENUITEM "TODO LIST",        ID_TODO
 END
 
 IDR_RECORD_MENU MENU 

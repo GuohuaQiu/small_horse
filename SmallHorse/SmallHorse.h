@@ -10,7 +10,8 @@
 #include <afxdb.h>
     
 #include "idset.h"
-#include "listset.h"       
+#include "listset.h"
+#include "todoset.h"
 #include "SubCountSet.h"       
 #include "RateSet.h"       
 #include "QueryHistoryList.h"     
@@ -45,6 +46,7 @@ public:
 	BOOL OpenBankbook(const CString& strID);
 	CIDSet* GetIDSet();
 	CListSet* GetListSet();
+	CTodoSet* GetTodoSet();
 	static UINT  m_DataFormat;
 	int GetTypeIndex(const CString& strType);
 	TCHAR	m_cType[256][64];
@@ -66,6 +68,7 @@ public:
 // Implementation
 	afx_msg void OnAppAbout();
 	afx_msg void OnQuery();
+	afx_msg void OnTodo();
     afx_msg void OnUpdateShowNoExistBook(CCmdUI* pCmdUI);
 	afx_msg void OnShowNoExistBook();
 	afx_msg BOOL OnOpenQueryFile (UINT nID);
@@ -83,6 +86,7 @@ private:
 	CSubCountSet m_subCountSet;
 	CRateSet m_rateSet;
 	CBookTypeSet m_bookTypeSet;
+	CTodoSet m_TodoSet;
 public:
 	void CopyRecordsTo(const CDWordArray& dbAry,
 		const CString& strCount,
@@ -137,6 +141,8 @@ public:
 	CQueryItemList m_querylist;
 public:
 	int StaticDoubtItems(CString& nID);
+public:
+	BOOL OpenTodoView(void);
 };
 
 extern CSmallHorseApp theApp;
