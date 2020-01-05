@@ -967,6 +967,7 @@ int CListSet::MoveRecordsTo(const CString& Count, const CString& SubCount,const 
 	CDatabaseUtility::Generate_modify_string("Item_Book_ID",Count,strSQL);
 	if(SubCount.GetLength()>0)
 	{
+        strSQL += ",";
 		CDatabaseUtility::Generate_modify_string("SubCountID",SubCount,strSQL);
 	}
 	CDatabaseUtility::Append_Condition_Int_Array("Index",strSQL,dbArray,count);

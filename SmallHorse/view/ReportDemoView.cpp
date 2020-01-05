@@ -409,10 +409,6 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
 					int n = 0;
 					while (pos) {
 						CString strId = g_CountIdList.GetNext(pos);
-						if(strId == m_pParent->m_strID)
-						{
-							continue;
-						}
 						sMenu.AppendMenu(MF_STRING,IDM_COPY_RECORDS_TO + n,(LPCTSTR)strId);
 						moveMenu.AppendMenu(MF_STRING,IDM_MOVE_RECORDS_TO + n,(LPCTSTR)strId);
 						n++;
@@ -2143,7 +2139,6 @@ void CReportDemoView::BrowseToBackYear(int backYear)
         last_diff = this_diff;
     }
     pReportCtrl->EnsureVisible(targetRow);
-
 }
 
 void CReportDemoView::OnBrowseYear(UINT nID) 
@@ -2550,6 +2545,4 @@ void CReportDemoView::OnMoveRecordsTo(UINT nID)
 		MoveRecordsTo(strId);
 	}
 	g_CountIdList.RemoveAll();
-
-
 }
