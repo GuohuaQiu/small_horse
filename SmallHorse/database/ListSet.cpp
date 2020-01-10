@@ -190,7 +190,7 @@ CString CListSet::GetDate()
 // }
 
 
-BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
+BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pATC[],int column_count)
 {
 	int nCount = pctrl->GetItemCount();
 	CString strDate;
@@ -206,7 +206,7 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
 	COleDateTime time = COleDateTime::GetCurrentTime();
 	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
 		
-		
+
 	BOOL bRet = TRUE;
 	for(int i = 0;i<nCount;i++)
 	{
@@ -216,7 +216,7 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
 			listData.m_ID = strId;
 			if(nType[VALUE_TYPE_DATE]>=0)
 			{
-                strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
+				strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
 				if(nType[VALUE_TYPE_ONLYTIME]>=0)
 				{
 					strDate += " ";
@@ -232,16 +232,16 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
 				{
 					CString msg;
 					msg.Format("Below format cant be read:\n %s",strDate);
-					
+
 					AfxMessageBox(msg);
-                    return FALSE;
+					return FALSE;
 				}
 
 				listData.m_day = COleDateTime(nYear,nMonth,nDay,nHour,nMinute,nSec);
 			}
 			fIncome = 0.0;
 
-            TCHAR *pTempTchar;
+			TCHAR *pTempTchar;
 			if(nType[VALUE_TYPE_INCOME]>=0)
 			{
 				strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_INCOME]);
@@ -265,19 +265,32 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
 			{
 				listData.m_strSubCount = pctrl->GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
 			}
-            if(nType[VALUE_TYPE_COMMENT]>=0)
-            {
-				CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
-				int len = str.GetLength();
+			CString strComment;
+			if(nType[VALUE_TYPE_COMMENT]>=0)
+			{
+				strComment = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
+			}
 
-				while(len > 0 && str.GetAt(0) == _TCHAR(' '))
+			//ADD TO COMMENTS
+			for(int j = 0;j< column_count;j++)
+			{
+				if(pATC[j]==1)
 				{
-					len--;
-					str = str.Right(len);
+					strComment += " ";
+					strComment += pctrl->GetItemText(i,j);
 				}
+			}
 
-                listData.m_remain = str;
-            }
+			int len = strComment.GetLength();
+
+			while(len > 0 && strComment.GetAt(0) == _TCHAR(' '))
+			{
+				len--;
+				strComment = strComment.Right(len);
+			}
+			listData.m_remain = strComment;
+
+
 			if(nType[VALUE_TYPE_SUM]>=0)
 			{
 				CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
@@ -286,12 +299,13 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId)
 				listData.m_remain += strSum;
 			}
 			listData.m_remain += strStamp;
-            if(nType[VALUE_TYPE_SITE]>=0)
-            {
-                listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
-            }
+			if(nType[VALUE_TYPE_SITE]>=0)
+			{
+				listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
+			}
+
 			bRet = New_Item(&listData);
-//			bRet = Update();
+			//			bRet = Update();
 			if(!bRet)
 			{
 				break;

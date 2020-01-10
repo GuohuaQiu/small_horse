@@ -104,7 +104,7 @@ TCHAR pFieldName[VALUE_SUBCOUNT_TYPE_number][16]=
     Return type  : 
     Argument      : 
 ********************************************/
-BOOL CSubCountSet::AddItems(CListCtrl *pctrl, int nType[],CString strMainCount)
+BOOL CSubCountSet::AddItems(CListCtrl *pctrl, int nType[],CString strMainCount,int pATC[],int column_count)
 {
 	int nCount = pctrl->GetItemCount();
 

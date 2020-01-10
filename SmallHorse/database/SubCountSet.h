@@ -20,7 +20,7 @@ public:
 	void GetTipString(CString& strTip);
 	void AddFirstRecordforSubCount(const CString& strMainCount);
 	BOOL Find(const CString& strMainCount,const CString& strSubCount);
-	BOOL AddItems(CListCtrl *pctrl,int nType[],CString strMainCount);
+	BOOL AddItems(CListCtrl *pctrl,int nType[],CString strMainCount,int pATC[],int column_count);
 	void RequeryCount(const CString& strCount);
 	CSubCountSet(CDatabase* pDatabase = NULL);
 	DECLARE_DYNAMIC(CSubCountSet)

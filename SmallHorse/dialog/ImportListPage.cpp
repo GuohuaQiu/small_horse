@@ -23,7 +23,6 @@ extern int nSubCountRegionAttr[VALUE_SUBCOUNT_TYPE_number];
 
 
 
-
 IMPLEMENT_DYNCREATE(CImportListPage, CPropertyPage)
 
 extern TCHAR cSubCountRegionName[VALUE_SUBCOUNT_TYPE_number][FIELD_NAME_LEN];
@@ -80,17 +79,15 @@ BOOL CImportListPage::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 	CHeaderCtrl* pHeadCtrl = m_listctrl.GetHeaderCtrl();
 	ASSERT(pHeadCtrl->GetSafeHwnd());
-	   
+
 	VERIFY( m_qiuheadCtrl.SubclassWindow(pHeadCtrl->GetSafeHwnd()) );
 	if(m_pParent->m_nImportType == IMPORT_TYPE_RECORD)
 	{
-		m_qiuheadCtrl.m_nFieldCount = VALUE_TYPE_number;
-		m_qiuheadCtrl.m_pFieldNames = (TCHAR*)cRegion;
+		m_qiuheadCtrl.SetColumnName(VALUE_TYPE_number,(TCHAR*)cRegion,nRegionAttr);
 	}
 	else
 	{
-		m_qiuheadCtrl.m_nFieldCount = VALUE_SUBCOUNT_TYPE_number;
-		m_qiuheadCtrl.m_pFieldNames = (TCHAR*)cSubCountRegionName;
+		m_qiuheadCtrl.SetColumnName(VALUE_SUBCOUNT_TYPE_number,(TCHAR*)cSubCountRegionName,nSubCountRegionAttr);
 	}
 
 	
@@ -204,6 +201,21 @@ void CImportListPage::ReFill()
 }
 
 
+int CImportListPage::GetCheckedCount()
+{
+	int CheckedCount = 0;
+	int nCount = m_listctrl.GetItemCount();
+	for(int i = 0;i<nCount;i++)
+	{
+		if(m_listctrl.GetCheck(i))
+		{
+			CheckedCount++;
+		}
+	}
+	return CheckedCount;
+}
+
+
 /*******************************************
     Function Name :	 SaveDataToDataLib
     Create by     :	  Qiu Guohua
@@ -214,30 +226,39 @@ void CImportListPage::ReFill()
 ********************************************/
 BOOL CImportListPage::SaveDataToDataLib()
 {
+	if(!m_qiuheadCtrl.ValidateNames())
+		return FALSE;
+	int nCheckedCount = GetCheckedCount();
+	if(nCheckedCount == 0)
+	{
+		AfxMessageBox("No record is selected.Please select.");
+		return FALSE;
+	}
+	int *nTypeArry = m_qiuheadCtrl.GetNameIndex();
+	int ConflictCount = 0;
 	if(m_pParent->m_nImportType == IMPORT_TYPE_RECORD)
 	{
-		int nTypeArry[VALUE_TYPE_number];
-		if(!m_qiuheadCtrl.FindType(nTypeArry,nRegionAttr))
-			return FALSE;
-		int nCount = FindConflict(nTypeArry);
-		if(nCount>0)
-		{
-			//		return FALSE;
-		}
-		
-		return m_pParent->m_pListSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount);
+		ConflictCount = FindConflict(nTypeArry);
 	}
 	else
 	{
-		int nTypeArry[VALUE_SUBCOUNT_TYPE_number];
-		if(!m_qiuheadCtrl.FindType(nTypeArry,nSubCountRegionAttr))
-			return FALSE;
-		int nCount = FindSubCountConflict(nTypeArry);
-		if(nCount>0)
-		{
-			//		return FALSE;
-		}
-		return m_pParent->m_pSubCountSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount);
+		ConflictCount = FindSubCountConflict(nTypeArry);
+	}
+	if(ConflictCount== nCheckedCount)
+	{
+		AfxMessageBox("全部重复，请重试。");
+		return FALSE;
+	}
+	int *pATC;
+	int totalColumn = m_qiuheadCtrl.GetAddToComments(&pATC);
+
+	if(m_pParent->m_nImportType == IMPORT_TYPE_RECORD)
+	{
+		return m_pParent->m_pListSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount,pATC,totalColumn);
+	}
+	else
+	{
+		return m_pParent->m_pSubCountSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount,pATC,totalColumn);
 	}
 }
 

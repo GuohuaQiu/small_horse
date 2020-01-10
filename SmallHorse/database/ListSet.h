@@ -47,7 +47,7 @@ public:
 	BOOL Find(const COleDateTime& time,float fRecord,const CString& strSubCount);
 	BOOL IsOnlyOneBook();
 	BOOL GetCurrentBookId(CString &strID);
-	BOOL AddItems(CListCtrl* pctrl,int nType[],const CString& strId);
+	BOOL AddItems(CListCtrl* pctrl,int nType[],const CString& strId,int pATC[],int column_count);
 // 	void SetNetIncome(BYTE bType);
 	CString GetDate();
 	CString GetArray();

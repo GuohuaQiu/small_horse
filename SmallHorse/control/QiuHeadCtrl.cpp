@@ -16,10 +16,26 @@ static char THIS_FILE[] = __FILE__;
 
 CQiuHeadCtrl::CQiuHeadCtrl()
 {
+	m_nFieldCount = 0;
+	m_pFieldNames = NULL;
+	m_pIndex = NULL;
+	m_pFieldAttr = NULL;
+
+
+	m_TotalColumnCount = 0;
+	m_pAddToComments = NULL;
 }
 
 CQiuHeadCtrl::~CQiuHeadCtrl()
 {
+	if(m_pAddToComments)
+	{
+		delete [] m_pAddToComments;
+	}
+	if(m_pIndex)
+	{
+		delete [] m_pIndex;
+	}
 }
 
 #define ID_MENU_ADD_TO_COMMENT         34000
@@ -27,7 +43,7 @@ CQiuHeadCtrl::~CQiuHeadCtrl()
 #define ID_MENU_SET_FIELD_NAME_END     34010
 #define ID_MENU_SET_AS_BLANK           34011
 
-
+//extern int g_comment_string_index_in_header;
 
 BEGIN_MESSAGE_MAP(CQiuHeadCtrl, CHeaderCtrl)
 	//{{AFX_MSG_MAP(CQiuHeadCtrl)
@@ -43,6 +59,16 @@ int g_a = 3;
 
 void CQiuHeadCtrl::OnLButtonDown(UINT nFlags, CPoint point) 
 {
+	if(m_TotalColumnCount == 0)
+	{
+		m_TotalColumnCount = GetItemCount();
+		m_pAddToComments = new int[m_TotalColumnCount];
+		for(int i=0;i<m_TotalColumnCount;i++)
+		{
+			m_pAddToComments[i] = 0;
+		}
+	}
+
 	CMenu mu;
 	mu.CreatePopupMenu( );
 	for(int i = 0;i<m_nFieldCount;i++)
@@ -51,7 +77,7 @@ void CQiuHeadCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	mu.AppendMenu(MF_STRING,ID_MENU_ADD_TO_COMMENT,_T("添加到备注"));
 	mu.AppendMenu(MF_STRING,ID_MENU_SET_AS_BLANK,_T(">>>删除"));
-//	mu.setwindow
+	//	mu.setwindow
 	CMenu* pMenu = &mu;
 	int n = GetItemCount();
 	CRect rect;
@@ -64,7 +90,7 @@ void CQiuHeadCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 			m_nLastSelectedItem = i;
 			ClientToScreen(&rect);
 			pMenu->TrackPopupMenu(TPM_LEFTALIGN,rect.left,rect.top,this,0);
-//			CHeaderCtrl::OnLButtonUp(nFlags, point);
+			//			CHeaderCtrl::OnLButtonUp(nFlags, point);
 			return;
 		}
 	}
@@ -87,66 +113,13 @@ void CQiuHeadCtrl::OnMenuitem(UINT nID)
 	hitem.mask = HDI_TEXT;
 	if(nID==ID_MENU_ADD_TO_COMMENT)
 	{
-		TCHAR  lpBuffer[256];
-		
-		hitem.pszText = lpBuffer;
-		hitem.cchTextMax = 256;
-		GetItem(m_nLastSelectedItem,&hitem);
-		int nCommentIndex = GetCommentIndex();
-		if(nCommentIndex == m_nLastSelectedItem)
-		{
-			nCommentIndex = GetCommentIndex(nCommentIndex + 1);
-		}
-		if(nCommentIndex == -1)
-		{
-			AfxMessageBox("没有\"备注\"这一项,请设置!");
-			return;
-		}
-		CListCtrl* pListCtrl = (CListCtrl*)GetParent();
-		CString strOldTitle = GetItemString(m_nLastSelectedItem);
-		BOOL bAddTitle = TRUE;
-		if(strOldTitle == m_pFieldNames+(m_nFieldCount-1)*FIELD_NAME_LEN)
-		{
-			bAddTitle = FALSE;
-		}
-		int nItmCount = pListCtrl->GetItemCount();
-		CString strNewTxt;
-		for(int i = 0;i<nItmCount;i++)
-		{
-			CString strTxt = pListCtrl->GetItemText(i,nCommentIndex);
-			CString strOldTxt = pListCtrl->GetItemText(i,m_nLastSelectedItem);
-			if(bAddTitle)
-			{
-				strNewTxt.Format("%s;%s:%s",strTxt,strOldTitle,strOldTxt);
-			}
-			else
-			{
-				strNewTxt.Format("%s;%s",strTxt,strOldTxt);
-			}
-			pListCtrl->SetItemText(i,nCommentIndex,strNewTxt);
-		}
-		pListCtrl->DeleteColumn(m_nLastSelectedItem);
+		AddToComments(m_nLastSelectedItem);
 		m_nLastSelectedItem = -1;
 		return;
 	}
-	hitem.pszText = m_pFieldNames + (nID - ID_MENU_SET_FIELD_NAME_START)*FIELD_NAME_LEN ;
-	SetItem(m_nLastSelectedItem,&hitem);
+	SetColumeAs(m_nLastSelectedItem,nID - ID_MENU_SET_FIELD_NAME_START);
 }
 
-int CQiuHeadCtrl::GetCommentIndex(int nFrom)
-{
-	int nCount = GetItemCount();
-	CString strItem;
-	for(int i = nFrom;i < nCount;i++)
-	{
-		strItem = GetItemString(i);
-		if(strItem == m_pFieldNames+(m_nFieldCount-1)*FIELD_NAME_LEN)
-		{
-			return i;
-		}
-	}
-    return -1;
-}
 
 CString CQiuHeadCtrl::GetItemString(int nIndex)
 {
@@ -162,86 +135,133 @@ CString CQiuHeadCtrl::GetItemString(int nIndex)
 }
 
 
-
-
-BOOL CQiuHeadCtrl::FindType(int nTypeArry[],int nAttrArry[])
+void CQiuHeadCtrl::SetColumnName(int count, TCHAR* pNames,int nAttrArry[])
 {
-	int nHeadCount = GetItemCount();
-	memset(nTypeArry,-1,m_nFieldCount*sizeof(nTypeArry[0]));
-	for(int j = 0;j<nHeadCount;j++)
+	m_nFieldCount = count;
+	m_pFieldNames = pNames;
+	m_pFieldAttr = nAttrArry;
+	m_pIndex = new int[count];
+	for(int i=0;i<count;i++)
 	{
-		CString strItem = GetItemString(j);
-		for(int i = 0 ; i < m_nFieldCount;i++)
-		{
-			if(strItem == m_pFieldNames+i*FIELD_NAME_LEN)
-			{
-				if(nTypeArry[i] == -1)
-				{
-					nTypeArry[i] = j;
-					break;
-				}
-				else
-				{
-					CString strTip;
-					strTip.Format(_T("%s 重复了!"),strItem);
-					AfxMessageBox(strTip);
-					return FALSE;
-				}
-			}
-		}
+		m_pIndex[i] = -1;
 	}
 
+}
 
-	BOOL bRet = TRUE;
-	CString strTip(_T("找不到 "));
-//  find all must set fields.
+void CQiuHeadCtrl::SetColumeAs(int col_index,int name_index)
+{
+	if(m_pIndex[name_index] == col_index)
+	{
+		return;
+	}
+	if(m_pIndex[name_index] != -1)
+	{
+		ClearName(m_pIndex[name_index]);
+	}
+	m_pAddToComments[col_index] = 0;
+
+	m_pIndex[name_index] = col_index;
+	UpdateName(col_index);
+}
+void CQiuHeadCtrl::UpdateName(int col_index)
+{
+	for(int i=0;i<m_nFieldCount;i++)
+	{
+		if(m_pIndex[i] == col_index)
+		{
+			HDITEM hitem;
+			memset(&hitem,0,sizeof(hitem));
+			hitem.mask = HDI_TEXT;
+			hitem.pszText = m_pFieldNames + i*FIELD_NAME_LEN ;
+			SetItem(col_index,&hitem);
+			return;
+		}
+	}
+}
+
+char STRING_NULL[4] = "_";
+char STRING_ADDTOCOMMENT[] = "ToComment";
+
+void CQiuHeadCtrl::ClearName(int col_index)
+{
+	HDITEM hitem;
+	memset(&hitem,0,sizeof(hitem));
+	hitem.mask = HDI_TEXT;
+	hitem.pszText = STRING_NULL ;
+	SetItem(col_index,&hitem);
+}
+void CQiuHeadCtrl::AddToComments(int col_index)
+{
+	HDITEM hitem;
+	memset(&hitem,0,sizeof(hitem));
+	hitem.mask = HDI_TEXT;
+	hitem.pszText = STRING_ADDTOCOMMENT;
+	SetItem(col_index,&hitem);
+
+	for(int i=0;i<m_nFieldCount;i++)
+	{
+		if(m_pIndex[i] == col_index)
+		{
+			m_pIndex[i] = -1;
+		}
+	}
+	m_pAddToComments[col_index] = 1;
+}
+
+BOOL CQiuHeadCtrl::ValidateNames()
+{
+	//  find all at least one  fields.
+	BOOL hasOne = FALSE;
+	BOOL MustHas = TRUE;
+	CString strTip(_T(""));
+	CString strMust(_T(""));
 	for(int i = 0 ; i < m_nFieldCount;i++)
 	{
-		if((nAttrArry[i] == 1) && (nTypeArry[i]==-1))
+		if((m_pFieldAttr[i] > 1))
 		{
-			strTip += _T("\"");
+			if(m_pIndex[i]!=-1)
+			{
+				hasOne = TRUE;
+			}
 			strTip += m_pFieldNames+i*FIELD_NAME_LEN;
-			strTip += _T("\"");
-			bRet = FALSE;
+			strTip += _T(" ");
 		}
-	}
-	
-	if(bRet)
-	{// All must field found.
-		strTip = _T("");
-
-	}
-	else
-	{
-		strTip += _T("\n");
-	}
-//  find all at least one  fields.
-	for(int i = 0 ; i < m_nFieldCount;i++)
-	{
-		if((nAttrArry[i] > 1) && (nTypeArry[i]==-1))
+		else if(m_pFieldAttr[i] == 1)
 		{
-			//find another one.
-			for(int j = i+1;j<m_nFieldCount;j++)
+			if(m_pIndex[i]==-1)
 			{
-				if(nAttrArry[j] == nAttrArry[i])
-				{
-					if(nTypeArry[j]==-1)
-					{
-						strTip += _T("\"");
-						strTip += m_pFieldNames+i*FIELD_NAME_LEN;
-						strTip += _T("\" 和 ");
-						strTip += _T("\"");
-						strTip += m_pFieldNames+j*FIELD_NAME_LEN;
-						strTip += _T("\" 至少应有一个");
-						bRet = FALSE;
-					}
-				}
+				MustHas = FALSE;
+				strMust += m_pFieldNames+i*FIELD_NAME_LEN;
+				strTip += _T(" ");
 			}
 		}
 	}
-	if(!bRet)
+	CString strInfo;
+	if(!hasOne)
 	{
-		AfxMessageBox(strTip);
+		strTip += _T("\" 至少应有一个\n");
+		strInfo += strTip;
 	}
-	return bRet;
+	if(!MustHas)
+	{
+		strMust += _T("\" 必须有\n");
+		strInfo += strMust;
+	}
+	if(!hasOne||!MustHas)
+	{
+		AfxMessageBox(strInfo );
+		return FALSE;
+	}
+	return TRUE;
+}
+
+int* CQiuHeadCtrl::GetNameIndex()
+{
+	return m_pIndex;
+}
+
+int CQiuHeadCtrl::GetAddToComments(int** ppATC)
+{
+	*ppATC = m_pAddToComments;
+	return m_TotalColumnCount;
 }

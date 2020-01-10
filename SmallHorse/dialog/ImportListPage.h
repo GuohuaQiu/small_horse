@@ -56,7 +56,8 @@ protected:
 	afx_msg void OnUnmarkselected();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
+private:
+	int GetCheckedCount();
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -16,11 +16,23 @@ class CQiuHeadCtrl : public CHeaderCtrl
 // Construction
 public:
 	CQiuHeadCtrl();
-
+	void SetColumnName(int count, TCHAR* pNames,int nAttrArry[]);
+	BOOL ValidateNames();
+	int* GetNameIndex();
+	int GetAddToComments(int** ppATC);
 // Attributes
-public:
+private:
 	int m_nFieldCount;
 	TCHAR *m_pFieldNames;
+	int* m_pIndex;
+	int* m_pFieldAttr;
+
+	//Below item for "add to comments"
+	int m_TotalColumnCount;
+	int *m_pAddToComments;
+	void SetColumeAs(int col_index,int name_index);
+	void UpdateName(int col_index);
+	void ClearName(int col_index);
 
 // Operations
 public:
@@ -32,12 +44,11 @@ public:
 
 // Implementation
 public:
-	BOOL FindType(int nTypeArry[],int nAttrArry[]);
 	CString GetItemString(int nIndex);
-	int GetCommentIndex(int nFrom = 0);
 	virtual ~CQiuHeadCtrl();
 private:
 	int m_nLastSelectedItem;
+	void AddToComments(int col_index);
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CQiuHeadCtrl)
