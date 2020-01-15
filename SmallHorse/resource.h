@@ -244,13 +244,16 @@
 #define ID_QUERY_ONE_DAY                32960
 #define ID_RECORD_MOVE                  32962
 #define ID_TODO                         32963
+#define ID_SEARCH_DATETIME_MAIN         32964
+#define ID_SEARCH_DAY_ROUND             32966
+#define ID_SEARCH_QUERY                 32969
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        201
-#define _APS_NEXT_COMMAND_VALUE         32964
+#define _APS_NEXT_COMMAND_VALUE         32971
 #define _APS_NEXT_CONTROL_VALUE         1094
 #define _APS_NEXT_SYMED_VALUE           109
 #endif

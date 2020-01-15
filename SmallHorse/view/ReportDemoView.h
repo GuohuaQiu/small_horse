@@ -78,11 +78,11 @@ public:
 
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CReportDemoView)
-	public:
+public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual void OnInitialUpdate();
-	protected:
+protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -97,6 +97,7 @@ public:
 	void MoveRecordsTo(const CString& strCount);
 	BOOL DisplayReport();
 	BOOL DisplayTodo();
+	void ForceUpdate();
 #if 0
 	void CheckBill(int nYear, int nMonth,COleDateTime& timeBegin);
 #endif

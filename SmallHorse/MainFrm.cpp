@@ -24,6 +24,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CBCGPMDIFrameWnd)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_FILE_CLOSE, OnFileClose)
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, OnViewCustomize)
+	ON_COMMAND(ID_SEARCH_QUERY, OnDayRoundQuery)
+	ON_COMMAND(ID_SEARCH_DATETIME_MAIN, OnDayRoundQuery)
+	ON_COMMAND(ID_SEARCH_DAY_ROUND, OnDayRoundQuery)
 	ON_REGISTERED_MESSAGE(BCGM_RESETTOOLBAR, OnToolbarReset)
 	ON_REGISTERED_MESSAGE(BCGM_TOOLBARMENU, OnToolbarContextMenu)
 	ON_REGISTERED_MESSAGE(BCGM_CUSTOMIZEHELP, OnHelpCustomizeToolbars)
@@ -399,6 +402,8 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 	// "Folders" button has a text label:
 	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_EDIT_CAL_SUM),
 		_T("计算余额"));
+	m_wndToolBar.SetToolBarBtnText (m_wndToolBar.CommandToIndex (ID_SEARCH_QUERY),
+		_T("查询中心日"));
 
 	// 	CMenu menuHistory;
 	// 	menuHistory.LoadMenu (IDR_HISTORY_POPUP);
@@ -413,26 +418,31 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 	CMenu menuBrowse;
 	menuBrowse.CreatePopupMenu( );
 
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_1,strYear);
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_2,strYear);
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_3,strYear);
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_4,strYear);
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_5,strYear);
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_6,strYear);
-    strYear.Format("%d",year--);
-    menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_7,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_1,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_2,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_3,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_4,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_5,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_6,strYear);
+	strYear.Format("%d",year--);
+	menuBrowse.AppendMenu(MF_STRING,ID_THIS_YEAR_7,strYear);
 
-    CBCGPToolbarMenuButton btnBrowse(ID_THIS_YEAR, menuBrowse, 
-        CImageHash::GetImageOfCommand (ID_THIS_YEAR), strYearThis);
+	CBCGPToolbarMenuButton btnBrowse(ID_THIS_YEAR, menuBrowse,
+		CImageHash::GetImageOfCommand (ID_THIS_YEAR), strYearThis);
 	btnBrowse.m_bText = TRUE;
 	m_wndToolBar.ReplaceButton (ID_THIS_YEAR, btnBrowse);
 
+	CBCGPToolbarDateTimeCtrl btnDateCtrl(ID_SEARCH_DATETIME_MAIN,CImageHash::GetImageOfCommand (ID_SEARCH_DATETIME_MAIN));
+	m_wndToolBar.ReplaceButton(ID_SEARCH_DATETIME_MAIN,btnDateCtrl);
+
+	CBCGPToolbarSpinEditBoxButton editDayRound(ID_SEARCH_DAY_ROUND, CImageHash::GetImageOfCommand (ID_SEARCH_DAY_ROUND), 0, 50);
+	m_wndToolBar.ReplaceButton(ID_SEARCH_DAY_ROUND,editDayRound);
 	return 0;
 }
 
@@ -548,5 +558,20 @@ BOOL CMainFrame::ShowAccountInfo(CIDSet *pSet)
 void CMainFrame::UpdateQueryList()
 {
 	m_wndTaskPane.UpdateMRUFilesList();
-
 }
+
+void CMainFrame::OnDayRoundQuery()
+{
+	CBCGPToolbarDateTimeCtrl* pDateTimeCtrl = (CBCGPToolbarDateTimeCtrl*)m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex (ID_SEARCH_DATETIME_MAIN));
+	COleDateTime dt;
+	pDateTimeCtrl->GetTime(dt);
+
+	CBCGPToolbarSpinEditBoxButton* pEditCtrl = (CBCGPToolbarSpinEditBoxButton*)m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex (ID_SEARCH_DAY_ROUND));
+	CEdit* pEdit = pEditCtrl->GetEditBox();
+	CString round;
+	pEdit->GetWindowText(round);
+
+	int x = atoi(round);
+	theApp.QueryDate(dt,x);
+}
+

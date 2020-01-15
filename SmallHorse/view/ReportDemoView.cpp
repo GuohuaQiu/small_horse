@@ -2546,3 +2546,8 @@ void CReportDemoView::OnMoveRecordsTo(UINT nID)
 	}
 	g_CountIdList.RemoveAll();
 }
+
+void CReportDemoView::ForceUpdate()
+{
+	OnUpdate(NULL,0,NULL);
+}

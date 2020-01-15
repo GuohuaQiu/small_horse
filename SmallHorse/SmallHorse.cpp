@@ -956,7 +956,14 @@ BOOL CSmallHorseApp::OpenView(const CString &strFilter, const CString &strOrder,
 			CReportFrame* psfrm=(CReportFrame*)pview->GetParent();
 			//the view has created activate it.
 			if(IS_RECORD(psfrm->m_ViewType))
-			{	
+			{
+				if(psfrm->m_ViewType == VIEW_TYPE_RECORD_QUERY)
+				{
+					psfrm->SetFilter(strFilter,strOrder);
+					psfrm->ForceUpdate();
+					((CFrameWnd*)psfrm)->ActivateFrame();
+					return TRUE;
+				}
 				if((strFilter == psfrm->m_strFilter))
 				{
 					((CFrameWnd*)psfrm)->ActivateFrame();
@@ -2657,33 +2664,49 @@ int CSmallHorseApp::StaticDoubtItems(CString& nID)
 
 BOOL CSmallHorseApp::OpenTodoView(void)
 {
-    CMainFrame* pfrm=(CMainFrame*)AfxGetMainWnd();
+	CMainFrame* pfrm=(CMainFrame*)AfxGetMainWnd();
 
-    CDocument* pdoc=GetDoc();
-    if(pdoc)
-    {
-        POSITION pos=pdoc->GetFirstViewPosition();
-        CView* pview;
-        while(pos)
-        {
-            pview=pdoc->GetNextView(pos);
-            CReportFrame* psfrm=(CReportFrame*)pview->GetParent();
-            //the view has created activate it.
-            if(IS_TODO(psfrm->m_ViewType))
-            {
-                ((CFrameWnd*)psfrm)->ActivateFrame();
-                return TRUE;
-            }
-        }
-    }
-    else
-    {
-        pdoc= m_pDocTemplate->CreateNewDocument();
-    }
+	CDocument* pdoc=GetDoc();
+	if(pdoc)
+	{
+		POSITION pos=pdoc->GetFirstViewPosition();
+		CView* pview;
+		while(pos)
+		{
+			pview=pdoc->GetNextView(pos);
+			CReportFrame* psfrm=(CReportFrame*)pview->GetParent();
+			//the view has created activate it.
+			if(IS_TODO(psfrm->m_ViewType))
+			{
+				((CFrameWnd*)psfrm)->ActivateFrame();
+				return TRUE;
+			}
+		}
+	}
+	else
+	{
+		pdoc= m_pDocTemplate->CreateNewDocument();
+	}
 
-    CReportFrame* pcframe=(CReportFrame*)m_pDocTemplate->CreateNewFrame(pdoc,NULL);
-    pcframe->SetTodoType();
+	CReportFrame* pcframe=(CReportFrame*)m_pDocTemplate->CreateNewFrame(pdoc,NULL);
+	pcframe->SetTodoType();
 
-    m_pDocTemplate->InitialUpdateFrame(pcframe, pdoc);
-    return TRUE;
+	m_pDocTemplate->InitialUpdateFrame(pcframe, pdoc);
+	return TRUE;
+}
+void CSmallHorseApp::QueryDate(COleDateTime centerDay, int nRoundDay)
+{
+	CString strQueryInfo;
+
+	COleDateTimeSpan span;
+	span.SetDateTimeSpan(nRoundDay,0,0,0);
+	COleDateTime timea = centerDay + span;
+	COleDateTime timeb = centerDay - span;
+	// OperDate BETWEEN #2009-12-14# and #2009-12-31#
+	strQueryInfo=timeb.Format("OperDate BETWEEN #%Y-%m-%d# and ");
+	strQueryInfo+=timea.Format("#%Y-%m-%d#");
+
+	CString strSort;
+	strSort=_T("OperDate,Index");
+	OpenView(strQueryInfo,strSort);
 }

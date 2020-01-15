@@ -42,6 +42,7 @@ public:
 	void UpdateAllView();
 	BOOL AddNewItem(const CString& strID);
 	CDocument* GetDoc();
+	void QueryDate(COleDateTime centerDay, int nRoundDay);
 	
 	BOOL OpenBankbook(const CString& strID);
 	CIDSet* GetIDSet();

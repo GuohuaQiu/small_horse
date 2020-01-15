@@ -1245,6 +1245,9 @@ BEGIN
     BUTTON      ID_QUERY
     BUTTON      ID_EDIT_CAL_SUM
     BUTTON      ID_THIS_YEAR
+    BUTTON      ID_SEARCH_DATETIME_MAIN
+    BUTTON      ID_SEARCH_DAY_ROUND
+    BUTTON      ID_SEARCH_QUERY
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources

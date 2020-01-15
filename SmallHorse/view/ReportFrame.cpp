@@ -5,6 +5,7 @@
 #include "..\SmallHorse.h"
 
 #include "reportframe.h"
+#include "ReportDemoView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -277,4 +278,9 @@ void CReportFrame::OnSetAsAutoreturnCredit()
 		AfxMessageBox("Not a credit card.");
 	}
 	
+}
+void  CReportFrame::ForceUpdate()
+{
+	CReportDemoView* pview = (CReportDemoView*)GetActiveView();
+	pview->ForceUpdate();
 }

@@ -48,6 +48,7 @@ public:
 	VIEW_TYPE GetViewType();
 	void SetFilter(const CString& strFilter, const CString& strSort);
 	void SetTodoType();
+	void ForceUpdate();
 	virtual ~CReportFrame();
 #ifdef _DEBUG
 	virtual void AssertValid() const;

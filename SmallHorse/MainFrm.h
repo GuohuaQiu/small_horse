@@ -57,6 +57,7 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnFileClose();
 	afx_msg void OnViewCustomize();
+	afx_msg void OnDayRoundQuery();
 	afx_msg LRESULT OnToolbarReset(WPARAM,LPARAM);
 	void OnToolsViewUserToolbar (UINT id);
 	void OnUpdateToolsViewUserToolbar (CCmdUI* pCmdUI);
