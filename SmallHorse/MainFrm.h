@@ -29,6 +29,7 @@ public:
 
 // Implementation
 public:
+	void SetQueryDay(const COleDateTime& day);
 	void UpdateQueryList();
 	BOOL ShowAccountInfo(CIDSet *pSet);
 	CBankbookTree* GetBookTree();

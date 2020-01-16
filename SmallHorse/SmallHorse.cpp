@@ -1940,6 +1940,9 @@ void CSmallHorseApp::QueryOneDay(COleDateTime day)
 	CString strSort;
 	strSort=_T("OperDate,Index");
 	OpenView(strInfo,strSort);
+
+	//Modify Toolbar date control
+	((CMainFrame*)m_pMainWnd)->SetQueryDay(day);
 }
 
 

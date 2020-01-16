@@ -575,3 +575,8 @@ void CMainFrame::OnDayRoundQuery()
 	theApp.QueryDate(dt,x);
 }
 
+void CMainFrame::SetQueryDay(const COleDateTime& day)
+{
+	CBCGPToolbarDateTimeCtrl* pDateTimeCtrl = (CBCGPToolbarDateTimeCtrl*)m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex (ID_SEARCH_DATETIME_MAIN));
+	pDateTimeCtrl->SetTime(day);
+}
