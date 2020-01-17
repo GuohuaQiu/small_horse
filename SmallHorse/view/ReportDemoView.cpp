@@ -69,6 +69,13 @@ enum COLUMN_TODO
     COLUMN_TODO_NUMBER
 };
 
+enum COLUMN_SIMPLE_SUBCOUNT
+{
+	COLUMN_SIMPLE_SUBCOUNT_NAME,
+	COLUMN_SIMPLE_SUBCOUNT_REMAIN,
+	COLUMN_SIMPLE_SUBCOUNT_NUMBER
+};
+
 enum COLUMN_ONE_BOOK
 {
 	COLUMN_REMAIN  = COLUMN_BASE_NUMBER,
@@ -1244,6 +1251,11 @@ void CReportDemoView::CreateListCtrl()
         pReportCtrl->InsertColumn (COLUMN_TODO_ID, _T("序号"), 15);
         pReportCtrl->InsertColumn (COLUMN_TODO_BODY, _T("内容"), 30);
     }
+	else if(IS_SIMPLE_SUBCOUNT(m_pParent->m_ViewType))
+	{
+		pReportCtrl->InsertColumn (COLUMN_SIMPLE_SUBCOUNT_NAME, _T("子账户名"), 50);
+		pReportCtrl->InsertColumn (COLUMN_SIMPLE_SUBCOUNT_REMAIN, _T("余额"), 30);
+	}
 	else
 	{
 		if(m_ViewType == VIEW_TYPE_MAIN_COUNTS)
@@ -1396,6 +1408,7 @@ void CReportDemoView::DisplayCount()
 	CRecordset set(&dtbs);
 	
 	b = set.Open(CRecordset::snapshot,m_pParent->m_strFilter);
+	TRACE("\nfilter: %s\n",m_pParent->m_strFilter);
 	int n = set.GetRecordCount();
 		TRACE("\ntotal count %d %d.......\n",n,set.GetODBCFieldCount());
 	if(m_pParent->m_ViewType == VIEW_TYPE_MAIN_COUNTS)
@@ -2208,10 +2221,14 @@ void CReportDemoView::FillItems()
 	{
 		DisplayRecord();
 	}
-    else if(IS_TODO(m_pParent->m_ViewType))
-    {
-        DisplayTodo();
-    }
+	else if(IS_TODO(m_pParent->m_ViewType))
+	{
+		DisplayTodo();
+	}
+	else if(IS_SIMPLE_SUBCOUNT(m_pParent->m_ViewType))
+	{
+		DisplaySimpleSubCount();
+	}
 	else
 	{
         DisplayCount();
@@ -2550,4 +2567,36 @@ void CReportDemoView::OnMoveRecordsTo(UINT nID)
 void CReportDemoView::ForceUpdate()
 {
 	OnUpdate(NULL,0,NULL);
+}
+
+void CReportDemoView::DisplaySimpleSubCount()
+{
+	CSubCountInOneCountSet sub_set(m_pParent->m_strFilter,FALSE);
+
+	if(!sub_set.Open())
+	{
+		AfxMessageBox(_T("sub_set 数据库装载错误(type)!"));
+		return ;
+	};
+	sub_set.Requery();
+	sub_set.MoveFirst();
+	while(!sub_set.IsEOF())
+	{
+		AddSimpleSubCount2List(&sub_set);
+		TRACE("subid:%s %s\n", sub_set.m_Sub_Count_ID,sub_set.m_Remains);
+		sub_set.MoveNext();
+	}
+	sub_set.Close();
+}
+
+void CReportDemoView::AddSimpleSubCount2List(CSubCountInOneCountSet* pSet)
+{
+	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
+
+	int count=pReportCtrl->GetColumnCount ();
+	CBCGPGridRow* pRow = pReportCtrl->CreateRow (count);
+	pRow->GetItem (COLUMN_SIMPLE_SUBCOUNT_NAME)->SetValue ((LPCTSTR)pSet->m_Sub_Count_ID, FALSE);
+	pRow->GetItem (COLUMN_SIMPLE_SUBCOUNT_REMAIN)->SetValue ((LPCTSTR)pSet->m_Remains, FALSE);
+	pReportCtrl->AddRow (pRow, FALSE);
+
 }

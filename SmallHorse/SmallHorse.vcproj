@@ -663,6 +663,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\database\SubCountInOneCountSet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\database\SubCountSet.cpp"
 				>
 			</File>
@@ -974,6 +978,10 @@
 			</File>
 			<File
 				RelativePath=".\control\Subclass.h"
+				>
+			</File>
+			<File
+				RelativePath=".\database\SubCountInOneCountSet.h"
 				>
 			</File>
 			<File

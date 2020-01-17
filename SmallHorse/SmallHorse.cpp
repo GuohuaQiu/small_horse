@@ -1821,13 +1821,20 @@ void CSmallHorseApp::ModifySubCount(const CString &strId, const CString &strSubI
 ********************************************/
 void CSmallHorseApp::OpenSubCountbyId(const CString &strId)
 {
-    CString strSql;
-    strSql.Format(SQL_OPEN_ALL_SUB_COUNT_BY_ID SQL_GROUP_SUB_COUNT_WITH_SUM,strId);
-    
-    OpenCountsView(strSql, \
-        VIEW_TYPE_SUB_COUNTS,\
-        FALSE,\
-        _T("子账户列表"));
+#if 0
+	CString strSql;
+	strSql.Format(SQL_OPEN_ALL_SUB_COUNT_BY_ID SQL_GROUP_SUB_COUNT_WITH_SUM,strId);
+
+	OpenCountsView(strSql, \
+		VIEW_TYPE_SUB_COUNTS,\
+		FALSE,\
+		_T("子账户列表"));
+#else
+	OpenCountsView(strId, \
+		VIEW_TYPE_SIMPLE_SUBCOUNT,
+		FALSE,\
+		_T("子账户列表"));
+#endif
 }
 
 

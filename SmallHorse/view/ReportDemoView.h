@@ -11,6 +11,7 @@
 
 #include "MailReportCtrl.h"
 #include "reportframe.h"
+#include "SubCountInOneCountSet.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CFlagItem class
@@ -105,7 +106,9 @@ public:
 	void FillItems();
 	static void Callback_OnItemDbClk(LPVOID pThis,CBCGPGridRow* pRow);
 	void DisplayCount();
+	void DisplaySimpleSubCount();
 	void AddSubCount2List(int index,CRecordset* pSet);
+	void AddSimpleSubCount2List(CSubCountInOneCountSet* pSet);
 	void CreateListCtrl();
 	void AdjustColumnWidth();
 	void SetSelectedRow(const int nRecordArray);

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "..\SmallHorse.h"
 #include "AddNewItemDlg.h"
+#include "SubCountInOneCountSet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -107,6 +108,25 @@ BOOL CAddNewItemDlg::OnInitDialog()
 		else
 			break;
 	}
+
+	CSubCountInOneCountSet sub_set(this->m_id);
+	
+	if(!sub_set.Open())
+	{
+		AfxMessageBox(_T("sub_set Êý¾Ý¿â×°ÔØ´íÎó(type)!"));
+		return FALSE;
+	};
+	sub_set.Requery();
+	sub_set.MoveFirst();
+	while(!sub_set.IsEOF())
+	{
+		TRACE("subid:%s %s\n", sub_set.m_Sub_Count_ID);
+		m_cmbSubCount.AddString(sub_set.m_Sub_Count_ID);
+		sub_set.MoveNext();
+	}
+	sub_set.Close();
+
+#if 0 //replaced by CSubCountInOneCountSet which list all subid name.
 	m_cmbType.SetCurSel(m_nType);
 	CSubCountSet* pSubCount = theApp.GetSubCountSet();
 	pSubCount->RequeryCount(m_id);
@@ -119,7 +139,7 @@ BOOL CAddNewItemDlg::OnInitDialog()
 			pSubCount->MoveNext();
 		}
 	}
-
+#endif
 	
 	const UINT stateMask = 
 		CBCGPDateTimeCtrl::DTM_SPIN |
