@@ -150,18 +150,25 @@ void CQiuHeadCtrl::SetColumnName(int count, TCHAR* pNames,int nAttrArry[])
 
 void CQiuHeadCtrl::SetColumeAs(int col_index,int name_index)
 {
-	if(m_pIndex[name_index] == col_index)
-	{
-		return;
-	}
-	if(m_pIndex[name_index] != -1)
-	{
-		ClearName(m_pIndex[name_index]);
-	}
-	m_pAddToComments[col_index] = 0;
+    if(m_pIndex[name_index] == col_index)
+    {
+        return;
+    }
+    if(m_pIndex[name_index] != -1)
+    {
+        for(int i = 0;i<m_nFieldCount;i++)
+        {
+            if(m_pIndex[i] == col_index){
+                m_pIndex[i] = -1;
+            }
+        }
+        //TOO ALL ONLY ONECE ITEM, SHOULD CLEAR
+        ClearName(m_pIndex[name_index]);
+    }
+    m_pAddToComments[col_index] = 0;
 
-	m_pIndex[name_index] = col_index;
-	UpdateName(col_index);
+    m_pIndex[name_index] = col_index;
+    UpdateName(col_index);
 }
 void CQiuHeadCtrl::UpdateName(int col_index)
 {
