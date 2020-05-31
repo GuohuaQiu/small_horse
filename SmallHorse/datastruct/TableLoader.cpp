@@ -100,14 +100,18 @@ void AutoWidthList(CListCtrl *pList)
 }
 void FillText(CListCtrl* pListCtrl,int row, int col,char* p)
 {
-	if(row == pListCtrl->GetItemCount())
-	{
-		pListCtrl->InsertItem(row,p);
-	}
-	else
-	{
-		pListCtrl->SetItemText(row,col,p);
-	}
+    if(strlen(p)==0) 
+    {
+        return;
+    }
+    if(row == pListCtrl->GetItemCount())
+    {
+        pListCtrl->InsertItem(row,p);
+    }
+    else
+    {
+        pListCtrl->SetItemText(row,col,p);
+    }
 
 }
 void CTableLoader::FillListCtrl(CListCtrl *pCtrl)
