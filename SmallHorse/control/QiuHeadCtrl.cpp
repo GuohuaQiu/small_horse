@@ -156,6 +156,13 @@ void CQiuHeadCtrl::SetColumeAs(int col_index,int name_index)
 	}
 	if(m_pIndex[name_index] != -1)
 	{
+        for(int i = 0;i<m_nFieldCount;i++)
+        {
+            if(m_pIndex[i] == col_index){
+                m_pIndex[i] = -1;
+            }
+        }
+        //TOO ALL ONLY ONECE ITEM, SHOULD CLEAR 
 		ClearName(m_pIndex[name_index]);
 	}
 	m_pAddToComments[col_index] = 0;
