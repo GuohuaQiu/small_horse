@@ -114,12 +114,13 @@ BEGIN
     END
     POPUP "编辑"
     BEGIN
-        MENUITEM "拷贝",                          ID_EDIT_COPY
-        MENUITEM "粘贴",                          ID_EDIT_PASTE
-        MENUITEM "计算余额",                        ID_EDIT_CAL_SUM
-        MENUITEM "修改记录",                        ID_RECORD_MODIFY
+        MENUITEM "拷贝",                              ID_EDIT_COPY
+        MENUITEM "粘贴",                              ID_EDIT_PASTE
+        MENUITEM "计算余额",                          ID_EDIT_CAL_SUM
+        MENUITEM "修改记录",                          ID_RECORD_MODIFY
         MENUITEM "智能设置类型",                      ID_EDIT_SMART_TYPE
-        MENUITEM "替换备注",                        ID_EDIT_REPLACE_COMMENT
+        MENUITEM "替换备注",                          ID_EDIT_REPLACE_COMMENT
+        MENUITEM "test",                              ID_EDIT_TEST
     END
     POPUP "查询"
     BEGIN

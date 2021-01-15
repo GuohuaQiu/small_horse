@@ -247,6 +247,7 @@ ON_COMMAND(ID_CAL_CREDIT, OnCalCredit)
 ON_COMMAND(ID_EDIT_CREDIT_PERIOD, OnCreditPeroid)
 ON_COMMAND(ID_EDIT_SMART_TYPE, OnSmartSetType)
 ON_COMMAND(ID_EDIT_REPLACE_COMMENT, OnReplaceComment)
+ON_COMMAND(ID_EDIT_TEST, OnEditTest)
 ON_COMMAND(ID_ADD_RETURN_RECORD, OnAddReturnRecord)
 ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdateEditCopy)
 ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, OnUpdateEditPaste)
@@ -1531,6 +1532,18 @@ void CReportDemoView::OnSmartSetType()
 		}
         theApp.ForceUpdateViews();
 	}
+}
+void CReportDemoView::OnEditTest() 
+{
+/*	CListSet* pListSet = theApp.GetListSet();
+
+
+	CString strSQL="update Items set Oper=0-Oper where Index between 9945 and 10016";
+
+	TRACE("%s\n",strSQL);
+	pListSet->m_pDatabase->ExecuteSQL(strSQL);
+
+	theApp.ForceUpdateViews();*/
 }
 
 void CReportDemoView::OnReplaceComment() 

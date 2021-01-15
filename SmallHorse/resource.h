@@ -239,6 +239,7 @@
 #define ID_RECORD_COPY                  32949
 #define ID_RECORD_PASTE                 32950
 #define ID_EDIT_REPLACE_COMMENT         32954
+#define ID_EDIT_TEST                    32955
 #define ID_EDIT_CREDIT_PERIOD           32956
 #define ID_BOOK_DOUNT_STATIC            32958
 #define ID_QUERY_ONE_DAY                32960

@@ -146,6 +146,7 @@ protected:
 	afx_msg void OnCreditPeroid();
 	afx_msg void OnSmartSetType();
 	afx_msg void OnReplaceComment();
+	afx_msg void OnEditTest();
 	afx_msg void OnAddReturnRecord();
 	afx_msg void OnUpdateEditCopy(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateEditPaste(CCmdUI* pCmdUI);
