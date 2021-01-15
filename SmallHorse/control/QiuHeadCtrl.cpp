@@ -154,7 +154,7 @@ void CQiuHeadCtrl::SetColumeAs(int col_index,int name_index)
     {
         return;
     }
-    if(m_pIndex[name_index] != -1)
+//    if(m_pIndex[name_index] != -1)
     {
         for(int i = 0;i<m_nFieldCount;i++)
         {
