@@ -362,59 +362,179 @@ CBookTypeSet* CSmallHorseApp::GetBookTypeSet()
 
 //return value:
 //0 : fail
-//1 : only date
-//2 : date and time
-//2014-10-21
+//1 : time
 
-int CSmallHorseApp::GetDate(CString strDate, int &y, int &m, int &d,int& hh, int& mm,int& ss)
+//2023-02-03
+int ParseTime(CString strTime, int &h, int &m, int &s)
 {
-	if(strDate.FindOneOf("-")!=-1)
+	int delimiter_count = 0;
+	int pos = 0;
+	h = -1;
+	m = -1;
+	s = 0;
+	
+	while (1)
 	{
-		if(strDate.FindOneOf(":")!=-1 )
+		pos = strTime.Find(':', pos + 1);
+		if (pos > 0)
 		{
-			_stscanf(strDate,_T("%d-%d-%d %d:%d:%d"),&y,&m,&d,&hh,&mm,&ss);
-			return 2;
+			delimiter_count++;
 		}
-		_stscanf(strDate,_T("%d-%d-%d"),&y,&m,&d);
-		
+		else
+		{
+			break;
+		}
+	}
+
+	if (delimiter_count == 2)
+	{
+		_stscanf(strTime, _T("%d:%d:%d"), &h, &m, &s);
+	}
+	else if (delimiter_count == 1)
+	{
+		_stscanf(strTime, _T("%d:%d"), &h, &m);
+	}
+	if (h == -1)
+	{
+		return 0;
+	}
+	return 1;
+}
+// return value:
+// 0 : fail
+// 1 : date
+
+// 2023-02-03
+int ParseDate(CString strDate, int &y, int &m, int &d)
+{
+	int date_len = strDate.GetLength();
+	int delimiter_pos = -1;
+	int delimiter_count = 0;
+	y = -1;
+	m = -1;
+
+
+	char delimiter[2] = {'-','\/'};
+
+	for (int i = 0; i < 2; i++)
+	{
+		int pos = 0;
+		while (1)
+		{
+			pos = strDate.Find(delimiter[i], pos + 1);
+			if (pos > 0)
+			{
+				delimiter_count++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		if (delimiter_count > 0)
+		{
+			delimiter_pos = i;
+			break;
+		}
+	}
+
+	if (delimiter_pos == 0)
+	{
+		if (delimiter_count == 2)
+		{
+			_stscanf(strDate, _T("%d-%d-%d"), &y, &m, &d);
+		}
+		else if (delimiter_count == 1)
+		{
+			_stscanf(strDate, _T("%d-%d"), &m, &d);
+		}
+	}
+	else if (delimiter_pos == 1)
+	{
+		if (delimiter_count == 2)
+		{
+			_stscanf(strDate, _T("%d/%d/%d"), &y, &m, &d);
+		}
+		else if (delimiter_count == 1)
+		{
+			_stscanf(strDate, _T("%d/%d"), &m, &d);
+		}
 	}
 	else
 	{
-		int date_len = strDate.GetLength();
-		if(date_len >13)
+		if (date_len == 8)
 		{
-			if(strDate.Find('\/')>0)//2018/9/18  18:20:30
-			{
-				_stscanf(strDate,_T("%d\/%d\/%d %d:%d:%d"),&y,&m,&d,&hh,&mm,&ss);
-			}
-			else//20150921  01:40:22
-			{
-				_stscanf(strDate,_T("%4d%2d%2d %d:%d:%d"),&y,&m,&d,&hh,&mm,&ss);
-			}
-			return 2;
+			_stscanf(strDate, _T("%4d%2d%2d"), &y, &m, &d);
 		}
-		else if(date_len >= 8)//"20100203"
+		else if (date_len == 4)
 		{
-			_stscanf(strDate,_T("%4d%2d%2d"),&y,&m,&d);
+			_stscanf(strDate, _T("%2d%2d"), &m, &d);
 		}
-		else if(date_len == 5)//"09/23"
+	}
+
+	if (m == -1)
+	{
+		return 0;
+	}
+	if (y == -1)
+	{
+		COleDateTime time = COleDateTime::GetCurrentTime();
+		y = time.GetYear();
+		int currentM = time.GetMonth();
+		if (m > currentM)
 		{
-			_stscanf(strDate,_T("%2d/%2d"),&m,&d);
-			COleDateTime time = COleDateTime::GetCurrentTime();
-			y = time.GetYear();
-			int currentM = time.GetMonth();
-			if(m>currentM)
-			{
-				y--;
-			}
-		} 
-		else
+			y--;
+		}
+	}
+	return 1;
+}
+// all test cases.
+	// 09/21 08:51:02		9	291988.45		N5CP	油条
+	// 09-22 08:49:28		5.1	291997.45		N5CP	丝瓜
+	// 0923 08:49:28		5.1	291997.45		N5CP	丝瓜
+	// 20210724 09:44:44		100	291888.45	微波�?		财付�? - 微信红包
+	// 2021-07-25 08:51:02		9	291988.45		N5CP	油条
+	// 2021/07/26 08:49:28		5.1	291997.45		N5CP	丝瓜
+
+	// 01/21		08:21:02		9	291988.45		N5CP	油条
+	// 02-22		08:22:28		5.1	291997.45		N5CP	丝瓜
+	// 0323		08:23:28		5.1	291997.45		N5CP	丝瓜
+	// 20190424		09:24:44		100	291888.45	微波�?		财付�? - 微信红包
+	// 2019-05-25		08:25:02		9	291988.45		N5CP	油条
+	// 2019/06/26		08:26:28		5.1	291997.45		N5CP	丝瓜
+
+	// 05/21		08:51		9	291988.45		N5CP	油条
+	// 06-22		08:49		5.1	291997.45		N5CP	丝瓜
+	// 0723		08:49		5.1	291997.45		N5CP	丝瓜
+	// 20210824		09:44		100	291888.45	微波�?		财付�? - 微信红包
+	// 2021-09-25		08:51		9	291988.45		N5CP	油条
+	// 2021/10/26		08:49		5.1	291997.45		N5CP	丝瓜
+	
+int CSmallHorseApp::GetDate(CString strDate, int &y, int &m, int &d, int &hh, int &mm, int &ss)
+{
+	int blank_pos = strDate.Find(' ', 0);
+	int ret = 0;
+	if (blank_pos != -1)
+	{
+		if (0 == ParseDate(strDate.Left(blank_pos), y, m, d))
 		{
 			return 0;
 		}
-
+		if (0 == ParseTime(strDate.Mid(blank_pos + 1, strDate.GetLength() - blank_pos - 1), hh, mm, ss))
+		{
+			return 0;
+		}
 	}
-
+	else
+	{
+		if (0 == ParseDate(strDate, y, m, d))
+		{
+			return 0;
+		}
+		hh = 8;
+		mm = 0;
+		ss = 0;
+	}
 	return 1;
 }
 
@@ -900,11 +1020,12 @@ void CSmallHorseApp::Search(const CStringList &idlist, const CStringList &typeli
 	TRACE(_T("\n"));
 	TRACE(_T("--end-\n"));
 	TRACE(_T("\n"));
+#if 0
 	CFile file;
 	file.Open(_T("C:\\testfil.txt"),CFile::modeCreate|CFile::modeWrite);
 	file.Write((LPTSTR)(LPCTSTR)strfil,strfil.GetLength());
 	file.Close();
-	
+#endif	
 	OpenView(strfil,_T("OperDate,Index"),TRUE,lpstrName);
 }
 
