@@ -359,33 +359,38 @@ CBookTypeSet* CSmallHorseApp::GetBookTypeSet()
 
 }
 
-
-//return value:
-//0 : fail
-//1 : time
-
-//2023-02-03
-int ParseTime(CString strTime, int &h, int &m, int &s)
+int GetCharNumber(CString strTime, char d)
 {
-	int delimiter_count = 0;
+	int char_count = 0;
 	int pos = 0;
-	h = -1;
-	m = -1;
-	s = 0;
-	
+
 	while (1)
 	{
-		pos = strTime.Find(':', pos + 1);
+		pos = strTime.Find(d, pos + 1);
 		if (pos > 0)
 		{
-			delimiter_count++;
+			char_count++;
 		}
 		else
 		{
 			break;
 		}
 	}
+	return char_count;
+}
 
+// return value:
+// 0 : fail
+// 1 : time
+
+//2023-02-03
+int ParseTime(CString strTime, int &h, int &m, int &s)
+{
+	int delimiter_count = GetCharNumber(strTime, ':');
+	h = -1;
+	m = -1;
+	s = 0;
+	
 	if (delimiter_count == 2)
 	{
 		_stscanf(strTime, _T("%d:%d:%d"), &h, &m, &s);
@@ -418,19 +423,7 @@ int ParseDate(CString strDate, int &y, int &m, int &d)
 
 	for (int i = 0; i < 2; i++)
 	{
-		int pos = 0;
-		while (1)
-		{
-			pos = strDate.Find(delimiter[i], pos + 1);
-			if (pos > 0)
-			{
-				delimiter_count++;
-			}
-			else
-			{
-				break;
-			}
-		}
+		delimiter_count = GetCharNumber(strDate, delimiter[i]);
 		if (delimiter_count > 0)
 		{
 			delimiter_pos = i;
