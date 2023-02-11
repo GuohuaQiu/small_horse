@@ -132,7 +132,7 @@ BOOL CDatabaseUtility::Generate_modify_float(const CString& strFieldName,float o
 BOOL CDatabaseUtility::Append_Condition_Str(const CString& strFieldName, CString& sqlCommandStr, const CString& strValue)
 {
 	CString strTemp;
-	strTemp.Format(" where %s=%s",strFieldName,strValue);
+	strTemp.Format(" where %s='%s'",strFieldName,strValue);
 	sqlCommandStr += strTemp;
 	return TRUE;
 }

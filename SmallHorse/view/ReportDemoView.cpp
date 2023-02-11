@@ -503,7 +503,7 @@ float CReportDemoView::AddMembertoList(CListSet* pSet,int index,BOOL bCalSum,flo
 	pRow->GetItem (COLUMN_TYPE__)->SetValue ((LPCTSTR)theApp.m_cType[pSet->m_bType], FALSE);
 	if(pSet->m_bType == 0)
 	{
-		CMailReportCtrl::SetRowBackColor(pRow, RGB(200,100,100));
+		CMailReportCtrl::SetRowBackColor(pRow, RGB(191,200,191));
 	}
     pRow->GetItem (COLUMN_SITE__)->SetValue ((LPCTSTR)pSet->m_strSite, FALSE);
     pRow->GetItem (COLUMN_SUBCOUNT)->SetValue ((LPCTSTR)pSet->m_strSubCount, FALSE);
