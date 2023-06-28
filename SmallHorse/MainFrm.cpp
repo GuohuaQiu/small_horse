@@ -69,7 +69,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	EnableMDITabbedGroups (TRUE, mdiTabParams);
 
-	CBCGPDockManager::SetDockMode (DT_SMART);
+	CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 //  End tab support
 
 	CBCGPToolBar::EnableQuickCustomization ();
@@ -239,7 +239,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   //  m_wndTaskPane.DockToWindow(&m_wndWorkSpace,CBRS_ALIGN_BOTTOM);
 	CBCGPDockingControlBar* pTabbedBar = NULL; 
 
-	m_wndWorkSpace2.AttachToTabWnd (&m_wndWorkSpace, DM_SHOW, TRUE, &pTabbedBar);
+	m_wndWorkSpace2.AttachToTabWnd (&m_wndWorkSpace, BCGP_DM_SHOW, TRUE, &pTabbedBar);
 
 	m_wndTaskPane.EnableDocking(CBRS_ALIGN_ANY);
 
@@ -460,7 +460,7 @@ LRESULT CMainFrame::OnHelpCustomizeToolbars(WPARAM wp, LPARAM lp)
 
 void CMainFrame::OnAppLook(UINT id)
 {
-	CBCGPDockManager::SetDockMode (DT_SMART);
+	CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 
 	m_nAppLook = id;
 
@@ -487,19 +487,19 @@ void CMainFrame::OnAppLook(UINT id)
 	case ID_VIEW_APPLOOK_2003:
 		// enable Office 2003 look:
 		CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManager2003));
-		CBCGPDockManager::SetDockMode (DT_SMART);
+		CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 		break;
 
 	case ID_VIEW_APPLOOK_2007:
 		// enable Office 2007 look:
 		CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManager2007));
-		CBCGPDockManager::SetDockMode (DT_SMART);
+		CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 		break;
 
 	case ID_VIEW_APPLOOK_VS2005:
 		// enable VS.NET 2005 look:
 		CBCGPVisualManager::SetDefaultManager (RUNTIME_CLASS (CBCGPVisualManagerVS2005));
-		CBCGPDockManager::SetDockMode (DT_SMART);
+		CBCGPDockManager::SetDockMode (BCGP_DT_SMART);
 		break;
 
 	default:

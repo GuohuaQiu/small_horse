@@ -122,8 +122,6 @@ public:
 	BOOL RectifyBookInfo(const CString& strID);
 	BOOL DeleteBook(const CString& strID);
     void RectifyBookinfo(const CString& strID);
-	void GetTypeList(CStringList &strTypeList);
-	void GetBankList(CStringList& strBankList);
 	static COleDateTime CalEndDate(COleDateTime time, int month);
 	void OpenAllCount();
 	void OpenAllCountOrderbyBank();

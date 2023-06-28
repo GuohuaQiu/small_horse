@@ -1,24 +1,13 @@
 
 #if !defined(DATABASE_SETUP_H)
 #define DATABASE_SETUP_H
-#if 0
-#ifdef _DEBUG
-#define DATA_SOURCE_NAME_ODBC  _T("ODBC;DSN=test_b;pwd=rgb")
-#define DATA_SOURCE_NAME _T("DSN=test_b;pwd=rgb")
-#else
-#define DATA_SOURCE_NAME_ODBC  _T("ODBC;DSN=Smarter;pwd=rgb")
-#define DATA_SOURCE_NAME _T("DSN=Smarter;pwd=rgb")
-#endif
 
-#else
-#ifdef _DEBUG
-#define DATA_SOURCE_NAME_ODBC  _T("DSN=test;DBQ=C:\\guohua\\finance\\test.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;")
+#include "CDbConfigure.h"
+
+
+#define DATA_SOURCE_NAME_ODBC  CDbConfigure::GetDataSource()
 #define DATA_SOURCE_NAME DATA_SOURCE_NAME_ODBC
-#else
-#define DATA_SOURCE_NAME_ODBC  _T("DSN=simon_test_64;DBQ=C:\\guohua\\finance\\bankbook.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;")
-#define DATA_SOURCE_NAME DATA_SOURCE_NAME_ODBC
-#endif
-#endif
+
 #define SQL_AND_BOOK_EXIST                 _T(" and Books.Book_Exist = 1 ")
 #define SQL_AND_BOOK_NO_EXIST              _T(" and Books.Book_Exist is false ")
 
@@ -93,7 +82,7 @@
 #define SQL_OPEN_ALL_EXIST_IN_DEBT_COUNT    SQL_SELECT_MAIN_COUNT_WITH_SUM_AND_NO_HIDE SQL_GROUP_MAIN_COUNT_WITH_SUM SQL_HAVING_TOTAL_IS_NEGATIVE 
 
 #define SQL_SELECT_ALL_SITE    _T("select distinct(Site)\
-                                       from Books,Items \
+                                       from Items \
                                        where Site is not NULL ")
 
 

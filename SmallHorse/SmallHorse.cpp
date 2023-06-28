@@ -19,6 +19,7 @@
 #include "ReportDemoView.h"
 #include "CloseSubCountDlg.h"
 #include "CompareFrame.h"
+#include "CDbConfigure.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,6 +77,8 @@ CSmallHorseApp::CSmallHorseApp() :
 		m_cType[i][0]=0;
 	}
     m_bShowNoExistBook = FALSE;
+
+	CDbConfigure::OpenIni();
 }
 
 // The one and only CSmallHorseApp object
@@ -771,7 +774,8 @@ BOOL CSmallHorseApp::Rectifypassword(const CString& strID)
 
 	}
 	return TRUE;
-
+#else
+	return FALSE;
 #endif
 }
 
@@ -1510,52 +1514,6 @@ COleDateTime CSmallHorseApp::CalEndDate(COleDateTime time, int month)
 }
 
 
-void CSmallHorseApp::GetBankList(CStringList &strBankList)
-{
-    CDatabase dtbs;
-    BOOL b = dtbs.OpenEx(DATA_SOURCE_NAME,CDatabase::openReadOnly|CDatabase::noOdbcDialog);
-    CRecordset set(&dtbs);
-    
-    b = set.Open(CRecordset::snapshot,_T("select Book_Bank from Books  group by Book_Bank"));
-    
-    if(!set.IsBOF())
-    {
-        set.MoveFirst();
-    }
-    while(!set.IsEOF())
-    {
-        CString strValue;
-        set.GetFieldValue((short)0,strValue);
-        strBankList.AddTail(strValue);
-        set.MoveNext();
-    }
-    set.Close();
-    dtbs.Close();
-}
-
-void CSmallHorseApp::GetTypeList(CStringList &strTypeList)
-{
-    CDatabase dtbs;
-    BOOL b = dtbs.OpenEx(DATA_SOURCE_NAME,CDatabase::openReadOnly|CDatabase::noOdbcDialog);
-    CRecordset set(&dtbs);
-    
-    b = set.Open(CRecordset::snapshot,_T("select Book_Type from Books  group by Book_Type"));
-    
-    if(!set.IsBOF())
-    {
-        set.MoveFirst();
-    }
-    while(!set.IsEOF())
-    {
-        CString strValue;
-        set.GetFieldValue((short)0,strValue);
-        strTypeList.AddTail(strValue);
-        set.MoveNext();
-    }
-    set.Close();
-    dtbs.Close();
-}
-
 
 
 /*******************************************
@@ -1667,8 +1625,8 @@ BOOL CSmallHorseApp::FreeBook(const CString &strID)
 //         pIdSet->m_bExist=!pIdSet->m_bExist;
 //         return pIdSet->Update();
     }
-    return FALSE;
 #endif
+    return FALSE;
 }
 
 
@@ -1818,21 +1776,6 @@ void CSmallHorseApp::DeleteRecords(const CDWordArray &dbAry)
         {
             AfxMessageBox("The database is null.");
         }
-#if 0 // this database cant update intime.
-        CDatabase dtbs;
-        BOOL b = dtbs.OpenEx(DATA_SOURCE_NAME,CDatabase::noOdbcDialog|CDatabase::noOdbcDialog);
-        if(b)
-        {
-            
-            
-            CString strSql;
-            strSql.Format("delete from Items where Index in (%s)",strIDs);
-            dtbs.ExecuteSQL(strSql);
-            dtbs.Close();
-            
-            ForceUpdateViews();
-        }
-#endif
     }
 }
 

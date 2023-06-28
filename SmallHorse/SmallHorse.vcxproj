@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5636499A-5B0C-4197-9A24-D31BB5888792}</ProjectGuid>
+    <RootNamespace>SmallHorse</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.28307.799</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ReferencePath>.\bar;.\database;c:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;$(ReferencePath)</ReferencePath>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ReferencePath>.\bar;.\database;c:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;$(ReferencePath)</ReferencePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ReferencePath>.\bar;.\database;c:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;$(ReferencePath)</ReferencePath>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ReferencePath>.\bar;.\database;c:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;$(ReferencePath)</ReferencePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>false</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>compare;bar;database;control;dialog;datastruct;view;file-support;C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\BCGSoft\BCGControlBarPro\bin64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>false</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>compare;bar;database;control;dialog;datastruct;view;file-support;C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\BCGSoft\BCGControlBarPro\BCGCBPro;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\BCGSoft\BCGControlBarPro\bin64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="bar\CurveBar.cpp" />
+    <ClCompile Include="bar\TaskPane.cpp" />
+    <ClCompile Include="bar\WorkspaceBar.cpp" />
+    <ClCompile Include="bar\WorkspaceBar2.cpp" />
+    <ClCompile Include="compare\CmpListA.cpp" />
+    <ClCompile Include="compare\CmpListB.cpp" />
+    <ClCompile Include="compare\ListCompare.cpp" />
+    <ClCompile Include="control\AutoCompl.cpp" />
+    <ClCompile Include="control\BankbookTree.cpp" />
+    <ClCompile Include="control\CompareDetailCtrl.cpp" />
+    <ClCompile Include="control\CompareListCtrl.cpp" />
+    <ClCompile Include="control\DetailItem.cpp" />
+    <ClCompile Include="control\GroupRow.cpp" />
+    <ClCompile Include="control\InfoEdit.cpp" />
+    <ClCompile Include="control\MailReportCtrl.cpp" />
+    <ClCompile Include="control\MyToolTipCtrl.cpp" />
+    <ClCompile Include="control\QiuHeadCtrl.cpp" />
+    <ClCompile Include="control\SelEdit.cpp" />
+    <ClCompile Include="control\Subclass.cpp" />
+    <ClCompile Include="database\BookTypeSet.cpp" />
+    <ClCompile Include="database\CDbConfigure.cpp" />
+    <ClCompile Include="database\CreditPaySet.cpp" />
+    <ClCompile Include="database\DatabaseUtility.cpp" />
+    <ClCompile Include="database\HtmlRecordSet.cpp" />
+    <ClCompile Include="database\IDSet.cpp" />
+    <ClCompile Include="database\ListSet.cpp" />
+    <ClCompile Include="database\ManagerSet.cpp" />
+    <ClCompile Include="database\RateSet.cpp" />
+    <ClCompile Include="database\SubCountInOneCountSet.cpp" />
+    <ClCompile Include="database\SubCountSet.cpp" />
+    <ClCompile Include="database\TodoSet.cpp" />
+    <ClCompile Include="database\TypeSet.cpp" />
+    <ClCompile Include="datastruct\GeneralData.cpp" />
+    <ClCompile Include="datastruct\public_fun.cpp" />
+    <ClCompile Include="datastruct\QueryHistoryList.cpp" />
+    <ClCompile Include="datastruct\RecordList.cpp" />
+    <ClCompile Include="datastruct\SmartDate.cpp" />
+    <ClCompile Include="datastruct\TableLoader.cpp" />
+    <ClCompile Include="dialog\AddNewItemDlg.cpp" />
+    <ClCompile Include="dialog\CheckCountDateSetup.cpp" />
+    <ClCompile Include="dialog\CloseSubCountDlg.cpp" />
+    <ClCompile Include="dialog\CommentPage.cpp" />
+    <ClCompile Include="dialog\CopyRecordsDlg.cpp" />
+    <ClCompile Include="dialog\CreditPayDlg.cpp" />
+    <ClCompile Include="dialog\DatePage.cpp" />
+    <ClCompile Include="dialog\DingQiInputDlg.cpp" />
+    <ClCompile Include="dialog\FileSelPage.cpp" />
+    <ClCompile Include="dialog\FindBookDlg.cpp" />
+    <ClCompile Include="dialog\ImportListPage.cpp" />
+    <ClCompile Include="dialog\ImportSheet.cpp" />
+    <ClCompile Include="dialog\NamePage.cpp" />
+    <ClCompile Include="dialog\NewBook.cpp" />
+    <ClCompile Include="dialog\PassWordDlg.cpp" />
+    <ClCompile Include="dialog\PeriodSetupDlg.cpp" />
+    <ClCompile Include="dialog\Pwddlg.cpp" />
+    <ClCompile Include="dialog\QueryEndDlg.cpp" />
+    <ClCompile Include="dialog\QueryFromCommentDlg.cpp" />
+    <ClCompile Include="dialog\QueryFromDateDlg.cpp" />
+    <ClCompile Include="dialog\QueryFromMoneyDlg.cpp" />
+    <ClCompile Include="dialog\QuerySheet.cpp" />
+    <ClCompile Include="dialog\ReplaceStringDlg.cpp" />
+    <ClCompile Include="dialog\SmartSetDlg.cpp" />
+    <ClCompile Include="dialog\TypePage.cpp" />
+    <ClCompile Include="file-support\CSVFile.cpp" />
+    <ClCompile Include="file-support\CSVLoader.cpp" />
+    <ClCompile Include="file-support\GridHtmlExporter.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OutputBar.cpp" />
+    <ClCompile Include="SmallHorse.cpp" />
+    <ClCompile Include="SmallHorseDoc.cpp" />
+    <ClCompile Include="SmallHorseView.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="view\BankBookDoc.cpp" />
+    <ClCompile Include="view\CompareFrame.cpp" />
+    <ClCompile Include="view\CurveView.cpp" />
+    <ClCompile Include="view\ReportDemoView.cpp" />
+    <ClCompile Include="view\ReportFrame.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bar\CurveBar.h" />
+    <ClInclude Include="bar\TaskPane.h" />
+    <ClInclude Include="bar\WorkspaceBar.h" />
+    <ClInclude Include="bar\WorkspaceBar2.h" />
+    <ClInclude Include="compare\CmpListA.h" />
+    <ClInclude Include="compare\CmpListB.h" />
+    <ClInclude Include="compare\ListCompare.h" />
+    <ClInclude Include="control\AutoCompl.h" />
+    <ClInclude Include="control\BankbookTree.h" />
+    <ClInclude Include="control\CompareDetailCtrl.h" />
+    <ClInclude Include="control\CompareListCtrl.h" />
+    <ClInclude Include="control\DetailItem.h" />
+    <ClInclude Include="control\GroupRow.h" />
+    <ClInclude Include="control\InfoEdit.h" />
+    <ClInclude Include="control\MailReportCtrl.h" />
+    <ClInclude Include="control\MyToolTipCtrl.h" />
+    <ClInclude Include="control\QiuHeadCtrl.h" />
+    <ClInclude Include="control\SelEdit.h" />
+    <ClInclude Include="control\Subclass.h" />
+    <ClInclude Include="database\BookTypeSet.h" />
+    <ClInclude Include="database\CDbConfigure.h" />
+    <ClInclude Include="database\CreditPaySet.h" />
+    <ClInclude Include="database\DatabaseUtility.h" />
+    <ClInclude Include="database\database_setup.h" />
+    <ClInclude Include="database\HtmlRecordSet.h" />
+    <ClInclude Include="database\IDSet.h" />
+    <ClInclude Include="database\ListSet.h" />
+    <ClInclude Include="database\ManagerSet.h" />
+    <ClInclude Include="database\RateSet.h" />
+    <ClInclude Include="database\SubCountInOneCountSet.h" />
+    <ClInclude Include="database\SubCountSet.h" />
+    <ClInclude Include="database\TodoSet.h" />
+    <ClInclude Include="database\TypeSet.h" />
+    <ClInclude Include="datastruct\ConvertData.h" />
+    <ClInclude Include="datastruct\public_fun.h" />
+    <ClInclude Include="datastruct\QueryHistoryList.h" />
+    <ClInclude Include="datastruct\RecordList.h" />
+    <ClInclude Include="datastruct\SmartDate.h" />
+    <ClInclude Include="datastruct\TableLoader.h" />
+    <ClInclude Include="dialog\AddNewItemDlg.h" />
+    <ClInclude Include="dialog\CheckCountDateSetup.h" />
+    <ClInclude Include="dialog\CloseSubCountDlg.h" />
+    <ClInclude Include="dialog\CommentPage.h" />
+    <ClInclude Include="dialog\CopyRecordsDlg.h" />
+    <ClInclude Include="dialog\CreditPayDlg.h" />
+    <ClInclude Include="dialog\DatePage.h" />
+    <ClInclude Include="dialog\DingQiInputDlg.h" />
+    <ClInclude Include="dialog\FileSelPage.h" />
+    <ClInclude Include="dialog\FindBookDlg.h" />
+    <ClInclude Include="dialog\ImportListPage.h" />
+    <ClInclude Include="dialog\ImportSheet.h" />
+    <ClInclude Include="dialog\NamePage.h" />
+    <ClInclude Include="dialog\NewBook.h" />
+    <ClInclude Include="dialog\PassWordDlg.h" />
+    <ClInclude Include="dialog\PeriodSetupDlg.h" />
+    <ClInclude Include="dialog\Pwddlg.h" />
+    <ClInclude Include="dialog\QueryEndDlg.h" />
+    <ClInclude Include="dialog\QueryFromCommentDlg.h" />
+    <ClInclude Include="dialog\QueryFromDateDlg.h" />
+    <ClInclude Include="dialog\QueryFromMoneyDlg.h" />
+    <ClInclude Include="dialog\QuerySheet.h" />
+    <ClInclude Include="dialog\ReplaceStringDlg.h" />
+    <ClInclude Include="dialog\SmartSetDlg.h" />
+    <ClInclude Include="dialog\TypePage.h" />
+    <ClInclude Include="file-support\CSVFile.h" />
+    <ClInclude Include="file-support\CSVLoader.h" />
+    <ClInclude Include="file-support\GridHtmlExporter.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="OutputBar.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SmallHorse.h" />
+    <ClInclude Include="SmallHorseDoc.h" />
+    <ClInclude Include="SmallHorseView.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="view\BankBookDoc.h" />
+    <ClInclude Include="view\CompareFrame.h" />
+    <ClInclude Include="view\CurveView.h" />
+    <ClInclude Include="view\ReportDemoView.h" />
+    <ClInclude Include="view\ReportFrame.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\Book01a.ico" />
+    <Image Include="res\list.bmp" />
+    <Image Include="res\mainfram.bmp" />
+    <Image Include="res\menu16.bmp" />
+    <Image Include="res\menu256.bmp" />
+    <Image Include="res\RC_ACTIVE.bmp" />
+    <Image Include="res\RC_INACTIVE.bmp" />
+    <Image Include="res\SmallHorse.ico" />
+    <Image Include="res\SmallHorseDoc.ico" />
+    <Image Include="res\tasks.bmp" />
+    <Image Include="res\test.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\toolbar2.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="res\ToolbarCold256.bmp" />
+    <Image Include="res\Workspace.bmp" />
+    <Image Include="UserImages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\handpoin.cur" />
+    <None Include="res\SmallHorse.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SmallHorse.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="SmallHorse.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
