@@ -14,6 +14,8 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+IMPLEMENT_DYNAMIC(CGroupRow, CBCGPReportRow)
+
 CGroupRow::CGroupRow(const CString& strGroupName)
 :CBCGPReportRow(strGroupName)
 {

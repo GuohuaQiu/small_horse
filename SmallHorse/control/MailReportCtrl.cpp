@@ -304,19 +304,18 @@ void CMailReportCtrl::TrackToolTip(CPoint point)
 
 	if (clickArea == CBCGPGridRow::ClickName)
 	{
-    //here are my codes.
-    CWnd* pwnd = GetParent();
-    pwnd = pwnd->GetParent();
-    if(pwnd->IsKindOf(RUNTIME_CLASS (CReportFrame)))
-    {
-      CReportFrame* pfrm = (CReportFrame*)pwnd;
-      strTipText = ((CGroupRow*)pHitRow)->GetTipString(pfrm->m_strID);
-    }
-
-    
-//    TRACE("CBCGPGridRow::ClickName\n");
-//		strTipText = pHitRow->GetNameTooltip ();
-		rectToolTip = ((CGroupRow*)pHitRow)->GetTipRect ();
+		//here are my codes.
+		CWnd* pwnd = GetParent();
+		pwnd = pwnd->GetParent();
+		if (pwnd->IsKindOf(RUNTIME_CLASS(CReportFrame)))
+		{
+			CReportFrame* pfrm = (CReportFrame*)pwnd;
+			if (pHitRow->IsKindOf(RUNTIME_CLASS(CGroupRow)))
+			{
+				strTipText = ((CGroupRow*)pHitRow)->GetTipString(pfrm->m_strID);
+				rectToolTip = ((CGroupRow*)pHitRow)->GetTipRect();
+			}
+		}
 	}
 	else if (clickArea == CBCGPGridRow::ClickValue)
 	{

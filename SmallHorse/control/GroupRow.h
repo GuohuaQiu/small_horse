@@ -11,6 +11,7 @@
 
 class CGroupRow : public CBCGPReportRow  
 {
+	DECLARE_DYNAMIC(CGroupRow)
 public:
 	void SetExpandValueWithNoRedraw(BOOL bExpand);
 	void CollapseInactive();
