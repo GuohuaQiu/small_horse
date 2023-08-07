@@ -790,10 +790,16 @@ BOOL CSmallHorseApp::Rectifypassword(const CString& strID)
 ********************************************/
 BOOL CSmallHorseApp::ShowAccountInfo(const CString &strID)
 {
-	if(!m_IDSet.MovetoCurID(strID))
+	if (!m_IDSet.MovetoCurID(strID))
 		return FALSE;
 	return ((CMainFrame*)m_pMainWnd)->ShowAccountInfo(&m_IDSet);
 }
+
+BOOL CSmallHorseApp::ShowStaticInfo(const CStringList &sl)
+{
+    return ((CMainFrame*)m_pMainWnd)->ShowStaticInfo(sl);
+}
+
 
 #include <afxcoll.h>
 /*******************************************

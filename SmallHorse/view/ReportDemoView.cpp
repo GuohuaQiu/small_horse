@@ -510,7 +510,7 @@ float CReportDemoView::AddMembertoList(CListSet* pSet,int index,BOOL bCalSum,flo
 	
     pRow->SetData( (DWORD)pSet->m_arraynumber);
 	
-    if(m_ViewType == VIEW_TYPE_RECORD_QUERY)
+    if(IS_QUERY(m_ViewType))
     {
         pRow->GetItem (COLUMN_BOOK_ID)->SetValue ((LPCTSTR)pSet->m_ID, FALSE);
         CIDSet * pIdset = theApp.GetIDSet();
@@ -1241,7 +1241,7 @@ void CReportDemoView::CreateListCtrl()
 			pReportCtrl->SetColumnVisible (COLUMN_SUBCOUNT, FALSE);
 			pReportCtrl->InsertGroupColumn (0, COLUMN_SUBCOUNT );
 		}
-		else if(m_ViewType == VIEW_TYPE_RECORD_QUERY)
+		else if(IS_QUERY(m_ViewType))
 		{
 			pReportCtrl->InsertColumn (COLUMN_BOOK_ID, _T("账户"), 40);
 			pReportCtrl->InsertColumn (COLUMN_BOOK_BANK, _T("银行"), 30);
@@ -1385,114 +1385,119 @@ typedef enum
 }Order_Count_Enum;
 void CReportDemoView::DisplayCount()
 {
+    m_total = 0.0f;
+    m_nStaticCount = 0;
 #ifdef  LOAD_DATEBASE
-	TRACE(_T("\nbegin DisplayRecord"));
-	TRACE(_T("\n "));
-	if(m_pParent->m_strFilter.GetLength()<500)
-		TRACE(_T("\n %s"),m_pParent->m_strFilter);
+    TRACE(_T("\nbegin DisplayRecord"));
+    TRACE(_T("\n "));
+    if (m_pParent->m_strFilter.GetLength() < 500)
+        TRACE(_T("\n %s"), m_pParent->m_strFilter);
     Order_Count_Enum order = COUNT_ORDER_BY_NONE;
-    if(m_pParent->m_strFilter.Find(SQL_ORDER_BY_BANK,0) >= 0)
+    if (m_pParent->m_strFilter.Find(SQL_ORDER_BY_BANK, 0) >= 0)
     {
         order = COUNT_ORDER_BY_BANK;
 
     }
-    else if(m_pParent->m_strFilter.Find(SQL_ORDER_BY_OWNER,0) >= 0)
+    else if (m_pParent->m_strFilter.Find(SQL_ORDER_BY_OWNER, 0) >= 0)
     {
         order = COUNT_ORDER_BY_PEOPLE;
     }
-    
-	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
-	pReportCtrl->RemoveAll ();
 
-	CDatabase dtbs;
-	BOOL b = dtbs.OpenEx(DATA_SOURCE_NAME,CDatabase::openReadOnly|CDatabase::noOdbcDialog);
-	CRecordset set(&dtbs);
-	
-	b = set.Open(CRecordset::snapshot,m_pParent->m_strFilter);
-	TRACE("\nfilter: %s\n",m_pParent->m_strFilter);
-	int n = set.GetRecordCount();
-		TRACE("\ntotal count %d %d.......\n",n,set.GetODBCFieldCount());
-	if(m_pParent->m_ViewType == VIEW_TYPE_MAIN_COUNTS)
-	{
-		int index = 1;
-		while(!set.IsEOF())
-		{
-      static CString strBank;
-      static BOOL bbb=TRUE;
+    CBCGPReportCtrl* pReportCtrl = GetReportCtrl();
+    pReportCtrl->RemoveAll();
+
+    CDatabase dtbs;
+    BOOL b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+    CRecordset set(&dtbs);
+
+    b = set.Open(CRecordset::snapshot, m_pParent->m_strFilter);
+    TRACE("\nfilter: %s\n", m_pParent->m_strFilter);
+    int n = set.GetRecordCount();
+    TRACE("\ntotal count %d %d.......\n", n, set.GetODBCFieldCount());
+    if (m_pParent->m_ViewType == VIEW_TYPE_MAIN_COUNTS)
+    {
+        int index = 1;
+        while (!set.IsEOF())
+        {
+            static CString strBank;
+            static BOOL bbb = TRUE;
             CDBVariant varint;
-			CBCGPGridRow* pRow = pReportCtrl->CreateRow (VALUE_MAINCOUNT_TYPE_number);
-			CString strValue;
-			set.GetFieldValue((short)0,strValue);
-			pRow->GetItem (VALUE_MAINCOUNT_TYPE_MAINCOUNT)->SetValue ((LPCTSTR)strValue, FALSE);
+            CBCGPGridRow* pRow = pReportCtrl->CreateRow(VALUE_MAINCOUNT_TYPE_number);
+            CString strValue;
+            set.GetFieldValue((short)0, strValue);
+            pRow->GetItem(VALUE_MAINCOUNT_TYPE_MAINCOUNT)->SetValue((LPCTSTR)strValue, FALSE);
 
 
-			set.GetFieldValue((short)1,strValue);
-            if(order == COUNT_ORDER_BY_BANK)
+            set.GetFieldValue((short)1, strValue);
+            if (order == COUNT_ORDER_BY_BANK)
             {
-                if(strValue != strBank)
+                if (strValue != strBank)
                 {
                     strBank = strValue;
                     bbb = !bbb;
                 }
-                if(bbb)
+                if (bbb)
                 {
-                    CMailReportCtrl::SetRowBackColor(pRow, RGB(192,255,255));
+                    CMailReportCtrl::SetRowBackColor(pRow, RGB(192, 255, 255));
                 }
                 else
                 {
-                    CMailReportCtrl::SetRowBackColor(pRow, RGB(211,255,211));
+                    CMailReportCtrl::SetRowBackColor(pRow, RGB(211, 255, 211));
                 }
             }
-			pRow->GetItem (VALUE_MAINCOUNT_TYPE_BANK)->SetValue ((LPCTSTR)strValue, FALSE);
-			set.GetFieldValue((short)2,strValue);
-            if(order == COUNT_ORDER_BY_PEOPLE)
+            pRow->GetItem(VALUE_MAINCOUNT_TYPE_BANK)->SetValue((LPCTSTR)strValue, FALSE);
+            set.GetFieldValue((short)2, strValue);
+            if (order == COUNT_ORDER_BY_PEOPLE)
             {
-                if(strValue != strBank)
+                if (strValue != strBank)
                 {
                     strBank = strValue;
                     bbb = !bbb;
                 }
-                if(bbb)
+                if (bbb)
                 {
-                    CMailReportCtrl::SetRowBackColor(pRow, RGB(122,212,255));
+                    CMailReportCtrl::SetRowBackColor(pRow, RGB(122, 212, 255));
                 }
                 else
                 {
-                    CMailReportCtrl::SetRowBackColor(pRow, RGB(211,255,221));
+                    CMailReportCtrl::SetRowBackColor(pRow, RGB(211, 255, 221));
                 }
 
             }
-			pRow->GetItem (VALUE_MAINCOUNT_TYPE_OWNER)->SetValue ((LPCTSTR)strValue, FALSE);
-			set.GetFieldValue((short)3,varint,SQL_REAL);
-			pRow->GetItem (VALUE_MAINCOUNT_TYPE_VALUE)->SetValue (varint.m_fltVal, FALSE);
-            set.GetFieldValue((short)4,strValue);
-            pRow->GetItem (VALUE_MAINCOUNT_TYPE_COMMENT)->SetValue ((LPCTSTR)strValue, FALSE);
-            set.GetFieldValue((short)5,varint,SQL_C_BIT);
+            pRow->GetItem(VALUE_MAINCOUNT_TYPE_OWNER)->SetValue((LPCTSTR)strValue, FALSE);
+            set.GetFieldValue((short)3, varint, SQL_REAL);
+            pRow->GetItem(VALUE_MAINCOUNT_TYPE_VALUE)->SetValue(varint.m_fltVal, FALSE);
+            //todo
+            m_total += varint.m_fltVal;
+            m_nStaticCount++;
+            set.GetFieldValue((short)4, strValue);
+            pRow->GetItem(VALUE_MAINCOUNT_TYPE_COMMENT)->SetValue((LPCTSTR)strValue, FALSE);
+            set.GetFieldValue((short)5, varint, SQL_C_BIT);
 
-            pRow->GetItem (VALUE_MAINCOUNT_TYPE_MAINCOUNT)->SetImage (varint.m_boolVal ? 2 : 3, FALSE);
-			
-			pReportCtrl->AddRow (pRow, FALSE);
-			set.MoveNext();
-			index++;
-		}
-	}
-	else if(m_pParent->m_ViewType == VIEW_TYPE_SUB_COUNTS)
-	{
-		int index = 1;
-		while(!set.IsEOF())
-		{
-			AddSubCount2List(index,&set);
-			set.MoveNext();
-			index++;
-		}
-	}
-	set.Close();
-	dtbs.Close();
+            pRow->GetItem(VALUE_MAINCOUNT_TYPE_MAINCOUNT)->SetImage(varint.m_boolVal ? 2 : 3, FALSE);
+
+            pReportCtrl->AddRow(pRow, FALSE);
+            set.MoveNext();
+            index++;
+        }
+    }
+    else if (m_pParent->m_ViewType == VIEW_TYPE_SUB_COUNTS)
+    {
+        int index = 1;
+        while (!set.IsEOF())
+        {
+            AddSubCount2List(index, &set);
+            set.MoveNext();
+            index++;
+        }
+    }
+    set.Close();
+    dtbs.Close();
 
 
-	
-	AdjustColumnWidth();
-	pReportCtrl->AdjustLayout ();
+
+    AdjustColumnWidth();
+    pReportCtrl->AdjustLayout();
 #endif
 }
 
@@ -1767,10 +1772,23 @@ void CReportDemoView::OnActivateView(BOOL bActivate, CView* pActivateView, CView
 {
     if(bActivate)
     {
-        if( m_pParent && m_pParent->m_strID != _T(""))
+        if (m_pParent)
         {
-            theApp.ShowAccountInfo(m_pParent->m_strID);
-            TRACE(_T("OnActivateView %s,%d,%s,%s\n"),m_pParent->m_strTitle,bActivate,  pActivateView == this ? _T("Active this"):_T(""),pDeactiveView == this ? _T("DeActive this"):_T("")        );
+            if (m_pParent->m_strID != _T("")) {
+
+                theApp.ShowAccountInfo(m_pParent->m_strID);
+                TRACE(_T("OnActivateView %s,%d,%s,%s\n"), m_pParent->m_strTitle, bActivate, pActivateView == this ? _T("Active this") : _T(""), pDeactiveView == this ? _T("DeActive this") : _T(""));
+            }
+            else if (m_pParent->m_ViewType == VIEW_TYPE_MAIN_COUNTS)
+            {
+                CStringList sl;
+                CString total;
+                total.Format("Total:%.2f", m_total);
+                sl.AddHead(total);
+                total.Format("项目数：%d", m_nStaticCount);
+                sl.AddHead(total);
+                theApp.ShowStaticInfo(sl);
+            }
         }
     }
 	CBCGPReportView::OnActivateView(bActivate, pActivateView, pDeactiveView);

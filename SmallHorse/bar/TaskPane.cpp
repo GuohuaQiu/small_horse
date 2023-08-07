@@ -105,6 +105,20 @@ BOOL CTaskPane::ShowAccountInfo(CIDSet *pSet)
 	RedrawWindow();
 	return TRUE;
 }
+BOOL CTaskPane::ShowStaticInfo(const CStringList &sl)
+{
+    RemoveGroup(m_nAccountGroup);
+    m_nAccountGroup = AddGroup(_T("统计结果"));
+
+    POSITION pos = sl.GetHeadPosition();
+    while (pos)
+    {
+        CString str = sl.GetNext(pos);
+        AddLabel(m_nAccountGroup, str);
+    }
+    RedrawWindow();
+    return TRUE;
+}
 
 int CTaskPane::AddQueryList(int nGroup, int nMaxFiles)
 {

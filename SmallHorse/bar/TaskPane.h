@@ -37,6 +37,7 @@ protected:
 public:
 	int AddQueryList (int nGroup, int nMaxFiles = 16);
 	BOOL ShowAccountInfo(CIDSet* pSet);
+    BOOL ShowStaticInfo(const CStringList &sl);
 	virtual ~CTaskPane();
 
 	// Generated message map functions

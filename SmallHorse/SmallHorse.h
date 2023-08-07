@@ -37,6 +37,7 @@ public:
 	void SetBookFilter(const CString strID);
 	void CalSum(const CString& strID);
 	BOOL ShowAccountInfo(const CString& strID);
+    BOOL ShowStaticInfo(const CStringList &sl);
 	BOOL Rectifypassword(const CString& strID);
 	void DeleteRecord(int nRecordID);
 	void UpdateAllView();

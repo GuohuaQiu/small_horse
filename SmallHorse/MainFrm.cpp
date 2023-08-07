@@ -554,6 +554,10 @@ BOOL CMainFrame::ShowAccountInfo(CIDSet *pSet)
 {
 	return m_wndTaskPane.ShowAccountInfo(pSet);
 }
+BOOL CMainFrame::ShowStaticInfo(const CStringList &sl)
+{
+    return m_wndTaskPane.ShowStaticInfo(sl);
+}
 
 void CMainFrame::UpdateQueryList()
 {

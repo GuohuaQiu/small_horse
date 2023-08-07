@@ -43,6 +43,8 @@ class CReportDemoView : public CBCGPReportView
 protected: // create from serialization only
 	VIEW_TYPE    m_ViewType;
 	CReportFrame* m_pParent;
+	float  m_total;
+	int	m_nStaticCount;
 	BOOL m_bFirst;
 	CReportDemoView();
 	DECLARE_DYNCREATE(CReportDemoView)
