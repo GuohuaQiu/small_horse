@@ -254,7 +254,7 @@ BOOL CImportListPage::SaveDataToDataLib()
 
 	if(m_pParent->m_nImportType == IMPORT_TYPE_RECORD)
 	{
-		return m_pParent->m_pListSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount,pATC,totalColumn);
+		return CListSet::AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount,pATC,totalColumn);
 	}
 	else
 	{

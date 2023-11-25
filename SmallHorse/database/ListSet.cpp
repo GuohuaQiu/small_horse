@@ -205,6 +205,9 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pA
     CString strStamp;
 	COleDateTime time = COleDateTime::GetCurrentTime();
 	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
+
+	CListSet listData;
+	listData.StartEdit();
 		
 
 	BOOL bRet = TRUE;
@@ -212,7 +215,7 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pA
 	{
 		if(pctrl->GetCheck(i))
 		{
-			CListSet listData;
+			listData.AddNew();
 			listData.m_ID = strId;
 			if(nType[VALUE_TYPE_DATE]>=0)
 			{
@@ -304,14 +307,18 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pA
 				listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
 			}
 
-			bRet = New_Item(&listData);
-			//			bRet = Update();
-			if(!bRet)
+			int ret = listData.SubmitNew();
+
+			//bRet = New_Item(&listData);
+
+			if(ret)
 			{
+				bRet = FALSE;
 				break;
 			}
 		}
 	}
+	listData.EndEdit();
 	return bRet;
 }
 
@@ -669,6 +676,15 @@ BOOL CListSet::NewRecord(Record *precord)
 {
 //    AddNew();
 	CListSet listData;
+	listData.StartEdit();
+
+
+
+	listData.AddNew();
+
+
+
+
     listData.m_remain = precord->m_remain ; 
     listData.m_day = precord->m_day ;
     listData.m_bType = precord->m_bType ;
@@ -678,8 +694,10 @@ BOOL CListSet::NewRecord(Record *precord)
     listData.m_strSite = precord->m_strSite ;
 	listData.m_TimeAdd = precord->m_TimeAdd;
 	listData.m_TimeModify = precord->m_TimeModify;
-	return New_Item(&listData);
-//    return Update();
+	listData.SubmitNew();
+	listData.EndEdit();
+	return TRUE;
+	//return New_Item(&listData);
 }
 
 
@@ -801,23 +819,23 @@ BOOL CListSet::Edit_CalSum(float* fSum)
 }
 
 BOOL CListSet::New_Item(CListSet* pInData){
-	m_LockModify.Lock();
-	AddNew();
 
-	m_day=pInData->m_day;
-	m_ID=pInData->m_ID;
-	m_strSubCount = pInData->m_strSubCount;
-	m_bType = pInData->m_bType;
-    m_strSite = pInData->m_strSite;
-	m_addorsub = pInData->m_addorsub;
-	m_remain=pInData->m_remain;
-	m_TimeAdd = pInData->m_TimeAdd;
-	m_TimeModify = pInData->m_TimeModify;
-	BOOL b = Update();
+	CListSet listData;
+	listData.StartEdit();
 
-	TRACE("New item ok? %s", b?"TRUE":"FALSE");
-	m_LockModify.Unlock();
-	return b;
+	listData.AddNew();
+
+	listData.m_day = pInData->m_day;
+	listData.m_ID = pInData->m_ID;
+	listData.m_strSubCount = pInData->m_strSubCount;
+	listData.m_bType = pInData->m_bType;
+	listData.m_strSite = pInData->m_strSite;
+	listData.m_addorsub = pInData->m_addorsub;
+	listData.m_remain = pInData->m_remain;
+
+	listData.SubmitNew();
+	listData.EndEdit();
+	return TRUE;
 }
 
 
@@ -991,3 +1009,54 @@ int CListSet::MoveRecordsTo(const CString& Count, const CString& SubCount,const 
 
 	return 0;
 }
+
+int CListSet::StartEdit()
+{
+	if (IsOpen()) {
+		Close();
+	}
+	Open(CRecordset::dynaset);
+	Requery();
+	MoveLast();
+	
+	return 0;
+}
+
+
+int CListSet::SubmitEdit()
+{
+	m_TimeModify = COleDateTime::GetCurrentTime();
+	BOOL b = Update();
+
+	TRACE("New item ok? %s", b ? "TRUE" : "FALSE");
+
+	if (b) {
+		return 0;
+	}
+	return -1;
+}
+
+
+int CListSet::SubmitNew()
+{
+	m_TimeAdd = COleDateTime::GetCurrentTime();
+	m_TimeModify = COleDateTime::GetCurrentTime();
+	BOOL b = Update();
+
+
+	TRACE("New item ok? %s", b ? "TRUE" : "FALSE");
+
+	if (b) {
+		return 0;
+	}
+	return -1;
+}
+
+int CListSet::EndEdit()
+{
+	Close();
+	theApp.ForceUpdateViews();
+	return 0;
+
+}
+

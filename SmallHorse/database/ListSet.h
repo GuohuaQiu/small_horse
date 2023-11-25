@@ -30,7 +30,7 @@ public:
 #endif
 	BOOL Modify_Record(CListSet* inData);
 	BOOL Edit_CalSum(float *fSum);
-	BOOL New_Item(CListSet* pInData);
+	static BOOL New_Item(CListSet* pInData);
 	BOOL GetLastDate(CSmartDate &date);
 		
 	BOOL GetFirstDate(CSmartDate &date);
@@ -47,7 +47,7 @@ public:
 	BOOL Find(const COleDateTime& time,float fRecord,const CString& strSubCount);
 	BOOL IsOnlyOneBook();
 	BOOL GetCurrentBookId(CString &strID);
-	BOOL AddItems(CListCtrl* pctrl,int nType[],const CString& strId,int pATC[],int column_count);
+	static BOOL AddItems(CListCtrl* pctrl,int nType[],const CString& strId,int pATC[],int column_count);
 // 	void SetNetIncome(BYTE bType);
 	CString GetDate();
 	CString GetArray();
@@ -102,6 +102,10 @@ public:
 	int Modify_Site_ByComment(const CString&strSite,const CString& strNoHas, const CString& strHas,const CDWordArray& dbArray,int count);
 	int Replace_Comment(const CString& strOldString, const CString& strNewString,const CDWordArray& dbArray,int count);
 	int MoveRecordsTo(const CString& Count, const CString& SubCount,const CDWordArray& dbArray,int count);
+	int StartEdit();
+	int SubmitEdit();
+	int EndEdit();
+	int SubmitNew();
 };
 
 //{{AFX_INSERT_LOCATION}}

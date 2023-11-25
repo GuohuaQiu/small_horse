@@ -654,41 +654,42 @@ BOOL CSmallHorseApp::AddNewItem(const CString &strID)
     {
         return FALSE;
     }
-
+#if 1
 	CAddNewItemDlg dlg;
-	dlg.m_id=strID;
-/**** Add by Qiu Guohua on 2004-07-19 09:50:39 **********************/
-	dlg.m_nType=m_IDSet.m_bDefaultNetIncome;
-/**************************2004-07-19 09:50:39 **********************/
-	CListSet* plistset = GetListSet();
-	do{
-		if(dlg.DoModal()==IDOK)
+	dlg.m_id = strID;
+	/**** Add by Qiu Guohua on 2004-07-19 09:50:39 **********************/
+	dlg.m_nType = m_IDSet.m_bDefaultNetIncome;
+	/**************************2004-07-19 09:50:39 **********************/
+	// CListSet* plistset = GetListSet();
+	CListSet listData;
+	listData.StartEdit();
+	dlg.m_pSet = &listData;
+	do
+	{
+		if (dlg.DoModal() == IDOK)
 		{
-			if(plistset->GetRecordCount())
-			{
-				plistset->Requery();
-				plistset->MoveLast();
-			}
-			CListSet listData;
+			// if(plistset->GetRecordCount())
+			// {
+			// 	plistset->Requery();
+			// 	plistset->MoveLast();
+			// }
 
-//			plistset->AddNew();
-			listData.m_day=dlg.m_date;
-			listData.m_ID=dlg.m_id;
-			listData.m_remain=dlg.m_remain;
-			listData.m_bType=(BYTE)dlg.m_nType;
-			listData.m_addorsub=dlg.m_sum;
+			//			plistset->AddNew();
+			listData.AddNew();
+			listData.m_day = dlg.m_date;
+			listData.m_ID = dlg.m_id;
+			listData.m_remain = dlg.m_remain;
+			listData.m_bType = (BYTE)dlg.m_nType;
+			listData.m_addorsub = dlg.m_sum;
 			listData.m_strSubCount = dlg.m_strSubCount;
-            listData.m_strSite = dlg.m_strSite;
- //           BOOL b = plistset->UpdateRequery();
- //           if(!b)
- //           {
-  //              AfxMessageBox("Ìá½»Ê§°Ü£¡");
- //           }
-			plistset->New_Item(&listData);
-			//Simon UpdateAllView();
-			dlg.m_bnewbook=FALSE;
+			listData.m_strSite = dlg.m_strSite;
+			listData.SubmitNew();
+			//	plistset->New_Item(&listData);
+			dlg.m_bnewbook = FALSE;
 		}
-	}while(dlg.bgonext==TRUE);
+	} while (dlg.bgonext == TRUE);
+	listData.EndEdit();
+#endif
 	return TRUE;
 }
 
@@ -1245,7 +1246,7 @@ void CSmallHorseApp::TransferDingqi(const CString& strID)
 	CDingQiInputDlg dlg;
 	dlg.m_id = strID;
 	CSubCountSet* pSubCountSet = GetSubCountSet();
-	CListSet* pListSet = GetListSet();
+	// CListSet* pListSet = GetListSet();
 	if(dlg.DoModal()==IDOK)
 	{
 		pSubCountSet->MoveLast();
@@ -1262,10 +1263,11 @@ void CSmallHorseApp::TransferDingqi(const CString& strID)
 		pSubCountSet->Update();
         pSubCountSet->RequeryCount(strID);
 
+		CListSet listData;
+		listData.StartEdit();
         if(!dlg.m_bNewSave)
         {
-			CListSet listData;
-//            pListSet->AddNew();
+			listData.AddNew();
             listData.m_day=dlg.m_date;
             listData.m_ID=strID;
             listData.m_strSubCount = _T("");
@@ -1273,22 +1275,25 @@ void CSmallHorseApp::TransferDingqi(const CString& strID)
             listData.m_bType=3;
             listData.m_addorsub.Format(_T("%f"),dlg.m_sum);
             listData.m_addorsub.Insert(0,_T("-"));
-//            pListSet->Update();
-			pListSet->New_Item(&listData);
+			listData.SubmitNew();
+
+			//pListSet->New_Item(&listData);
         }
-		CListSet listData;
-//		pListSet->AddNew();
+//		CListSet listData;
+		listData.AddNew();
+
 		listData.m_day=dlg.m_date;
 		listData.m_ID=strID;
 		listData.m_strSubCount = dlg.m_strSubCount;
 		listData.m_remain= _T("");
 		listData.m_bType=3;
 		listData.m_addorsub.Format(_T("%f"),dlg.m_sum);
+		listData.SubmitNew();
+		listData.EndEdit();
 
-		pListSet->New_Item(&listData);
-//		pListSet->Update();
+		//pListSet->New_Item(&listData);
 	}
-    ForceUpdateViews();
+    //ForceUpdateViews();
 }
 
 /*******************************************
@@ -2173,69 +2178,70 @@ BOOL CSmallHorseApp::CloseSubCount(const CString &strID, const CString &strSubID
 	    TRACE("b fBase:%f interest :%f \n",fBase,fInterest);
     }
     fBase += fInterest;
-    
-    
-    CListSet* pItemSet = GetListSet();
-    if(days > 0)
-    {
-		CListSet setData;
-        setData.m_day=endDate;
-        setData.m_ID=strID;
-        setData.m_strSubCount = strSubID;
-        setData.m_bType=13;//interest
-    
-        setData.m_addorsub.Format(_T("%f"),fInterest);
-        setData.m_remain.Format(_T("Inerest (Smarter Close %.2f)"),fRate);
-		pItemSet->New_Item(&setData);
-    }
-    
-//    pItemSet->AddNew();
-    CListSet listData;
-    listData.m_day=endDate;
-    listData.m_ID=strID;
-    listData.m_strSubCount = strSubID;
-    if(bSavetoDefault)
-    {
-        listData.m_bType=3;//transfer
-    }
-    else
-    {
-        listData.m_bType=-1;//dont know the usage.
-    }
-    
-    listData.m_addorsub.Format(_T("%f"),-fBase);
-	TRACE("c fBase:%f\n",fBase);
 
-    listData.m_remain.Format(_T("Inerest (Smarter Close )"));
-//    pItemSet->Update();
-	pItemSet->New_Item(&listData);
-	
+	// CListSet* pItemSet = GetListSet();
+	CListSet listData;
+	listData.StartEdit();
+	if (days > 0)
+	{
+		listData.AddNew();
+		listData.m_day = endDate;
+		listData.m_ID = strID;
+		listData.m_strSubCount = strSubID;
+		listData.m_bType = 13; // interest
 
-    if(bSavetoDefault)
-    {
-        //transfer to general account. 
-//        pItemSet->AddNew();
-		CListSet setData;
+		listData.m_addorsub.Format(_T("%f"), fInterest);
+		listData.m_remain.Format(_T("Inerest (Smarter Close %.2f)"), fRate);
+		listData.SubmitNew();
+		// pItemSet->New_Item(&setData);
+	}
 
-        
-        setData.m_day=endDate;
-        setData.m_ID=strID;
-        setData.m_strSubCount = _T("");
-        setData.m_bType=3;//transfer
-        
-        setData.m_addorsub.Format(_T("%f"),fBase);
-        setData.m_remain.Format(_T("(Smarter Close Sub Count %s)"),strSubID);
- //       pItemSet->Update();
-		pItemSet->New_Item(&setData);
-    }
-    
-    pset->SetNoExist();
+	listData.AddNew();
 
-//     pset->Edit();
-//     pset->m_bExist = FALSE;
-//     pset->m_BeginValue = 0.00001f;//cant set to 0.0 .so set a very small value.
-//     pset->Update();
-    return pset->Requery();
+	//  CListSet listData;
+	listData.m_day = endDate;
+	listData.m_ID = strID;
+	listData.m_strSubCount = strSubID;
+	if (bSavetoDefault)
+	{
+		listData.m_bType = 3; // transfer
+	}
+	else
+	{
+		listData.m_bType = -1; // dont know the usage.
+	}
+
+	listData.m_addorsub.Format(_T("%f"), -fBase);
+	TRACE("c fBase:%f\n", fBase);
+
+	listData.m_remain.Format(_T("Inerest (Smarter Close )"));
+	//    pItemSet->Update();
+	listData.SubmitNew();
+	// pItemSet->New_Item(&listData);
+
+	if (bSavetoDefault)
+	{
+		// transfer to general account.
+		//        pItemSet->AddNew();
+		//	CListSet setData;
+
+		listData.AddNew();
+		listData.m_day = endDate;
+		listData.m_ID = strID;
+		listData.m_strSubCount = _T("");
+		listData.m_bType = 3; // transfer
+
+		listData.m_addorsub.Format(_T("%f"), fBase);
+		listData.m_remain.Format(_T("(Smarter Close Sub Count %s)"), strSubID);
+		listData.SubmitNew();
+
+		//	pItemSet->New_Item(&setData);
+	}
+	listData.EndEdit();
+
+	pset->SetNoExist();
+
+	return pset->Requery();
 }
 
 BOOL CSmallHorseApp::RenewSubCount(const CString &strID, const CString &strSubID, const COleDateTime &endDate)
@@ -2254,9 +2260,12 @@ BOOL CSmallHorseApp::RenewSubCount(const CString &strID, const CString &strSubID
 		}
 		while(pset->m_End_Date <= endDate)
 		{
-			CListSet* pItemSet = GetListSet();
+			//CListSet* pItemSet = GetListSet();
 			CListSet listData;
-			//      pItemSet->AddNew();
+			listData.StartEdit();
+			listData.AddNew();
+
+
 			listData.m_day=pset->m_End_Date;
 			TRACE_TIME("old end date",pset->m_End_Date);
 			listData.m_ID=strID;
@@ -2308,9 +2317,12 @@ BOOL CSmallHorseApp::RenewSubCount(const CString &strID, const CString &strSubID
 
 			listData.m_addorsub.Format(_T("%f"),fInterest);
 			listData.m_remain.Format(_T("Inerest (Smarter Renew %.2f)"),fRate);
-			//      pItemSet->Update();
-			pItemSet->New_Item(&listData);
-// 			pset->Edit();
+
+			listData.SubmitNew();
+			listData.EndEdit();
+
+			//pItemSet->New_Item(&listData);
+
 
 			CSubCountSet subSet;
 			subSet.MakeDataCopy(subSet);
@@ -2326,7 +2338,6 @@ BOOL CSmallHorseApp::RenewSubCount(const CString &strID, const CString &strSubID
 			pset->m_End_Date=subSet.m_End_Date;
 			pset->m_BeginValue=subSet.m_BeginValue;
 
-// 			bRet = pset->Update();
 		}
 	}
 	return bRet;
@@ -2646,9 +2657,7 @@ void CSmallHorseApp::CopyRecordsTo(const CDWordArray &dbAry, const CString &strC
 		}
 		listSet.m_strSubCount = strSubCount;
 		listSet.m_ID = strCount;
-		listSet.m_TimeAdd = COleDateTime::GetCurrentTime();
-		listSet.m_TimeModify = COleDateTime::GetCurrentTime();
-		pListSet->New_Item(&listSet);
+		CListSet::New_Item(&listSet);
 		listSet.MoveNext();
 	}
 	listSet.Close();

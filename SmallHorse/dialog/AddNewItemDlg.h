@@ -21,6 +21,7 @@ public:
 	BOOL	m_bNewItem;
 	BOOL	m_bnewbook;
 	BOOL	bgonext;
+	CListSet* m_pSet;
 	CAddNewItemDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
@@ -60,6 +61,8 @@ protected:
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	int SubmitData();
 };
 
 //{{AFX_INSERT_LOCATION}}

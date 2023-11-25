@@ -396,7 +396,6 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
         {
             if(!pSel->IsGroup())
             {
-				TRACE("gogo SIMON!~\n");
 				CMenu menu;
 				menu.LoadMenu(IDR_RECORD_MENU);
 				CMenu* pMenu = &menu;
@@ -844,7 +843,7 @@ void CReportDemoView::OnEditPaste()
 		//2012-06-04
 		if (OpenClipboard())
 		{
-			CListSet* pListSet = theApp.GetListSet();
+			// CListSet* pListSet = theApp.GetListSet();
 			HANDLE hData = ::GetClipboardData(CSmallHorseApp::m_DataFormat);
 			CloseClipboard();
 			
@@ -854,15 +853,14 @@ void CReportDemoView::OnEditPaste()
 				memFile.SetHandle(hData,FALSE);
 				CArchive ar(&memFile, CArchive::load);
 				// Serialize data to document
-				if(pListSet->GetRecordCount())
-				{
-					pListSet->Requery();
-					pListSet->MoveLast();
-				}
+				// if(pListSet->GetRecordCount())
+				// {
+				// 	pListSet->Requery();
+				// 	pListSet->MoveLast();
+				// }
 				//	        pListSet->AddNew();
 				CListSet listData;
 				DoSerialize(ar,&listData,TRUE);
-				listData.m_ID = m_pParent->m_strID;
 				TRACE(_T("before save    %s\n"),listData.m_remain);
 				ar.Close();
 #if _MFC_VER <= 0x0420
@@ -872,34 +870,44 @@ void CReportDemoView::OnEditPaste()
 #endif
 				
 				CAddNewItemDlg dlg;
-				dlg.m_bNewItem=FALSE;
-				dlg.m_date=listData.m_day;
-				dlg.m_id=listData.m_ID;
-				dlg.m_sum=listData.m_addorsub;
-				dlg.m_remain=listData.m_remain;
-				dlg.m_nType=listData.m_bType;
+				dlg.m_bNewItem = FALSE;
+				dlg.m_date = listData.m_day;
+				dlg.m_id = m_pParent->m_strID;
+				dlg.m_sum = listData.m_addorsub;
+				dlg.m_remain = listData.m_remain;
+				dlg.m_nType = listData.m_bType;
 				dlg.m_strSubCount = listData.m_strSubCount;
 				dlg.m_strSite = listData.m_strSite;
-				if(dlg.DoModal()==IDOK)
+#ifdef SUBMIT_DATA_IN_DIALOG
+				dlg.m_pSet = &listData;
+				listData.StartEdit();
+#endif
+				if (dlg.DoModal() == IDOK)
 				{
+#ifndef SUBMIT_DATA_IN_DIALOG
+					listData.StartEdit();
+					listData.AddNew();
 					listData.m_day=dlg.m_date;
 					listData.m_addorsub=dlg.m_sum;
 					listData.m_remain=dlg.m_remain;
 					listData.m_bType=dlg.m_nType;
 					listData.m_strSite =dlg.m_strSite;
 					listData.m_strSubCount = dlg.m_strSubCount;
-					//			    BOOL b = pListSet->Update();
-					BOOL b = pListSet->New_Item(&listData);
-					if(!b)
+					listData.m_ID = dlg.m_id;
+					int ret = listData.SubmitNew();
+					listData.EndEdit();
+					//BOOL b = pListSet->New_Item(&listData);
+					if(ret)
 					{
 						::MessageBox(this->GetSafeHwnd(),"提交失败！","EditPaste Mode",MB_OK);
 					}
-					else
-					{
-						theApp.ForceUpdateViews();
-					}
+#endif
+
 					SelectMaxIndexItem();
 				}
+#ifdef SUBMIT_DATA_IN_DIALOG
+				listData.EndEdit();
+#endif
 			}
 			else
 			{
@@ -1627,7 +1635,7 @@ void CReportDemoView::ExportCreditRecord(const COleDateTime &timeBegin, const CO
 {
 	CString strFile(_T("C:\\test.htm"));
 	CGridHtmlExporter exporter;
-	exporter.SetExportFile(strFile);
+//exporter.SetExportFile(strFile);
     CListSet* pListSet = theApp.GetListSet();   
     pListSet->m_strFilter = m_pParent->m_strFilter;
     pListSet->Requery();
@@ -1647,16 +1655,16 @@ void CReportDemoView::ExportCreditRecord(const COleDateTime &timeBegin, const CO
 			if(fThisSum<0)
 			{
 				fSum += fThisSum;
-				exporter.ExportLine(pListSet->GetDate(),pListSet->m_addorsub,pListSet->m_remain,uColor);
+			//exporter.ExportLine(pListSet->GetDate(),pListSet->m_addorsub,pListSet->m_remain,uColor);
 			}
 		}
 		pListSet->MoveNext();
 	}
 	str = timePay.Format("%Y-%m-%d");
 	str1.Format("%8.2f",-fSum);
-	exporter.ExportLine(str,str1,"Bankbook自动生成还款额.",0x3591ff);
-	exporter.ExportTail();
-	exporter.CloseFile();
+//exporter.ExportLine(str,str1,"Bankbook自动生成还款额.",0x3591ff);
+//exporter.ExportTail();
+//exporter.CloseFile();
 	ShellExecute( AfxGetMainWnd()->m_hWnd, "open", strFile, NULL, NULL, SW_SHOWNORMAL );
 }
 
@@ -1732,25 +1740,26 @@ void CReportDemoView::OnAddReturnRecord()
         pListSet->Requery();
 		
 		CListSet listData;
+		listData.StartEdit();
+		listData.AddNew();
 		
-		//        pListSet->AddNew();
-		//		BYTE bType = ;
+
         listData.m_remain.Format("From %s",strPayId) ; 
         listData.m_day = day; 
         listData.m_bType = theApp.GetTypeIndex(_T("转存"));    
         listData.m_addorsub = addorsub;   
         listData.m_ID = g_strAutoReturnCreditCard;
 		listData.m_strSite = strSite;
+		int ret = listData.SubmitNew();
+		listData.EndEdit();
         
         CString str;
         str.Format("%s ->%s \n%s\n%s",strPayId,listData.m_ID,listData.m_addorsub,listData.m_remain);
-		b = pListSet->New_Item(&listData);
+		//b = pListSet->New_Item(&listData);
 		
-		//       BOOL b = pListSet->Update();
-		if(b)
+		if(ret == 0)
 		{
 			str += "\nOK";
-			theApp.ForceUpdateViews();
 		}
 		else
 		{

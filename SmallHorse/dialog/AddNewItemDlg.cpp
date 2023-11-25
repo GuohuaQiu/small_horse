@@ -31,6 +31,7 @@ CAddNewItemDlg::CAddNewItemDlg(CWnd* pParent /*=NULL*/)
 	bgonext=FALSE;
 	m_bnewbook=FALSE;
 	m_bNewItem=TRUE;
+	m_pSet = NULL;
 }
 
 
@@ -68,6 +69,7 @@ void CAddNewItemDlg::OnNextinput()
 {
 	bgonext=TRUE;
 	UpdateData();
+	SubmitData();
 	EndDialog(IDOK);
 }
 
@@ -75,6 +77,7 @@ void CAddNewItemDlg::OnYES()
 {
 	bgonext=FALSE;
 	UpdateData();
+	SubmitData();
 	EndDialog(IDOK);
 }
 
@@ -117,12 +120,15 @@ BOOL CAddNewItemDlg::OnInitDialog()
 		return FALSE;
 	};
 	sub_set.Requery();
-	sub_set.MoveFirst();
-	while(!sub_set.IsEOF())
+	if (sub_set.GetRecordCount() > 0)
 	{
-		TRACE("subid:%s %s\n", sub_set.m_Sub_Count_ID);
-		m_cmbSubCount.AddString(sub_set.m_Sub_Count_ID);
-		sub_set.MoveNext();
+		sub_set.MoveFirst();
+		while (!sub_set.IsEOF())
+		{
+			TRACE("subid:%s \n", sub_set.m_Sub_Count_ID);
+			m_cmbSubCount.AddString(sub_set.m_Sub_Count_ID);
+			sub_set.MoveNext();
+		}
 	}
 	sub_set.Close();
 
@@ -191,3 +197,26 @@ BOOL CAddNewItemDlg::UpdateData(BOOL bSaveAndValidate)
 
 
 
+int CAddNewItemDlg::SubmitData()
+{
+#ifdef SUBMIT_DATA_IN_DIALOG
+	if (m_pSet) 
+	{
+		m_pSet->AddNew();
+		m_pSet->m_ID = m_id;
+		m_pSet->m_day = m_date;
+		m_pSet->m_addorsub = m_sum;
+		m_pSet->m_remain = m_remain;
+		m_pSet->m_bType = m_nType;
+		m_pSet->m_strSite = m_strSite;
+		m_pSet->m_strSubCount = m_strSubCount;
+		int ret = m_pSet->SubmitNew();
+		if (ret)
+		{
+			::MessageBox(this->GetSafeHwnd(), "Ã·Ωª ß∞‹£°", "EditPaste Mode", MB_OK);
+		}
+
+	}
+#endif
+	return 0;
+}
