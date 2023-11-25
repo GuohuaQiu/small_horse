@@ -122,7 +122,6 @@ void CNewBook::OnOK()
 		m_idSet.m_nType = m_cmbType.GetCurSel() + 1;
 
 
-		//m_pIDSet->Edit( );
 		m_pIDSet->Modify_Book(&m_idSet);
         m_pIDSet->Requery();
     }

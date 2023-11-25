@@ -35,7 +35,7 @@ CIDSet::CIDSet(CDatabase* pdb)
 	m_EditStatus = 0;
 	m_nFields = 10;
 	//}}AFX_FIELD_INIT
-	m_nDefaultType = snapshot;
+	m_nDefaultType = dynaset;
 }
 
 
