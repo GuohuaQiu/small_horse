@@ -2783,3 +2783,15 @@ void CSmallHorseApp::QueryDate(COleDateTime centerDay, int nRoundDay)
 	strSort=_T("OperDate,Index");
 	OpenView(strQueryInfo,strSort);
 }
+
+
+void CSmallHorseApp::GetCurrentPath(char* path)
+{
+    HMODULE module = GetModuleHandle(0);
+    GetModuleFileName(module, path, MAX_PATH);
+
+    CString csFullPath(path);
+    int nPos = csFullPath.ReverseFind(_T('\\'));
+    if (nPos >= 0)
+        path[nPos+1] = 0;
+}

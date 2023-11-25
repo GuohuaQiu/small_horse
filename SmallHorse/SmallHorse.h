@@ -143,6 +143,7 @@ public:
 	int StaticDoubtItems(CString& nID);
 public:
 	BOOL OpenTodoView(void);
+    static void GetCurrentPath(char* path);
 };
 
 extern CSmallHorseApp theApp;
