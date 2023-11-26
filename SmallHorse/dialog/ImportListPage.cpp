@@ -305,7 +305,11 @@ int CImportListPage::FindSubCountConflict(int nType[])
 {
 	CString strSubCount;
 	CGridHtmlExporter exporter;
-	CString strFile(_T("C:\\bank.htm"));
+
+    char path[MAX_PATH];
+    CSmallHorseApp::GetCurrentPath(path);
+    strcat(path, "bank.htm");
+    CString strFile(_T(path));
 	exporter.SetExportFile(strFile);
 	int nConflictCount = 0;
 	int nCount = m_listctrl.GetItemCount();
@@ -341,7 +345,10 @@ int CImportListPage::FindConflict(int nType[5])
 	CString strRemain,strDate,strAdd,strDec,strSubCount;
 	int nYear,nMonth,nDay,nHh, nMm, nSs;
 	CGridHtmlExporter exporter;
-	CString strFile(_T("C:\\bank.htm"));
+    char path[MAX_PATH];
+    CSmallHorseApp::GetCurrentPath(path);
+    strcat(path, "info.htm");
+	CString strFile(_T(path));
 	exporter.SetExportFile(strFile);
 	int nConflictCount = 0;
 	int nCount = m_listctrl.GetItemCount();
