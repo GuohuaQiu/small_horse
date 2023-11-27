@@ -416,12 +416,15 @@ int CImportListPage::FindConflict(int nType[5])
 			}
 		}
 	}
-	strRemain.Format(_T("总共有%d项冲突."),nConflictCount);
-	exporter.ExportLine("","",strRemain,0x45dd45);
-	m_listctrl.SetRedraw(TRUE);
-	exporter.ExportTail();
+	if (nConflictCount > 0) {
+
+		strRemain.Format(_T("总共有%d项冲突."), nConflictCount);
+		exporter.ExportLine("", "", strRemain, 0x45dd45);
+		exporter.ExportTail();
+		ShellExecute(AfxGetMainWnd()->m_hWnd, _T("open"), strFile, NULL, NULL, SW_SHOWNORMAL);
+	}
 	exporter.CloseFile();
-	ShellExecute( AfxGetMainWnd()->m_hWnd,_T( "open"), strFile, NULL, NULL, SW_SHOWNORMAL );
+	m_listctrl.SetRedraw(TRUE);
 	return nConflictCount;
 	//end
 }
