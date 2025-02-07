@@ -155,7 +155,7 @@ BOOL CAddNewItemDlg::OnInitDialog()
 		CBCGPDateTimeCtrl::DTM_CHECKBOX |
 		CBCGPDateTimeCtrl::DTM_TIME | 
 		CBCGPDateTimeCtrl::DTM_TIME24HBYLOCALE;
-    m_wndDateTimePicker.SetState (CBCGPDateTimeCtrl::DTM_SPIN |CBCGPDateTimeCtrl::DTM_DROPCALENDAR |CBCGPDateTimeCtrl::DTM_DATE, stateMask);
+    m_wndDateTimePicker.SetState (CBCGPDateTimeCtrl::DTM_SPIN |CBCGPDateTimeCtrl::DTM_DROPCALENDAR |CBCGPDateTimeCtrl::DTM_TIME24H |CBCGPDateTimeCtrl::DTM_DATE | CBCGPDateTimeCtrl::DTM_TIME, stateMask);
 	m_wndDateTimePicker.SizeToContent();
 	UpdateData(FALSE);
   m_cmbSite.Init(GetDlgItem(IDC_COMBO_SITE));
@@ -173,20 +173,7 @@ BOOL CAddNewItemDlg::UpdateData(BOOL bSaveAndValidate)
 	CDialog::UpdateData(bSaveAndValidate);
 	if(bSaveAndValidate)
 	{
-		COleDateTime newDate = m_wndDateTimePicker.GetDate();
-		//Only the date change, will set to a new date. otherwise the time will disappear.
-/**** Add by Qiu Guohua on 2018-05-09 15:42:53 **********************/
-		if(m_date.GetDay() == newDate.GetDay() && m_date.GetMonth() == newDate.GetMonth() && m_date.GetYear() == newDate.GetYear())
-/**************************2018-05-09 15:42:53 **********************/
-		{
-			CString strTrace = m_date.Format();
-			TRACE(strTrace);
-			TRACE(_T("No changed.\n"));
-		}
-		else
-		{
-			m_date.SetDateTime(newDate.GetYear() ,newDate.GetMonth() ,newDate.GetDay(),m_date.GetHour(),m_date.GetMinute(),m_date.GetSecond());
-		}
+        m_date = m_wndDateTimePicker.GetDate();
 	}
 	else
 	{
