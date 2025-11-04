@@ -45,13 +45,16 @@
 #define IDB_ACTIVE                      186
 #define IDD_CLOSE_SUBCOUNT              189
 #define IDR_MENU_COMPARE                190
+#define IDR_SUBCOUNT_MANAGER_MENU       191
 #define IDD_COPY_RECORDS                195
 #define IDD_REPLACE_STRING              196
 #define IDB_LIST_IMAGES                 197
+#define IDD_DINGQI_MANAGER_DIALOG       197
 #define IDC_EDIT_MONEY_RANGE            1000
 #define IDC_EDIT_MONEY                  1001
 #define IDC_DATETIMEPICKER              1002
 #define IDC_EDIT_RATE                   1003
+#define IDC_DATETIMEPICKER_END          1004
 #define IDC_NEWID                       1011
 #define IDC_NEWNAME                     1012
 #define IDC_NEWBANK                     1013
@@ -62,6 +65,7 @@
 #define IDC_NEWCARD                     1016
 #define IDC_NEXTINPUT                   1017
 #define IDC_EDIT_MAINCOUNT              1017
+#define IDC_EDIT_OWNER                  1017
 #define IDC_EDIT_PASSWORD               1018
 #define IDC_ID                          1019
 #define IDC_LIST                        1022
@@ -128,6 +132,8 @@
 #define IDC_CHECK_TRANSFER              1091
 #define IDC_EDIT_OLD_STR                1092
 #define IDC_EDIT_NEW_STR                1093
+#define IDC_EDIT_BANK                   1094
+#define IDC_DATETIMEPICKER_START        1095
 #define IDM_COPY_RECORDS_TO             32000
 #define IDM_COPY_RECORDS_TO_END         32010
 #define IDM_MOVE_RECORDS_TO             32020
@@ -235,6 +241,7 @@
 #define ID_EDIT_CAL_SUM                 32938
 #define ID_ACCOUNT_SHOW_CLOSED          32941
 #define ID_ACCOUNT                      32942
+#define ID_SUBCOUNT_LIST_DETAIL_ALL     32943
 #define ID_SUBCOUNT_LIST_ALL            32944
 #define ID_RECORD_COPY                  32949
 #define ID_RECORD_PASTE                 32950
@@ -253,9 +260,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        201
+#define _APS_NEXT_RESOURCE_VALUE        204
 #define _APS_NEXT_COMMAND_VALUE         32971
-#define _APS_NEXT_CONTROL_VALUE         1094
+#define _APS_NEXT_CONTROL_VALUE         1096
 #define _APS_NEXT_SYMED_VALUE           109
 #endif
 #endif

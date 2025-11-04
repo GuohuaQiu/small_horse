@@ -75,6 +75,7 @@ public:
 	afx_msg void OnShowNoExistBook();
 	afx_msg BOOL OnOpenQueryFile (UINT nID);
 	afx_msg void OnOpenSubCounts();
+	afx_msg void OnOpenSubCountsDetail();
 	afx_msg void OnFileNew();
 	afx_msg void OnQueryComment();
 	afx_msg void OnQueryDate();
@@ -131,6 +132,8 @@ public:
 	void OpenCountsbyPeople(CString strText);
 	BOOL OpenCountsView(const CString &strFilter, VIEW_TYPE viewType, BOOL bSaveHistory ,LPCTSTR lpstrName);
 	void TransferDingqi(const CString& strID);
+    void ManageDingqi(DWORD recordId);
+    void ModifyDingqi(DWORD recordId);
 	void FillPeriodtoCombox(CComboBox* pCmbBox);
 	CSubCountSet* GetSubCountSet();
 	BOOL RenewSubCount(const CString& strID, const CString& strSubID);

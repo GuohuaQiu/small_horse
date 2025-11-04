@@ -95,6 +95,7 @@ BEGIN
         MENUITEM "新增加账户",                       ID_ACCOUNT_NEW
         MENUITEM "显示已关账户",                      ID_ACCOUNT_SHOW_CLOSED
         MENUITEM "显示所有子账户列表",                   ID_SUBCOUNT_LIST_ALL
+        MENUITEM "显示所有子账户详情",                   ID_SUBCOUNT_LIST_DETAIL_ALL
     END
     POPUP "记录"
     BEGIN
@@ -250,6 +251,14 @@ BEGIN
     END
 END
 
+IDR_SUBCOUNT_MANAGER_MENU MENU
+BEGIN
+    POPUP "D"
+    BEGIN
+        MENUITEM "修改",                          IDM_MODIFY_SUBCOUNT
+        MENUITEM "关掉子账户",                       ID_SUBCOUNT_CLOSE
+    END
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -376,10 +385,10 @@ BEGIN
     EDITTEXT        IDC_EDIT_FIND_STRING,60,48,132,14,ES_AUTOHSCROLL
 END
 
-IDD_ADDRECORD DIALOG  0, 0, 269, 242
+IDD_ADDRECORD DIALOGEX 0, 0, 269, 242
 STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_THICKFRAME
 CAPTION "增加记录"
-FONT 10, "宋体"
+FONT 10, "宋体", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_EDIT_MONEY,13,91,119,14,ES_AUTOHSCROLL | ES_NOHIDESEL
     DEFPUSHBUTTON   "确定",IDOK,41,207,42,14
@@ -464,7 +473,7 @@ STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_THICKFRAME
 CAPTION "定期输入"
 FONT 10, "宋体"
 BEGIN
-    ICON            160,IDC_STATIC,35,190,20,20
+    ICON            IDB_TASKS,IDC_STATIC,35,190,20,20
     EDITTEXT        IDC_EDIT_MONEY,13,131,119,14,ES_AUTOHSCROLL | ES_NOHIDESEL
     DEFPUSHBUTTON   "确定",IDOK,90,205,42,14
     PUSHBUTTON      "取消",IDCANCEL,153,205,42,14
@@ -631,6 +640,33 @@ BEGIN
     LTEXT           "替换为",-1,18,33,38,8
 END
 
+IDD_DINGQI_MANAGER_DIALOG DIALOGEX 0, 0, 324, 240
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_THICKFRAME
+CAPTION "定期输入"
+FONT 10, "宋体", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_EDIT_MONEY,57,103,75,14,ES_AUTOHSCROLL | ES_NOHIDESEL | WS_DISABLED
+    DEFPUSHBUTTON   "确定",IDOK,90,210,42,14
+    PUSHBUTTON      "取消",IDCANCEL,153,210,42,14
+    LTEXT           "日期:",IDC_STATIC,190,10,21,8
+    LTEXT           "银行：",IDC_STATIC,7,11,34,8
+    EDITTEXT        IDC_EDIT_BANK,56,9,119,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_EDIT_COMMENT,13,137,297,61,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "备注：",IDC_STATIC,4,118,23,8
+    PUSHBUTTON      "DateTimePicker",IDC_DATETIMEPICKER_START,189,21,119,14
+    LTEXT           "子帐号：",IDC_STATIC,7,81,38,8
+    LTEXT           "金额:",IDC_STATIC,7,100,38,8
+    EDITTEXT        IDC_EDIT_SUBCOUNT,56,81,119,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_EDIT_RATE,189,102,57,14,ES_AUTOHSCROLL | ES_NOHIDESEL
+    LTEXT           "利率:",IDC_STATIC,153,105,38,8
+    LTEXT           "存期:",IDC_STATIC,189,42,38,8
+    COMBOBOX        IDC_COMBO_TIMESPAN,189,54,119,142,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_ID,56,33,119,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_EDIT_OWNER,56,56,119,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "DateTimePicker",IDC_DATETIMEPICKER_END,189,78,119,14
+    LTEXT           "帐号：",IDC_STATIC,7,35,34,8
+    LTEXT           "姓名：",IDC_STATIC,7,58,34,8
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -872,6 +908,16 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 94
     END
+    IDD_DINGQI_MANAGER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 310
+        VERTGUIDE, 13
+        VERTGUIDE, 132
+        VERTGUIDE, 153
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 233
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1032,6 +1078,22 @@ BEGIN
     0
 END
 
+IDD_DINGQI_MANAGER_DIALOG DLGINIT
+BEGIN
+    IDC_COMBO_TIMESPAN, 0x403, 5, 0
+0xfdc8, 0xc2d4, "\000" 
+    IDC_COMBO_TIMESPAN, 0x403, 5, 0
+0xebb0, 0xeac4, "\000" 
+    IDC_COMBO_TIMESPAN, 0x403, 5, 0
+0xbbd2, 0xeac4, "\000" 
+    IDC_COMBO_TIMESPAN, 0x403, 5, 0
+0xbdc1, 0xeac4, "\000" 
+    IDC_COMBO_TIMESPAN, 0x403, 5, 0
+0xfdc8, 0xeac4, "\000" 
+    IDC_COMBO_TIMESPAN, 0x403, 5, 0
+0xe5ce, 0xeac4, "\000" 
+    0
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1039,6 +1101,23 @@ END
 //
 
 IDC_NULL                CURSOR                  "res\\handpoin.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ADDRECORD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DINGQI_MANAGER_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

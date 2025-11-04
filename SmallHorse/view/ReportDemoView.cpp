@@ -24,6 +24,7 @@
 #include "SmartDate.h"
 #include "CopyRecordsDlg.h"
 #include "ReplaceStringDlg.h"
+#include "DetailSubCountSet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -74,6 +75,20 @@ enum COLUMN_SIMPLE_SUBCOUNT
 	COLUMN_SIMPLE_SUBCOUNT_NAME,
 	COLUMN_SIMPLE_SUBCOUNT_REMAIN,
 	COLUMN_SIMPLE_SUBCOUNT_NUMBER
+};
+
+enum COLUMN_DETAIL_SUBCOUNT
+{
+    COLUMN_DETAIL_SUBCOUNT_BANK,
+    COLUMN_DETAIL_SUBCOUNT_OWNER,
+    COLUMN_DETAIL_SUBCOUNT_ID,
+    COLUMN_DETAIL_SUBCOUNT_VALUE,
+    COLUMN_DETAIL_SUBCOUNT_START_DATE,
+    COLUMN_DETAIL_SUBCOUNT_END_DATE,
+    COLUMN_DETAIL_SUBCOUNT_RATE,
+    COLUMN_DETAIL_SUBCOUNT_TIMESPAN,
+    COLUMN_DETAIL_SUBCOUNT_COMMENT,
+    COLUMN_DETAIL_SUBCOUNT__COUNT,
 };
 
 enum COLUMN_ONE_BOOK
@@ -450,6 +465,10 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
         else if(VIEW_TYPE_SUB_COUNTS == m_pParent->m_ViewType)
         {
             theApp.ShowPopupMenu (IDR_SUBCOUNT_MENU, point, this);
+        }
+        else if(VIEW_TYPE_SUB_COUNTS_DETAIL == m_pParent->m_ViewType)
+        {
+            theApp.ShowPopupMenu (IDR_SUBCOUNT_MANAGER_MENU, point, this);
         }
     }
 }
@@ -1265,6 +1284,18 @@ void CReportDemoView::CreateListCtrl()
 		pReportCtrl->InsertColumn (COLUMN_SIMPLE_SUBCOUNT_NAME, _T("子账户名"), 50);
 		pReportCtrl->InsertColumn (COLUMN_SIMPLE_SUBCOUNT_REMAIN, _T("余额"), 30);
 	}
+	else if(IS_DETAIL_SUBCOUNT(m_pParent->m_ViewType))
+	{
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_BANK, _T("银行"), 60);          
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_OWNER, _T("户主"), 30);         
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_ID, _T("账号"), 40);            
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_VALUE, _T("金额"), 20);         
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_START_DATE, _T("开户日"), 25);  
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_END_DATE, _T("到期日"), 30);    
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_RATE, _T("利率"), 30);          
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_TIMESPAN, _T("存期"), 20);      
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_COMMENT, _T("注释"), 20);       
+	}
 	else
 	{
 		if(m_ViewType == VIEW_TYPE_MAIN_COUNTS)
@@ -1943,7 +1974,21 @@ void CReportDemoView::OnTransferDingqi()
     CBCGPGridRow* pSel = GetReportCtrl ()->GetCurSel ();
     if(m_pParent->m_ViewType == VIEW_TYPE_RECORD_IN_ONE_COUNT)
     {
-    	theApp.TransferDingqi(m_pParent->m_strID);
+
+        CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
+        CBCGPGridRow* pRow = pReportCtrl->GetCurSel();
+        if (pSel != NULL)
+        {
+            DWORD dwRecordID = pRow->GetData();
+            theApp.ManageDingqi(dwRecordID);
+            //CListSet* pSet = theApp.GetListSet();
+            //if (pSet->MoveToID(dwRecordID, m_pParent->m_strFilter))
+            //{
+
+            //}
+        }
+
+    	//theApp.TransferDingqi(m_pParent->m_strID);
     }
     else if(m_pParent->m_ViewType == VIEW_TYPE_MAIN_COUNTS)
     {
@@ -2239,7 +2284,7 @@ void CReportDemoView::OnUpdateTransferDingqi(CCmdUI* pCmdUI)
 {
     //必须是储蓄卡
     BOOL b = m_pParent->m_ViewType == VIEW_TYPE_RECORD_IN_ONE_COUNT;
-    b &= (theApp.GetBookType(m_pParent->m_strID) == 1);
+    b &= (theApp.GetBookType(m_pParent->m_strID) != 3);//not credit card.
     pCmdUI->Enable(b);
 }
 
@@ -2268,6 +2313,10 @@ void CReportDemoView::FillItems()
 	else if(IS_SIMPLE_SUBCOUNT(m_pParent->m_ViewType))
 	{
 		DisplaySimpleSubCount();
+	}
+	else if(IS_DETAIL_SUBCOUNT(m_pParent->m_ViewType))
+	{
+		DisplayDetailSubCount();
 	}
 	else
 	{
@@ -2629,6 +2678,45 @@ void CReportDemoView::DisplaySimpleSubCount()
 	sub_set.Close();
 }
 
+void CReportDemoView::DisplayDetailSubCount()
+{
+#if 1
+    CString sql = "DELETE FROM FixedDeposit WHERE PERIOD IS NULL OR PERIOD = \'\';";
+
+    try {
+        CDatabase db;
+        db.OpenEx(CDbConfigure::GetDataSource());
+        db.ExecuteSQL(sql);
+        db.Close();
+    }
+    catch (CDBException* e) {
+        CString errMsg = _T("数据库错误: ") + e->m_strError;
+        AfxMessageBox(errMsg);
+        e->Delete();
+    }
+
+#endif
+
+	CDetailSubCountSet sub_set(m_pParent->m_strFilter);
+
+	if(!sub_set.Open())
+	{
+		AfxMessageBox(_T("DetailSubCountSet 数据库装载错误(type)!"));
+		return ;
+	};
+    sub_set.Requery();
+    if (sub_set.GetRecordCount() > 0)
+    {
+        sub_set.MoveFirst();
+        while (!sub_set.IsEOF())
+        {
+            AddDetailSubCount2List(&sub_set);
+
+            sub_set.MoveNext();
+        }
+    }
+	sub_set.Close();
+}
 void CReportDemoView::AddSimpleSubCount2List(CSubCountInOneCountSet* pSet)
 {
 	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
@@ -2639,4 +2727,25 @@ void CReportDemoView::AddSimpleSubCount2List(CSubCountInOneCountSet* pSet)
 	pRow->GetItem (COLUMN_SIMPLE_SUBCOUNT_REMAIN)->SetValue ((LPCTSTR)pSet->m_Remains, FALSE);
 	pReportCtrl->AddRow (pRow, FALSE);
 
+}
+
+void CReportDemoView::AddDetailSubCount2List(CDetailSubCountSet* pSet)
+{
+    CBCGPReportCtrl* pReportCtrl = GetReportCtrl();
+
+    int count = pReportCtrl->GetColumnCount();
+    CBCGPGridRow* pRow = pReportCtrl->CreateRow(count);
+
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_BANK         )->SetValue((LPCTSTR)pSet->m_strBank, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_OWNER        )->SetValue((LPCTSTR)pSet->m_strOwner, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_ID           )->SetValue((LPCTSTR)pSet->m_strBookId, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_VALUE        )->SetValue(pSet->m_fValue, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_START_DATE   )->SetValue(_variant_t((DATE)pSet->m_dateStart, VT_DATE), FALSE);
+
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_END_DATE     )->SetValue(_variant_t((DATE)pSet->m_dateEnd, VT_DATE), FALSE);
+
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_RATE         )->SetValue(pSet->m_fRate, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_TIMESPAN     )->SetValue((LPCTSTR)pSet->m_strTimeSpan, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_COMMENT      )->SetValue((LPCTSTR)pSet->m_strComment, FALSE);
+    pReportCtrl->AddRow(pRow, FALSE);
 }

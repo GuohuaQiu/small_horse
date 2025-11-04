@@ -20,6 +20,8 @@
 #include "CloseSubCountDlg.h"
 #include "CompareFrame.h"
 #include "CDbConfigure.h"
+#include "FixedDepositSet.h"
+#include "CFixedDepositManagerDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,10 +43,12 @@ BEGIN_MESSAGE_MAP(CSmallHorseApp, CWinApp)
 	ON_COMMAND(ID_QUERY_COMMENT, OnQueryComment)
 	ON_COMMAND(ID_QUERY_DATE, OnQueryDate)
 	ON_COMMAND(ID_QUERY_MONEY, OnQueryMoney)
+    ON_COMMAND(ID_SUBCOUNT_LIST_DETAIL_ALL, OnOpenSubCountsDetail)
 	ON_COMMAND(ID_SUBCOUNT_LIST_ALL, OnOpenSubCounts)
 	ON_COMMAND(ID_DATABASE_COMPARE, OnCompareDatabase)
 	// Standard print setup command
 	ON_COMMAND(ID_ACCOUNT_NEW, &CSmallHorseApp::OnAccountNew)
+    ON_COMMAND(ID_EDIT_TEST, &CSmallHorseApp::OnEditTest)
 END_MESSAGE_MAP()
 
 
@@ -337,6 +341,7 @@ void CSmallHorseApp::PreLoadState ()
 	GetContextMenuManager()->AddMenu (_T("My menu2"), IDR_BANKBOOK_MENU);
     GetContextMenuManager()->AddMenu (_T("My menu3"), IDR_SUBCOUNT_MENU);
     GetContextMenuManager()->AddMenu (_T("My menu4"), IDR_MENU_COMPARE);
+    GetContextMenuManager()->AddMenu (_T("My menu4"), IDR_SUBCOUNT_MANAGER_MENU);
 }
 
 
@@ -1295,6 +1300,217 @@ void CSmallHorseApp::TransferDingqi(const CString& strID)
 	}
     //ForceUpdateViews();
 }
+/*******************************************
+    Function Name : 
+    author        : Qiu Guohua
+    Date          : 2025-3-10 22:29:40
+    Description   : 
+    Return type  : 
+    Argument      : 
+********************************************/
+void CSmallHorseApp::ManageDingqi(DWORD recordId) 
+{
+    CListSet* pSet = GetListSet();
+    BOOL b = pSet->MoveToID(recordId);
+    if (!b) {
+        return;
+    }
+    if (IsAccountLocked(pSet->m_ID))
+    {
+        return;
+    }
+
+    //5. 银行，从LISTSET中间接提取，不可修改
+    //6. 主账户 从LISTSET中提取，不可修改
+    //8. 姓名，从LISTSET中间接提取，不可修改
+    //3. 注释  先从原来的记录处提取，可修改
+    //5. 余额，从LISTSET中提取，不可修改
+    //5. 起始日期 从LISTSET中提取，不可修改
+    //7. 子账户名 从LISTSET中提取，不可修改
+    //1. LISTSET_ID，作为键值对应LISTSET中的一项
+
+    //4. 利率，按年化显示，比如年化5 就是5.0
+    //2. 存期，字符串型，根据字符串转数字使用，来推算结束日期
+    CDatabase dtbs;
+    b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+    CRecordset set(&dtbs);
+    CString strFilter;
+    strFilter.Format("select Books.Book_Bank, Books.Book_Owner, Books.Book_ID,Items.SubCountID, Items.Comment,Items.Oper, Items.OperDate from Books,Items where Items.Item_Book_ID = Books.Book_ID and Items.Index = %d", recordId);
+
+    CFixedDepositManagerDlg dlg;
+
+
+    b = set.Open(CRecordset::snapshot, strFilter);
+    if (!b) {
+        return;
+    }
+    CDBVariant varint;
+    int count  = set.GetODBCFieldCount();
+    CODBCFieldInfo fieldinfo;
+    set.GetODBCFieldInfo((short)6,fieldinfo);
+
+    set.GetFieldValue((short)0, dlg.m_strBank);
+    set.GetFieldValue((short)1, dlg.m_strOwner);
+    set.GetFieldValue((short)2, dlg.m_strId);
+    set.GetFieldValue((short)3, dlg.m_strSubCount);
+    set.GetFieldValue((short)4, dlg.m_strComment);
+    set.GetFieldValue((short)5, varint, SQL_REAL);
+    dlg.m_fValue = (float)varint.m_fltVal;
+    CString x;
+    set.GetFieldValue((short)6, x);
+
+
+    COleDateTime dt;
+    if (dt.ParseDateTime(x)) {
+        // 成功转换
+        if (dt.GetStatus() == COleDateTime::valid) {
+            dlg.m_dateStart = dt;
+            dlg.m_dateEnd = dt;
+        }
+    }
+    else {
+        // 转换失败
+    }
+
+
+
+   
+    if (dlg.DoModal() == IDOK) {
+        CFixedDepositSet set;
+        set.Open();
+        set.AddNew();
+        set.m_Comment = dlg.m_strComment;
+        set.m_StartDate = dlg.m_dateStart;
+        set.m_DueDate = dlg.m_dateEnd;
+        TRACE("duedate year %d\n", set.m_DueDate.GetYear());
+        set.m_Rate = dlg.m_fRate;
+        set.m_ID = recordId;
+        set.m_Period = dlg.m_strTimeSpan;
+        set.Update();
+        set.Close();
+
+ 
+
+
+            //5. 银行，从LISTSET中间接提取，不可修改
+            //6. 主账户 从LISTSET中提取，不可修改
+            //8. 姓名，从LISTSET中间接提取，不可修改
+            //3. 注释  先从原来的记录处提取，可修改
+            //5. 余额，从LISTSET中提取，不可修改
+            //5. 起始日期 从LISTSET中提取，不可修改
+            //7. 子账户名 从LISTSET中提取，不可修改
+            //1. LISTSET_ID，作为键值对应LISTSET中的一项
+
+            //4. 利率，按年化显示，比如年化5 就是5.0
+            //2. 存期，字符串型，根据字符串转数字使用，来推算结束日期
+
+
+    }
+
+////		CListSet listData;
+//		listData.AddNew();
+//
+//		listData.m_day=dlg.m_date;
+//		listData.m_ID=strID;
+//		listData.m_strSubCount = dlg.m_strSubCount;
+//		listData.m_remain= _T("");
+//		listData.m_bType=3;
+//		listData.m_addorsub.Format(_T("%f"),dlg.m_sum);
+//		listData.SubmitNew();
+//		listData.EndEdit();
+//
+//		//pListSet->New_Item(&listData);
+//	}
+    //ForceUpdateViews();
+}
+
+// 修改定期记录（使用 CFixedDepositManagerDlg 界面）。
+// 与新增不同：修改时不改变主键 ID，只更新可修改字段并保存。
+void CSmallHorseApp::ModifyDingqi(DWORD recordId)
+{
+	CListSet* pSet = GetListSet();
+	BOOL b = pSet->MoveToID(recordId);
+	if (!b) {
+		return;
+	}
+	if (IsAccountLocked(pSet->m_ID))
+	{
+		return;
+	}
+
+	CDatabase dtbs;
+	b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+	CRecordset set(&dtbs);
+	CString strFilter;
+	strFilter.Format("select Books.Book_Bank, Books.Book_Owner, Books.Book_ID,Items.SubCountID, Items.Comment,Items.Oper, Items.OperDate from Books,Items where Items.Item_Book_ID = Books.Book_ID and Items.Index = %d", recordId);
+
+	CFixedDepositManagerDlg dlg;
+
+	b = set.Open(CRecordset::snapshot, strFilter);
+	if (!b) {
+		return;
+	}
+	CDBVariant varint;
+	set.GetFieldValue((short)0, dlg.m_strBank);
+	set.GetFieldValue((short)1, dlg.m_strOwner);
+	set.GetFieldValue((short)2, dlg.m_strId);
+	set.GetFieldValue((short)3, dlg.m_strSubCount);
+	set.GetFieldValue((short)4, dlg.m_strComment);
+	set.GetFieldValue((short)5, varint, SQL_REAL);
+	dlg.m_fValue = (float)varint.m_fltVal;
+	CString x;
+	set.GetFieldValue((short)6, x);
+
+	COleDateTime dt;
+	if (dt.ParseDateTime(x)) {
+		if (dt.GetStatus() == COleDateTime::valid) {
+			dlg.m_dateStart = dt;
+			dlg.m_dateEnd = dt;
+		}
+	}
+
+	if (dlg.DoModal() == IDOK) {
+		// 打开 FixedDeposit 表，查找对应 ID 并 Edit/Update，不要修改 ID
+		CFixedDepositSet fdset;
+		fdset.Open();
+		BOOL found = FALSE;
+		if (!fdset.IsEOF()) {
+			fdset.MoveFirst();
+			while (!fdset.IsEOF()) {
+				if ((DWORD)fdset.m_ID == recordId) {
+					// 找到记录，进入编辑
+					fdset.Edit();
+					// 更新允许修改的字段（保留 ID 原样）
+					fdset.m_Comment = dlg.m_strComment;
+					fdset.m_StartDate = dlg.m_dateStart;
+					fdset.m_DueDate = dlg.m_dateEnd;
+					fdset.m_Rate = dlg.m_fRate;
+					fdset.m_Period = dlg.m_strTimeSpan;
+					fdset.Update();
+					found = TRUE;
+					break;
+				}
+				fdset.MoveNext();
+			}
+		}
+		fdset.Close();
+
+		if (!found) {
+			// 如果没有找到对应记录，可选择新增（和原 ManageDingqi 保持一致的行为）
+			CFixedDepositSet newset;
+			newset.Open();
+			newset.AddNew();
+			newset.m_Comment = dlg.m_strComment;
+			newset.m_StartDate = dlg.m_dateStart;
+			newset.m_DueDate = dlg.m_dateEnd;
+			newset.m_Rate = dlg.m_fRate;
+			newset.m_Period = dlg.m_strTimeSpan;
+			// 不要擅自赋予原 recordId，因为这是修改语义缺失时的新增，应由系统分配ID
+			newset.Update();
+			newset.Close();
+		}
+	}
+}
 
 /*******************************************
     Function Name : 
@@ -1358,6 +1574,21 @@ void CSmallHorseApp::OnOpenSubCounts()
 				   _T("子账户列表"));
 }
 
+/*******************************************
+    Function Name : 
+    author        : Qiu Guohua
+    Date          : 2025-03-25 21:14
+    Description   : open all sub count detail
+    Return type  : 
+    Argument      : 
+********************************************/
+void CSmallHorseApp::OnOpenSubCountsDetail()
+{
+	OpenCountsView(SQL_OPEN_ALL_ACTIVE_SUB_COUNT, \
+        VIEW_TYPE_SUB_COUNTS_DETAIL,\
+				   FALSE,\
+				   _T("子账户列表"));
+}
 
 
 /*******************************************
@@ -2803,4 +3034,41 @@ void CSmallHorseApp::GetCurrentPath(char* path)
     int nPos = csFullPath.ReverseFind(_T('\\'));
     if (nPos >= 0)
         path[nPos+1] = 0;
+}
+
+
+void CSmallHorseApp::OnEditTest()
+{
+#if 0
+    CFixedDepositSet set;
+
+    set.Open();
+    //for (int i = 0; i < 20; i++) {
+    //    set.AddNew();
+    //    set.m_ID = 13149;
+    //    set.m_Comment = "Just test 25-3-9";
+    //    set.m_StartDate = COleDateTime::GetCurrentTime();
+    //    set.m_Rate = 5.0;
+    //    set.m_EndDate = COleDateTime::GetCurrentTime();
+    //    set.m_SubCountTableId = 66;
+    //    set.Update();
+    //}
+    set.Close();
+
+#else
+    try {
+        CDatabase db;
+        db.OpenEx(CDbConfigure::GetDataSource());
+        //db.ExecuteSQL(_T("ALTER TABLE FixedDeposit alter COLUMN EndDate rename TO DueDate;"));
+        db.ExecuteSQL(_T("ALTER TABLE FixedDeposit DROP COLUMN EndDate;"));
+        
+        db.Close();
+    }
+    catch (CDBException* e) {
+        CString errMsg = _T("数据库错误: ") + e->m_strError;
+        AfxMessageBox(errMsg);
+        e->Delete();
+    }
+
+#endif
 }
