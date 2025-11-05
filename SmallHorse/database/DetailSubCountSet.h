@@ -32,13 +32,14 @@ public:
     CString m_strBank;
     CString m_strOwner;
     CString m_strBookId;
-    CString m_strRecordId;
     float m_fValue;
     COleDateTime m_dateStart;
     COleDateTime m_dateEnd;
     float m_fRate;
     CString m_strTimeSpan;
     CString m_strComment;
+    int m_nId;
+    BOOL m_bClosed;
 	//}}AFX_FIELD
 
 

@@ -88,6 +88,7 @@ enum COLUMN_DETAIL_SUBCOUNT
     COLUMN_DETAIL_SUBCOUNT_RATE,
     COLUMN_DETAIL_SUBCOUNT_TIMESPAN,
     COLUMN_DETAIL_SUBCOUNT_COMMENT,
+    COLUMN_DETAIL_SUBCOUNT_STATUS,
     COLUMN_DETAIL_SUBCOUNT__COUNT,
 };
 
@@ -147,10 +148,9 @@ extern CString g_strAutoReturnCreditCard;
 // CFlagItem class
 
 CFlagItem::CFlagItem(
-					 CBCGPToolBarImages&	icons,
-					 int nSelectedIcon,
-					 DWORD dwData) :
-m_Icons (icons)
+    CBCGPToolBarImages &icons,
+    int nSelectedIcon,
+    DWORD dwData) : m_Icons(icons)
 {
 	m_varValue = (long) nSelectedIcon;
 	AllowEdit (FALSE);
@@ -429,7 +429,8 @@ void CReportDemoView::OnContextMenu(CWnd*, CPoint point)
 
 					POSITION pos = g_CountIdList.GetHeadPosition();
 					int n = 0;
-					while (pos) {
+                    while (pos)
+                    {
 						CString strId = g_CountIdList.GetNext(pos);
 						sMenu.AppendMenu(MF_STRING,IDM_COPY_RECORDS_TO + n,(LPCTSTR)strId);
 						moveMenu.AppendMenu(MF_STRING,IDM_MOVE_RECORDS_TO + n,(LPCTSTR)strId);
@@ -849,7 +850,8 @@ void CReportDemoView::OnEditPaste()
 	UINT uFormat=NULL;
 	TRACE("OUR FORMAT IS %d\n",CSmallHorseApp::m_DataFormat);
 	OpenClipboard();
-	do{
+    do
+    {
 		uFormat = EnumClipboardFormats(uFormat);
 		TRACE("clip format :%d\n",uFormat);
 	}while(uFormat!=NULL);
@@ -1295,6 +1297,7 @@ void CReportDemoView::CreateListCtrl()
         pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_RATE, _T("利率"), 30);          
         pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_TIMESPAN, _T("存期"), 20);      
         pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_COMMENT, _T("注释"), 20);       
+        pReportCtrl->InsertColumn(COLUMN_DETAIL_SUBCOUNT_STATUS, _T("状态"), 20);
 	}
 	else
 	{
@@ -1814,7 +1817,8 @@ void CReportDemoView::OnActivateView(BOOL bActivate, CView* pActivateView, CView
     {
         if (m_pParent)
         {
-            if (m_pParent->m_strID != _T("")) {
+            if (m_pParent->m_strID != _T(""))
+            {
 
                 theApp.ShowAccountInfo(m_pParent->m_strID);
                 TRACE(_T("OnActivateView %s,%d,%s,%s\n"), m_pParent->m_strTitle, bActivate, pActivateView == this ? _T("Active this") : _T(""), pDeactiveView == this ? _T("DeActive this") : _T(""));
@@ -2038,6 +2042,14 @@ void CReportDemoView::OnModifySubcount()
                 (LPCTSTR) (_bstr_t)pSel->GetItem(COLUMN_SUBCOUNT_MAINCOUNT)->GetValue(),
                 (LPCTSTR) (_bstr_t)pSel->GetItem(COLUMN_SUBCOUNT_SUBCOUNT)->GetValue());
         }
+        else if (m_pParent->m_ViewType == VIEW_TYPE_SUB_COUNTS_DETAIL)
+        {
+            if (pSel != NULL)
+            {
+                DWORD dwRecordID = pSel->GetData();
+                theApp.ModifyDingqi(dwRecordID);
+            }
+        }
     }
 }
 
@@ -2133,6 +2145,15 @@ void CReportDemoView::OnSubcountClose()
             
             BOOL b = theApp.CloseSubCount((LPCTSTR) (_bstr_t)pSel->GetItem(COLUMN_SUBCOUNT_MAINCOUNT)->GetValue(),
                 (LPCTSTR) (_bstr_t)pSel->GetItem(COLUMN_SUBCOUNT_SUBCOUNT)->GetValue());
+            if (b)
+            {
+                theApp.ForceUpdateViews();
+            }
+        }
+        else if (m_pParent->m_ViewType == VIEW_TYPE_SUB_COUNTS_DETAIL)
+        {
+            DWORD dwRecordID = pSel->GetData();
+            BOOL b = theApp.CloseDingqiRecord(dwRecordID);
             if(b)
             {
                 theApp.ForceUpdateViews();
@@ -2162,6 +2183,10 @@ void CReportDemoView::OnUpdateSubcountClose(CCmdUI* pCmdUI)
         {
             bEnable = theApp.IsSubcountActive((LPCTSTR) (_bstr_t)pSel->GetItem(COLUMN_SUBCOUNT_MAINCOUNT)->GetValue(),
                 (LPCTSTR) (_bstr_t)pSel->GetItem(COLUMN_SUBCOUNT_SUBCOUNT)->GetValue());
+        }
+        else if (m_pParent->m_ViewType == VIEW_TYPE_SUB_COUNTS_DETAIL)
+        {
+            bEnable = TRUE;
         }
         else if (IS_RECORD(m_pParent->m_ViewType)&&pSel->IsGroup())
         {
@@ -2391,7 +2416,8 @@ void CReportDemoView::OnCheckBill()
 	COleDateTime tmBegin,tmEnd,tmPay;
 	float fUse, fPay;
 	today = COleDateTime::GetCurrentTime();
-	do {
+    do
+    {
 		CheckBill(nYear,nMonth,tmBegin,tmEnd,tmPay, fUse,fPay);
 		exporter.ExportCheckLine(nYear,nMonth,tmBegin,tmEnd,tmPay, fUse,fPay);
 
@@ -2680,7 +2706,7 @@ void CReportDemoView::DisplaySimpleSubCount()
 
 void CReportDemoView::DisplayDetailSubCount()
 {
-#if 1
+#if 0
     CString sql = "DELETE FROM FixedDeposit WHERE PERIOD IS NULL OR PERIOD = \'\';";
 
     try {
@@ -2747,5 +2773,19 @@ void CReportDemoView::AddDetailSubCount2List(CDetailSubCountSet* pSet)
     pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_RATE         )->SetValue(pSet->m_fRate, FALSE);
     pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_TIMESPAN     )->SetValue((LPCTSTR)pSet->m_strTimeSpan, FALSE);
     pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_COMMENT      )->SetValue((LPCTSTR)pSet->m_strComment, FALSE);
+    if (pSet->m_bClosed)
+    {
+        CMailReportCtrl::SetRowBackColor(pRow, RGB(209, 200, 192));
+
+        pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_STATUS)->SetValue(_T("已结"), FALSE);
+    }
+    else
+    {
+        CMailReportCtrl::SetRowBackColor(pRow, RGB(245, 255, 245));
+        pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_STATUS)->SetValue(_T("未结"), FALSE);
+    }
+
     pReportCtrl->AddRow(pRow, FALSE);
+
+    pRow->SetData((DWORD)pSet->m_nId);
 }

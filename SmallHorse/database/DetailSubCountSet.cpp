@@ -23,7 +23,7 @@ CDetailSubCountSet::CDetailSubCountSet(const CString& strFilter)
 {
 	//{{AFX_FIELD_INIT(CDetailSubCountSet)
 	//m_strFilter = strFilter;
-	m_nFields = 10;
+	m_nFields = 11;
 	//}}AFX_FIELD_INIT
 	m_nDefaultType = snapshot;
 }
@@ -47,13 +47,14 @@ void CDetailSubCountSet::DoFieldExchange(CFieldExchange* pFX)
     RFX_Text(pFX, _T("[Book_Bank]"), m_strBank);
     RFX_Text(pFX, _T("[Book_Owner]"), m_strOwner);
     RFX_Text(pFX, _T("[Book_ID]"), m_strBookId);
-    RFX_Text(pFX, _T("[Index]"), m_strRecordId);
+    RFX_Int(pFX, _T("[Index]"), m_nId);
     RFX_Single(pFX, _T("[Oper]"), m_fValue);
     RFX_Date(pFX, _T("[OperDate]"), m_dateStart);
     RFX_Date(pFX, _T("[DueDate]"), m_dateEnd);
     RFX_Single(pFX, _T("[Rate]"), m_fRate);
     RFX_Text(pFX, _T("[PERIOD]"), m_strTimeSpan);
     RFX_Text(pFX, _T("[Comment]"), m_strComment);
+    RFX_Bool(pFX, _T("[Closed]"), m_bClosed);
 	//}}AFX_FIELD_MAP
 
 }
