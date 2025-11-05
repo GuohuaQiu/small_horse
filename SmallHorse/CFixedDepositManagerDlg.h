@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "afxdialogex.h"
 
 
 // CFixedDepositManagerDlg 对话框

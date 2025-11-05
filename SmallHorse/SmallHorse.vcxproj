@@ -227,6 +227,7 @@
     <ClCompile Include="control\SelEdit.cpp" />
     <ClCompile Include="control\Subclass.cpp" />
     <ClCompile Include="database\BookTypeSet.cpp" />
+    <ClCompile Include="database\DetailSubCountSet.cpp" />
     <ClCompile Include="database\CDbConfigure.cpp" />
     <ClCompile Include="database\CreditPaySet.cpp" />
     <ClCompile Include="database\DatabaseUtility.cpp" />
@@ -254,6 +255,8 @@
     <ClCompile Include="dialog\DatePage.cpp" />
     <ClCompile Include="dialog\DingQiInputDlg.cpp" />
     <ClCompile Include="dialog\FileSelPage.cpp" />
+    <ClCompile Include="CFixedDepositManagerDlg.cpp" />
+    <ClCompile Include="database\FixedDepositSet.cpp" />
     <ClCompile Include="dialog\FindBookDlg.cpp" />
     <ClCompile Include="dialog\ImportListPage.cpp" />
     <ClCompile Include="dialog\ImportSheet.cpp" />

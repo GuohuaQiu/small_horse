@@ -102,6 +102,11 @@
                                        
 #define COLUMN_SITE         _T("µØµã")
 
+#define SQL_OPEN_ALL_ACTIVE_SUB_COUNT         _T("select Books.Book_Bank, Books.Book_Owner, Books.Book_ID, Items.Index,\
+                                      Items.Oper, Items.OperDate,FixedDeposit.DueDate, FixedDeposit.Rate, FixedDeposit.PERIOD,FixedDeposit.Comment \
+                                      from Books,FixedDeposit,Items \
+                                      where FixedDeposit.ID = Items.Index and \
+                                      Items.Item_Book_ID = Books.Book_ID")
 
 typedef struct GeneralInformation
 {

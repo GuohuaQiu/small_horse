@@ -147,6 +147,7 @@ public:
 public:
 	BOOL OpenTodoView(void);
     static void GetCurrentPath(char* path);
+    afx_msg void OnEditTest();
 };
 
 extern CSmallHorseApp theApp;
