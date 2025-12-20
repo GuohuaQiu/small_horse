@@ -27,7 +27,8 @@ CFixedDepositSet::CFixedDepositSet(CDatabase* pdb)
 	m_Rate = 0.0;
 	m_Comment = L"";
 	m_SubCountTableId = 0;
-	m_nFields = 7;
+	m_bClosed = FALSE;
+	m_nFields = 8;
 	m_nDefaultType = dynaset;
 }
 //#error Security Issue: The connection string may contain a password
@@ -57,6 +58,7 @@ void CFixedDepositSet::DoFieldExchange(CFieldExchange* pFX)
 	RFX_Single(pFX, _T("[Rate]"), m_Rate);
 	RFX_Text(pFX, _T("[Comment]"), m_Comment);
 	RFX_Long(pFX, _T("[SubCountTableId]"), m_SubCountTableId);
+    RFX_Bool(pFX, _T("[Closed]"), m_bClosed);
     RFX_Text(pFX, _T("[PERIOD]"), m_Period);  // 注意字段名标识符
 
 }

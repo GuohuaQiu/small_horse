@@ -26,6 +26,7 @@ public:
 	float	m_Rate;
 	CStringW	m_Comment;
 	long	m_SubCountTableId;
+    BOOL    m_bClosed;
     CStringW m_Period;  // 字符串类型统一使用CString
 
 // 重写

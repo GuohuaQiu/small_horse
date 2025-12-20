@@ -134,6 +134,7 @@ public:
 	void TransferDingqi(const CString& strID);
     void ManageDingqi(DWORD recordId);
     void ModifyDingqi(DWORD recordId);
+    BOOL CloseDingqiRecord(DWORD recordId);
 	void FillPeriodtoCombox(CComboBox* pCmbBox);
 	CSubCountSet* GetSubCountSet();
 	BOOL RenewSubCount(const CString& strID, const CString& strSubID);
