@@ -74,13 +74,12 @@ void CCurveView::OnInitialUpdate()
 void CCurveView::OnDraw(CDC* pDC)
 {
     CListSet listSet;
-    listSet.EnsureOpen();
-    if(listSet.m_strFilter != m_pParent->m_strFilter)
-	{
-		listSet.m_strFilter = m_pParent->m_strFilter;
-		listSet.m_strSort = m_pParent->m_strSort;
-		listSet.Requery();
-	}
+
+
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+
 	int mode=pDC->SetBkMode(TRANSPARENT);
 
 	GetMaxValue();
@@ -263,7 +262,9 @@ int CCurveView::Get1999Days(COleDateTime time,BOOL bLocal)
 void CCurveView::DrawCurve(CDC *pDC)
 {
     CListSet listSet;
-    listSet.EnsureOpen();
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
     ClearAreaInfo();
 
 	CString strtrace;
@@ -316,7 +317,9 @@ void CCurveView::DrawCurve(CDC *pDC)
 void CCurveView::GetMaxValue()
 {
     CListSet listSet;
-    listSet.EnsureOpen();
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
     if(listSet.GetRecordCount()>0)
 	{
 	int max=0;
@@ -354,7 +357,10 @@ void CCurveView::GetMaxValue()
 void CCurveView::SetBeginYear()
 {
     CListSet listSet;
-    listSet.EnsureOpen();
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+
     if (bDraw)
     {
         if (listSet.GetRecordCount() > 0)
@@ -387,7 +393,9 @@ void CCurveView::DrawName(CDC *pDC, CString strName)
 void CCurveView::DrawAllSaveCurve(CDC *pDC)
 {
     CListSet listSet;
-    listSet.EnsureOpen();
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
     CString strtrace;
 	if(listSet.GetRecordCount()>0)
 	{
@@ -439,7 +447,9 @@ void CCurveView::DrawAllSaveCurve(CDC *pDC)
 void CCurveView::DrawAllExpenseCurve(CDC *pDC)
 {
     CListSet listSet;
-    listSet.EnsureOpen();
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
     CString strtrace;
 	if(listSet.GetRecordCount()>0)
 	{

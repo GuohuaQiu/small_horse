@@ -34,7 +34,6 @@ public:
 	BOOL OpenView(const CString &strFilter,const CString &strOrder,BOOL bSaveHistory = FALSE,LPCTSTR lpstrName = NULL);
 	void GenIDList(const CStringList& namelist,CStringList& idlist);
 	void Search(const CStringList& idlist,const CStringList& typelist,COleDateTime* pBeginTime=NULL,COleDateTime* pEndTime=NULL, LPCTSTR lpstrName = NULL,LPCTSTR  lpstrCommentLike = NULL);
-	void SetBookFilter(const CString strID);
 	void CalSum(const CString& strID);
 	BOOL ShowAccountInfo(const CString& strID);
     BOOL ShowStaticInfo(const CStringList &sl);

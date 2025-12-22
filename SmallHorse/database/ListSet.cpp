@@ -32,9 +32,9 @@ CListSet::CListSet(CDatabase* pdb)
     m_strSubCount = _T("");
     m_strSite = _T("");
     m_nFields = GetFieldCount();
-    //}}AFX_FIELD_INIT
-    m_nDefaultType = snapshot;
-    m_strSort=_T("OperDate,Index");
+	//}}AFX_FIELD_INIT
+	m_nDefaultType = snapshot;
+	m_strSort=_T("OperDate,Index");
 
     m_bSetUpdateTime = TRUE;
 }

@@ -762,18 +762,18 @@ void CReportDemoView::OnDeleteRecord()
     }
 }
 
-void CReportDemoView::OnEditRecord()
+void CReportDemoView::OnEditRecord() 
 {
-    if (IS_RECORD(m_pParent->m_ViewType))
-    {
-        CBCGPReportCtrl *pReportCtrl = GetReportCtrl();
-        CBCGPGridRow *pRow = pReportCtrl->GetCurSel();
-        if (pRow != NULL)
-        {
-            DWORD dwRecordID = pRow->GetData();
-            // cant use app default CListSet to edit. when CCurveView update,
-            // the object editMode change to noMode, this made the Update fail.
-            // 2012-06-04
+	if(IS_RECORD(m_pParent->m_ViewType))
+	{
+		CBCGPReportCtrl* pReportCtrl = GetReportCtrl();
+		CBCGPGridRow* pRow = pReportCtrl->GetCurSel();
+		if(pRow != NULL)
+		{
+			DWORD dwRecordID = pRow->GetData();
+    //cant use app default CListSet to edit. when CCurveView update, 
+    //the object editMode change to noMode, this made the Update fail.
+    //2012-06-04
             CListSet listSet;
 
             if (listSet.FindByID(dwRecordID))
@@ -804,28 +804,29 @@ void CReportDemoView::OnEditRecord()
                 listData.m_strSubCount = dlg.m_strSubCount;
                 listData.m_ID = listSet.m_ID;
                 BOOL b = listSet.Modify_Record(&listData);
-                //				BOOL b = pListSet->Update();
-                if (!b)
+//				BOOL b = pListSet->Update();
+                if(!b)
                 {
-                    ::MessageBox(this->GetSafeHwnd(), "提交失败！", "Edit Mode", MB_OK);
+                    ::MessageBox(this->GetSafeHwnd(),"提交失败！","Edit Mode",MB_OK);
                 }
                 else
                 {
                     theApp.ForceUpdateViews();
                 }
-                SetSelectedRow(dwRecordID);
-            }
-        }
-    }
+				SetSelectedRow(dwRecordID);
+			}
+		}
+	}
 }
 
+
 /*******************************************
-    Function Name :
+    Function Name : 
     author        : Qiu Guohua
     Date          : 2009-2-14 18:11:27
-    Description   :
-    Return type  :
-    Argument      :
+    Description   : 
+    Return type  : 
+    Argument      : 
 ********************************************/
 void CReportDemoView::OnEditPaste() 
 {
@@ -857,6 +858,7 @@ void CReportDemoView::OnEditPaste()
 		//2012-06-04
 		if (OpenClipboard())
 		{
+			// CListSet* pListSet = theApp.GetListSet();
 			HANDLE hData = ::GetClipboardData(CSmallHorseApp::m_DataFormat);
 			CloseClipboard();
 			
@@ -1012,7 +1014,7 @@ void CReportDemoView::OnLoadCsv()
 		listSet.EnsureOpen();
 		listSet.m_strFilter = m_pParent->m_strFilter;
 		listSet.Requery();
-		CImportSheet sheet(_T(""),&listSet,m_pParent->m_strID);
+		CImportSheet sheet(_T(""),m_pParent->m_strID);
 		sheet.DoModal();
         theApp.ForceUpdateViews();
 	}
@@ -1164,7 +1166,7 @@ void CReportDemoView::SelectMaxIndexItem()
     author        : Qiu Guohua
     Date          : 2009-2-14 20:35:08
     Description   : 
-    Return type   : 
+    Return type  : 
     Argument      : 
 ********************************************/
 void CReportDemoView::SetSelectedRow(const int nRecordArray)
@@ -1191,7 +1193,7 @@ void CReportDemoView::SetSelectedRow(const int nRecordArray)
     author        : Qiu Guohua
     Date          : 2009-2-14 22:53:00
     Description   : 
-    Return type   : no used. to get max width for every column.
+    Return type  : no used. to get max width for every column.
     Argument      : 
 ********************************************/
 void CReportDemoView::AdjustColumnWidth()
@@ -1208,7 +1210,7 @@ void CReportDemoView::AdjustColumnWidth()
     author        : Qiu Guohua
     Date          : 2009-4-24 21:49:20
     Description   : 
-    Return type   : 
+    Return type  : 
     Argument      : 
 ********************************************/
 void CReportDemoView::CreateListCtrl()
@@ -1537,6 +1539,7 @@ void CReportDemoView::DisplayCount()
     pReportCtrl->AdjustLayout();
 #endif
 }
+
 
 
 
@@ -2659,8 +2662,138 @@ void CReportDemoView::MoveRecordsTo(const CString &strCount)
 	int count = pReportCtrl->GetSelectedRows(dbAry);
 	if(count>0)
 	{
-        CListSet listSet;
-        listSet.OpenEx();
+		CListSet listSet;
 		listSet.MoveRecordsTo(strCount, dlg.m_SubCount,dbAry, count);
 	}
+}
+
+
+void CReportDemoView::OnMoveRecordsTo(UINT nID)
+{
+	int nIndex = nID - IDM_MOVE_RECORDS_TO;
+	CStringList list;
+
+	POSITION pos= g_CountIdList.GetHeadPosition();
+	CString strId;
+	while(nIndex >= 0 && pos)
+	{
+		strId = g_CountIdList.GetNext(pos);
+		nIndex--;
+	}
+	if(strId.GetLength()>0)
+	{
+		MoveRecordsTo(strId);
+	}
+	g_CountIdList.RemoveAll();
+}
+
+void CReportDemoView::ForceUpdate()
+{
+	OnUpdate(NULL,0,NULL);
+}
+
+void CReportDemoView::DisplaySimpleSubCount()
+{
+	CSubCountInOneCountSet sub_set(m_pParent->m_strFilter,FALSE);
+
+	if(!sub_set.Open())
+	{
+		AfxMessageBox(_T("sub_set 数据库装载错误(type)!"));
+		return ;
+	};
+	sub_set.Requery();
+	sub_set.MoveFirst();
+	while(!sub_set.IsEOF())
+	{
+		AddSimpleSubCount2List(&sub_set);
+		TRACE("subid:%s %s\n", sub_set.m_Sub_Count_ID,sub_set.m_Remains);
+		sub_set.MoveNext();
+	}
+	sub_set.Close();
+}
+
+void CReportDemoView::DisplayDetailSubCount()
+{
+#if 0
+    CString sql = "DELETE FROM FixedDeposit WHERE PERIOD IS NULL OR PERIOD = \'\';";
+
+    try {
+        CDatabase db;
+        db.OpenEx(CDbConfigure::GetDataSource());
+        db.ExecuteSQL(sql);
+        db.Close();
+    }
+    catch (CDBException* e) {
+        CString errMsg = _T("数据库错误: ") + e->m_strError;
+        AfxMessageBox(errMsg);
+        e->Delete();
+    }
+
+#endif
+
+	CDetailSubCountSet sub_set(m_pParent->m_strFilter);
+
+	if(!sub_set.Open())
+	{
+		AfxMessageBox(_T("DetailSubCountSet 数据库装载错误(type)!"));
+		return ;
+	};
+    sub_set.Requery();
+    if (sub_set.GetRecordCount() > 0)
+    {
+        sub_set.MoveFirst();
+        while (!sub_set.IsEOF())
+        {
+            AddDetailSubCount2List(&sub_set);
+
+            sub_set.MoveNext();
+        }
+    }
+	sub_set.Close();
+}
+void CReportDemoView::AddSimpleSubCount2List(CSubCountInOneCountSet* pSet)
+{
+	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
+
+	int count=pReportCtrl->GetColumnCount ();
+	CBCGPGridRow* pRow = pReportCtrl->CreateRow (count);
+	pRow->GetItem (COLUMN_SIMPLE_SUBCOUNT_NAME)->SetValue ((LPCTSTR)pSet->m_Sub_Count_ID, FALSE);
+	pRow->GetItem (COLUMN_SIMPLE_SUBCOUNT_REMAIN)->SetValue ((LPCTSTR)pSet->m_Remains, FALSE);
+	pReportCtrl->AddRow (pRow, FALSE);
+
+}
+
+void CReportDemoView::AddDetailSubCount2List(CDetailSubCountSet* pSet)
+{
+    CBCGPReportCtrl* pReportCtrl = GetReportCtrl();
+
+    int count = pReportCtrl->GetColumnCount();
+    CBCGPGridRow* pRow = pReportCtrl->CreateRow(count);
+
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_BANK         )->SetValue((LPCTSTR)pSet->m_strBank, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_OWNER        )->SetValue((LPCTSTR)pSet->m_strOwner, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_ID           )->SetValue((LPCTSTR)pSet->m_strBookId, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_VALUE        )->SetValue(pSet->m_fValue, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_START_DATE   )->SetValue(_variant_t((DATE)pSet->m_dateStart, VT_DATE), FALSE);
+
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_END_DATE     )->SetValue(_variant_t((DATE)pSet->m_dateEnd, VT_DATE), FALSE);
+
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_RATE         )->SetValue(pSet->m_fRate, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_TIMESPAN     )->SetValue((LPCTSTR)pSet->m_strTimeSpan, FALSE);
+    pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_COMMENT      )->SetValue((LPCTSTR)pSet->m_strComment, FALSE);
+    if (pSet->m_bClosed)
+    {
+        CMailReportCtrl::SetRowBackColor(pRow, RGB(209, 200, 192));
+
+        pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_STATUS)->SetValue(_T("已结"), FALSE);
+    }
+    else
+    {
+        CMailReportCtrl::SetRowBackColor(pRow, RGB(245, 255, 245));
+        pRow->GetItem(COLUMN_DETAIL_SUBCOUNT_STATUS)->SetValue(_T("未结"), FALSE);
+    }
+
+    pReportCtrl->AddRow(pRow, FALSE);
+
+    pRow->SetData((DWORD)pSet->m_nId);
 }

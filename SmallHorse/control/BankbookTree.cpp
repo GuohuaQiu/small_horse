@@ -433,13 +433,13 @@ void CBankbookTree::AddTreeItem(HTREEITEM hparent, const CString& strId, BOOL bE
 #endif
 }
 
-void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill)
+void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill/*=FALSE*/)
 {
 #ifdef  LOAD_DATEBASE
 	
     CIDSet idSet;
     idSet.OpenEx();
-    CIDSet* pIdSet = &idSet;
+	CIDSet* pIdSet = &idSet;
 	
 	CString strnamefil=_T("Book_Owner=\'");
 	strnamefil+=strname;
@@ -457,7 +457,6 @@ void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill)
 		pIdSet->MoveNext();
 	}
     CListSet listSet;
-
 	
 	strfil.Delete(strfil.ReverseFind(','));
 	if(bDisBill)
@@ -468,9 +467,9 @@ void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill)
 		dlg.DoModal();
 	}
 	
-	pListSet->m_strFilter =_T("Item_Book_ID IN")+ strfil+_T(") and (Type=1 or Type=2)");// '379 70052992*3'
-	pListSet->m_strSort=_T("OperDate,Index");
-	pListSet->Requery();
+	// pListSet->m_strFilter =_T("Item_Book_ID IN")+ strfil+_T(") and (Type=1 or Type=2)");// '379 70052992*3'
+	// pListSet->m_strSort=_T("OperDate,Index");
+	// pListSet->Requery();
 	
 	
 	

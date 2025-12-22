@@ -22,6 +22,7 @@
 #include "CDbConfigure.h"
 #include "FixedDepositSet.h"
 #include "CFixedDepositManagerDlg.h"
+#include "DatabaseManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -697,30 +698,27 @@ void CSmallHorseApp::UpdateAllView()
 
 void CSmallHorseApp::DeleteRecord(int nRecordID)
 {
-    CString strTip;
-    strTip.Format(_T("确定要删除序号为 %d 的记录吗?"),nRecordID);
-    if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
-    {
-        CListSet plistset;
-        plistset.Open(AFX_DB_USE_DEFAULT_TYPE, NULL, CRecordset::skipDeletedRecords);
-        BOOL bSuccess = plistset.MoveToID(nRecordID);
+	CString strTip;
+	strTip.Format(_T("确定要删除序号为 %d 的记录吗?"),nRecordID);
+	if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
+	{
+        CListSet listset;
+        BOOL bSuccess = listset.FindByID(nRecordID);
+
         if(!bSuccess)
         {
             ASSERT(FALSE);
-            CString strID;
-            strID.Format(_T("%d"),nRecordID);
-            plistset.m_strFilter =_T("Index = ") + strID;// '379 70052992*3'
-            plistset.Requery();
-            bSuccess = plistset.MoveToID(nRecordID);
+            listset.Reopen();
+            bSuccess = listset.MoveToID(nRecordID);
             if(!bSuccess)
             {
                 TRACE(_T("\nFALSE TO  MOVE TO  ID."));
                 return;
             }
         }
-        plistset.Delete();
-        UpdateAllView();
-    }
+        listset.Delete();
+		UpdateAllView();
+	}
 }
 
 
@@ -815,14 +813,14 @@ BOOL CSmallHorseApp::ShowStaticInfo(const CStringList &sl)
 ********************************************/
 void CSmallHorseApp::CalSum(const CString &strID)
 {
-    
+	
     if(IsAccountLocked(strID))
     {
         return;
     }
 
     CMapStringToPtr map;
-    map.InitHashTable(16);
+	map.InitHashTable(16);
     
     CListSet plistset;
     plistset.Open(AFX_DB_USE_DEFAULT_TYPE, NULL, CRecordset::skipDeletedRecords);
@@ -836,7 +834,7 @@ void CSmallHorseApp::CalSum(const CString &strID)
     }
     plistset.SetUpdateTime(FALSE);
     float fBaseSum = 0.0;
-    while(!plistset->IsEOF())
+    while(!plistset.IsEOF())
     {
         if(plistset.m_strSubCount == "")
         {
@@ -862,18 +860,18 @@ void CSmallHorseApp::CalSum(const CString &strID)
         plistset.MoveNext();
     }
     plistset.SetUpdateTime(TRUE);
-    UpdateAllView();
-    
-    POSITION pos;
-    CString key;
-    float* p;
-    
-    for( pos = map.GetStartPosition(); pos != NULL; )
-    {
-        map.GetNextAssoc( pos, key, (void*&)p );
-        delete p;
-    }
-    map.RemoveAll();
+	UpdateAllView();
+	
+	POSITION pos;
+	CString key;
+	float* p;
+	
+	for( pos = map.GetStartPosition(); pos != NULL; )
+	{
+		map.GetNextAssoc( pos, key, (void*&)p );
+		delete p;
+	}
+	map.RemoveAll();
 }
 
 
@@ -1339,7 +1337,7 @@ void CSmallHorseApp::ManageDingqi(DWORD recordId)
     //1. LISTSET_ID，作为键值对应LISTSET中的一项
 
     //4. 利率，按年化显示，比如年化5 就??5.0
-    //2. 存期，字符串型，根据字符串转??字使用，来推算结束日??
+    //2. 存期，字符串型，根据字符串转数字使用，来推算结束日期
     CDatabase dtbs;
     b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
     CRecordset set(&dtbs);
@@ -1430,7 +1428,7 @@ void CSmallHorseApp::ModifyDingqi(DWORD recordId)
         return;
     }
 
-    CDatabase* pdatabase = CDatabaseManager::GetInstance()->getDatabase();
+    CDatabase* pdatabase = CDatabaseManager::GetInstance()->GetConnection();
     b = pdatabase->OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
     CRecordset set(pdatabase);
 
@@ -1903,10 +1901,11 @@ void CSmallHorseApp::SelectPeriod(CComboBox *pCmbBox, int nMonth)
 ********************************************/
 void CSmallHorseApp::ForceUpdateViews()
 {
-    TRACE(_T("update start...;\n"));
+        TRACE(_T("update start...;\n"));
     UpdateAllView();
-    TRACE(_T("update end...;\n"));
+        TRACE(_T("update end...;\n"));
 }
+
 
 #define TRACE_TIME(reason,time) TRACE("%s:%s\n",reason,time.Format("%Y-%m-%d"));
 
@@ -1996,7 +1995,7 @@ void CSmallHorseApp::DeleteRecords(const CDWordArray &dbAry)
     strTip += _T("\n的记录吗?");
     if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
     {
-        CDatabase* pdatabase = CDatabaseManager::GetInstance()->getDatabase();
+        CDatabase* pdatabase = CDatabaseManager::GetInstance()->GetConnection();
 
         if(pdatabase)
         {
@@ -2928,9 +2927,9 @@ int CSmallHorseApp::StaticDoubtItems(CString& nID)
 {
 	CListSet set;
 	CString strfil=_T("\'")+nID+_T("\'");
-	set->m_strFilter=_T("Item_Book_ID=")+ strfil;
+	set.m_strFilter=_T("Item_Book_ID=")+ strfil;
 //	set->m_strFilter+=_T(" and Type=\'0\'");
-	TRACE(set->m_strFilter);
+	TRACE(set.m_strFilter);
 	TRACE("\n");
     set.OpenEx();
 
