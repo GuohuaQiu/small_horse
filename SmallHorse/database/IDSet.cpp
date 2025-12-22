@@ -18,10 +18,10 @@ static char THIS_FILE[] = __FILE__;
 // CIDSet
 
 
-IMPLEMENT_DYNAMIC(CIDSet, CRecordset)
+IMPLEMENT_DYNAMIC(CIDSet, CBaseRecordset)
 
 CIDSet::CIDSet(CDatabase* pdb)
-	: CRecordset(pdb)
+    : CBaseRecordset(pdb)
 {
 	//{{AFX_FIELD_INIT(CIDSet)
 	m_ID = _T("");
@@ -39,15 +39,13 @@ CIDSet::CIDSet(CDatabase* pdb)
 }
 
 
-CString CIDSet::GetDefaultConnect()
-{
-	return DATA_SOURCE_NAME_ODBC;
-}
 
 CString CIDSet::GetDefaultSQL()
 {
-	return _T("[Books]");
+    return _T("[Books]");
 }
+
+
 BOOL CIDSet::Modify_Book(CIDSet* pInData)
 {
 	CString strSQL="update Books set ";
@@ -75,6 +73,7 @@ BOOL CIDSet::Modify_Book(CIDSet* pInData)
 
 }
 
+
 void CIDSet::DoFieldExchange(CFieldExchange* pFX)
 {
 	//{{AFX_FIELD_MAP(CIDSet)
@@ -92,6 +91,57 @@ void CIDSet::DoFieldExchange(CFieldExchange* pFX)
 	//}}AFX_FIELD_MAP
 }
 
+BOOL CIDSet::FindByID(const CString& strID)
+{
+    CString strFilter;
+    strFilter.Format(_T("Book_ID = '%s'"), strID);
+    m_strFilter = strFilter;
+    
+    if (OpenEx())
+    {
+        return !IsEOF();
+    }
+    
+    return FALSE;
+}
+
+
+BOOL CIDSet::UpdateAndRefresh(BOOL bRefresh)
+{
+    if (!Update())
+        return FALSE;
+        
+    if (bRefresh)
+    {
+        // 保存当前位置
+        CDBVariant varBookmark;
+        if (CanBookmark())
+        {
+            GetBookmark(varBookmark);
+        }
+        
+        // 重新打开
+        Close();
+        if (!Open(m_nDefaultType, NULL, m_dwOptions))
+            return FALSE;
+            
+        // 恢复位置
+        if (varBookmark.m_dwType != DBVT_NULL && CanBookmark())
+        {
+            try
+            {
+                SetBookmark(varBookmark);
+            }
+            catch(...)
+            {
+                // 如果书签无效，移动到开头
+                MoveFirst();
+            }
+        }
+    }
+    
+    return TRUE;
+}
 /////////////////////////////////////////////////////////////////////////////
 // CIDSet diagnostics
 

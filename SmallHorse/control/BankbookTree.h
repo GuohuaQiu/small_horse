@@ -42,7 +42,7 @@ public:
 	void DisplayStaticInfo();
 	BOOL IsPeople(HTREEITEM item);
 	void QueryPeople(CString strname,BOOL bDisBill=FALSE);
-	void AddTreeItem(HTREEITEM hparent,CString str);
+    void AddTreeItem(HTREEITEM hparent, const CString& strId, BOOL bExist);
 	void AddTreeGroup(HTREEITEM htree);
 	void DeleteBook();
 	BOOL IsBandbook();

@@ -31,7 +31,7 @@ public:
 public:
 	void SetQueryDay(const COleDateTime& day);
 	void UpdateQueryList();
-	BOOL ShowAccountInfo(CIDSet *pSet);
+	BOOL ShowAccountInfo(const CString& strId);
     BOOL ShowStaticInfo(const CStringList &sl);
 	CBankbookTree* GetBookTree();
 	virtual ~CMainFrame();

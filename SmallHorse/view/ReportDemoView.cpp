@@ -532,13 +532,13 @@ float CReportDemoView::AddMembertoList(CListSet* pSet,int index,BOOL bCalSum,flo
     if(IS_QUERY(m_ViewType))
     {
         pRow->GetItem (COLUMN_BOOK_ID)->SetValue ((LPCTSTR)pSet->m_ID, FALSE);
-        CIDSet * pIdset = theApp.GetIDSet();
-        if(pIdset)
+        CIDSet idset;
+        idset.Open();
+        BOOL ret = idset.FindByID(pSet->m_ID);
+        //CIDSet * pIdset = theApp.GetIDSet();
+        if (ret)
         {
-            if(pIdset->MovetoCurID(pSet->m_ID))
-            {
-                pRow->GetItem (COLUMN_BOOK_BANK)->SetValue ((LPCTSTR)pIdset->m_bank, FALSE);
-            }
+            pRow->GetItem(COLUMN_BOOK_BANK)->SetValue((LPCTSTR)idset.m_bank, FALSE);
         }
         pReportCtrl->AddRow (pRow, FALSE);
         return 0;

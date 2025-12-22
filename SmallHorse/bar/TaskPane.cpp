@@ -80,29 +80,30 @@ void CTaskPane::UpdateMRUFilesList ()
     Return type  : 
     Argument      : 
 ********************************************/
-BOOL CTaskPane::ShowAccountInfo(CIDSet *pSet)
+BOOL CTaskPane::ShowAccountInfo(const CString& strId)
 {
-	if(pSet == NULL)
-		return FALSE;
 	RemoveGroup(m_nAccountGroup);
 	m_nAccountGroup = AddGroup (_T("账号"));
-
-	AddLabel (m_nAccountGroup, pSet->m_ID);
-	AddLabel (m_nAccountGroup, pSet->m_bank);
-	AddLabel (m_nAccountGroup, pSet->m_name);
-	AddLabel (m_nAccountGroup, pSet->m_remain);
-    if(pSet->m_bExist)
+    CIDSet idSet;
+    if (idSet.FindByID(strId))
     {
-        AddLabel(m_nAccountGroup,"状态：正常使用");
+        AddLabel(m_nAccountGroup, idSet.m_ID);
+        AddLabel(m_nAccountGroup, idSet.m_bank);
+        AddLabel(m_nAccountGroup, idSet.m_name);
+        AddLabel(m_nAccountGroup, idSet.m_remain);
+        if (idSet.m_bExist)
+        {
+            AddLabel(m_nAccountGroup, "状态：正常使用");
+        }
+        else
+        {
+            AddLabel(m_nAccountGroup, "状态：已经注销");
+        }
+        AddLabel(m_nAccountGroup, idSet.GetType());
     }
-    else
-    {
-        AddLabel(m_nAccountGroup,"状态：已经注销");
-    }
-    AddLabel(m_nAccountGroup,pSet->GetType());
 
-    
-	RedrawWindow();
+    RedrawWindow();
+
 	return TRUE;
 }
 BOOL CTaskPane::ShowStaticInfo(const CStringList &sl)

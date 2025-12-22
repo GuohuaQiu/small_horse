@@ -46,7 +46,7 @@ public:
 	void QueryDate(COleDateTime centerDay, int nRoundDay);
 	
 	BOOL OpenBankbook(const CString& strID);
-	CIDSet* GetIDSet();
+	// CIDSet* GetIDSet();
 	CListSet* GetListSet();
 	CTodoSet* GetTodoSet();
 	static UINT  m_DataFormat;
@@ -84,7 +84,7 @@ public:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-    CIDSet m_IDSet;
+    //CIDSet m_IDSet;
     CListSet m_listset;
 	CSubCountSet m_subCountSet;
 	CRateSet m_rateSet;

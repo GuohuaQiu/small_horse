@@ -146,20 +146,30 @@ void CWorkspaceBar2::OnIDEditChanged()
   {
     return;
   }
-    CIDSet* pIdSet = new CIDSet();
-	pIdSet->Open();
+    CIDSet idSet;
+
+
+    CIDSet* pIdSet = &idSet;
+
+    CString strFilter;
+
 	if(strID.GetLength()>0)
 	{
-		pIdSet->m_strFilter = "Book_ID LIKE \'%";
-		pIdSet->m_strFilter += strID;
-		pIdSet->m_strFilter += "%\'";
+		strFilter = "Book_ID LIKE \'%";
+		strFilter += strID;
+		strFilter += "%\'";
 	}
 	else
 	{
-		pIdSet->m_strFilter = "";
+		strFilter = "";
 
 	}
-	pIdSet->Requery();
+    pIdSet->m_strFilter = strFilter;
+    if (!idSet.OpenEx())
+    {
+        return;
+    }	
+    // pIdSet->Requery();
 	int nCount = pIdSet->GetRecordCount();
 	if(nCount > 0)
 	{
@@ -173,8 +183,8 @@ void CWorkspaceBar2::OnIDEditChanged()
 			pIdSet->MoveNext();
 		}
 	}
-	pIdSet->Close();
-	delete pIdSet;
+	// pIdSet->Close();
+	// delete pIdSet;
 }
 
 

@@ -550,9 +550,9 @@ void CMainFrame::OnUpdateAppLook(CCmdUI* pCmdUI)
     Return type  : 
     Argument      : 
 ********************************************/
-BOOL CMainFrame::ShowAccountInfo(CIDSet *pSet)
+BOOL CMainFrame::ShowAccountInfo(const CString& strId)
 {
-	return m_wndTaskPane.ShowAccountInfo(pSet);
+    return m_wndTaskPane.ShowAccountInfo(strId);
 }
 BOOL CMainFrame::ShowStaticInfo(const CStringList &sl)
 {

@@ -227,6 +227,8 @@
     <ClCompile Include="control\SelEdit.cpp" />
     <ClCompile Include="control\Subclass.cpp" />
     <ClCompile Include="database\BookTypeSet.cpp" />
+    <ClCompile Include="database\BaseRecordset.cpp" />
+    <ClCompile Include="database\DatabaseManager.cpp" />
     <ClCompile Include="database\DetailSubCountSet.cpp" />
     <ClCompile Include="database\CDbConfigure.cpp" />
     <ClCompile Include="database\CreditPaySet.cpp" />
@@ -314,8 +316,10 @@
     <ClInclude Include="control\SelEdit.h" />
     <ClInclude Include="control\Subclass.h" />
     <ClInclude Include="database\BookTypeSet.h" />
+    <ClInclude Include="database\BaseRecordset.h" />
     <ClInclude Include="database\CDbConfigure.h" />
     <ClInclude Include="database\CreditPaySet.h" />
+    <ClInclude Include="database\DatabaseManager.h" />
     <ClInclude Include="database\DatabaseUtility.h" />
     <ClInclude Include="database\database_setup.h" />
     <ClInclude Include="database\HtmlRecordSet.h" />
