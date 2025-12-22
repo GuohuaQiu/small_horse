@@ -22,6 +22,7 @@
 #include "CDbConfigure.h"
 #include "FixedDepositSet.h"
 #include "CFixedDepositManagerDlg.h"
+#include "DatabaseManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -540,18 +541,15 @@ int CSmallHorseApp::GetDate(CString strDate, int &y, int &m, int &d, int &hh, in
 
 int CSmallHorseApp::GetYear(int arrayIndex,CString strFilter)
 {
-#ifdef USE_APP_LIST_SET
-	CListSet* pListSet = GetListSet();
-#else
 	CListSet setEdit;
 	setEdit.Open();
 	CListSet* pListSet = &setEdit;
-#endif
-	
+    
 	if(pListSet->MoveToID(arrayIndex,strFilter))
 	{
 		return pListSet->m_day.GetYear();
 	}
+    return 0; // or appropriate default
 }
  
 
@@ -587,23 +585,6 @@ int CSmallHorseApp::GetTypeIndex(const CString &strType)
 // #endif
 // }
 
-
-/*******************************************
-    Function Name :	 
-    Create by     :	  Qiu Simon
-    Input         :   
-    Output        :   
-    Description   :   
-    Date          :   2009-2-4 11:11:42
-********************************************/
-CListSet* CSmallHorseApp::GetListSet()
-{
-    if(!m_listset.IsOpen())
-    {
-        m_listset.Open(AFX_DB_USE_DEFAULT_TYPE,  NULL, CRecordset::skipDeletedRecords  );
-    }
-    return &m_listset;
-}
 
 
 
@@ -721,24 +702,21 @@ void CSmallHorseApp::DeleteRecord(int nRecordID)
 	strTip.Format(_T("确定要删除序号为 %d 的记录吗?"),nRecordID);
 	if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
 	{
-		CListSet* plistset = GetListSet();
-		BOOL bSuccess = plistset->MoveToID(nRecordID);
-		if(!bSuccess)
-		{
-			ASSERT(FALSE);
-			CString strID;
-			strID.Format(_T("%d"),nRecordID);
-			plistset->m_strFilter =_T("Index = ") + strID;// '379 70052992*3'
-			plistset->Requery();
-			bSuccess = plistset->MoveToID(nRecordID);
-			if(!bSuccess)
-			{
-				TRACE(_T("\nFALSE TO  MOVE TO  ID."));
-				return;
-			}
-		}
-		plistset->Delete();
-		plistset->Requery();
+        CListSet listset;
+        BOOL bSuccess = listset.FindByID(nRecordID);
+
+        if(!bSuccess)
+        {
+            ASSERT(FALSE);
+            listset.Reopen();
+            bSuccess = listset.MoveToID(nRecordID);
+            if(!bSuccess)
+            {
+                TRACE(_T("\nFALSE TO  MOVE TO  ID."));
+                return;
+            }
+        }
+        listset.Delete();
 		UpdateAllView();
 	}
 }
@@ -843,42 +821,45 @@ void CSmallHorseApp::CalSum(const CString &strID)
 
     CMapStringToPtr map;
 	map.InitHashTable(16);
-	
-    CListSet* pListSet = GetListSet();
-	SetBookFilter(strID);
-    if(!pListSet->IsBOF())
+    
+    CListSet plistset;
+    plistset.Open(AFX_DB_USE_DEFAULT_TYPE, NULL, CRecordset::skipDeletedRecords);
+    CString strfil=_T("\'")+strID+_T("\'");
+    plistset.m_strFilter =_T("Item_Book_ID=") + strfil;
+    plistset.m_strSort=_T("OperDate,Index");
+    plistset.Requery();
+    if(!plistset.IsBOF())
     {
-        pListSet->MoveFirst();
+        plistset.MoveFirst();
     }
-    pListSet->SetUpdateTime(FALSE);
-	float fBaseSum = 0.0;
-	while(!pListSet->IsEOF())
-	{
-		if(pListSet->m_strSubCount == "")
-		{
-			pListSet->Edit_CalSum(&fBaseSum);
-		} 
-		else
-		{
-			float *pf;
-			if(map.Lookup(pListSet->m_strSubCount,(void*&)pf))
-			{
-				pListSet->Edit_CalSum(pf);
-				TRACE(_T("MAP[%s] = %f\n"),pListSet->m_strSubCount,*pf);
-			}
-			else
-			{//first record for a subcount.
-				float *pff = new float;
-				*pff = 0.0;
-				pListSet->Edit_CalSum(pff);
-				map[pListSet->m_strSubCount] = pff;
-				TRACE(_T("MAP[%s] = %f init\n"),pListSet->m_strSubCount,*pff);
-			}
-		}
-		pListSet->MoveNext();
-	}
-    pListSet->SetUpdateTime(TRUE);
-	pListSet->Requery();
+    plistset.SetUpdateTime(FALSE);
+    float fBaseSum = 0.0;
+    while(!plistset.IsEOF())
+    {
+        if(plistset.m_strSubCount == "")
+        {
+            plistset.Edit_CalSum(&fBaseSum);
+        } 
+        else
+        {
+            float *pf;
+            if(map.Lookup(plistset.m_strSubCount,(void*&)pf))
+            {
+                plistset.Edit_CalSum(pf);
+                TRACE(_T("MAP[%s] = %f\n"),plistset.m_strSubCount,*pf);
+            }
+            else
+            {//first record for a subcount.
+                float *pff = new float;
+                *pff = 0.0;
+                plistset.Edit_CalSum(pff);
+                map[plistset.m_strSubCount] = pff;
+                TRACE(_T("MAP[%s] = %f init\n"),plistset.m_strSubCount,*pff);
+            }
+        }
+        plistset.MoveNext();
+    }
+    plistset.SetUpdateTime(TRUE);
 	UpdateAllView();
 	
 	POSITION pos;
@@ -893,13 +874,6 @@ void CSmallHorseApp::CalSum(const CString &strID)
 	map.RemoveAll();
 }
 
-void CSmallHorseApp::SetBookFilter(const CString strID)
-{
-	CString strfil=_T("\'")+strID+_T("\'");
-	m_listset.m_strFilter =_T("Item_Book_ID=") + strfil;
-	m_listset.m_strSort=_T("OperDate,Index");
-    m_listset.Requery();
-}
 
 
 /*******************************************
@@ -1162,8 +1136,8 @@ BOOL CSmallHorseApp::OpenView(const CString &strFilter, const CString &strOrder,
 ********************************************/
 BOOL CSmallHorseApp::GetRecordInfo(int nRecordID,CString &strDescription)
 {
-    CListSet* pListSet = GetListSet();
-	BOOL b = pListSet->MoveToID(nRecordID);
+    CListSet listset;
+	BOOL b = listset.FindByID(nRecordID);
 	if(!b)
 	{
 		return FALSE;
@@ -1339,13 +1313,16 @@ void CSmallHorseApp::TransferDingqi(const CString& strID)
 ********************************************/
 void CSmallHorseApp::ManageDingqi(DWORD recordId) 
 {
-    CListSet* pSet = GetListSet();
-    BOOL b = pSet->MoveToID(recordId);
-    if (!b)
-    {
-        return;
-    }
-    if (IsAccountLocked(pSet->m_ID))
+
+    CListSet listset;
+	BOOL b = listset.FindByID(recordId);
+	if(!b)
+	{
+		return ;
+	}
+
+
+    if (IsAccountLocked(listset.m_ID))
     {
         return;
     }
@@ -1439,20 +1416,21 @@ void CSmallHorseApp::ManageDingqi(DWORD recordId)
 // 与新增不同：修改时不改变主键 ID，只更新可修改字段并保存。
 void CSmallHorseApp::ModifyDingqi(DWORD recordId)
 {
-    CListSet *pSet = GetListSet();
-    BOOL b = pSet->MoveToID(recordId);
-    if (!b)
-    {
-        return;
-    }
-    if (IsAccountLocked(pSet->m_ID))
+    CListSet listset;
+	BOOL b = listset.FindByID(recordId);
+	if(!b)
+	{
+		return ;
+	}
+
+    if (IsAccountLocked(listset.m_ID))
     {
         return;
     }
 
-    CDatabase dtbs;
-    b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
-    CRecordset set(&dtbs);
+    CDatabase* pdatabase = CDatabaseManager::GetInstance()->GetConnection();
+    b = pdatabase->OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+    CRecordset set(pdatabase);
 
     CString strFilter;
     strFilter.Format("select Books.Book_Bank, Books.Book_Owner, Books.Book_ID,Items.SubCountID, Items.Comment,Items.Oper, Items.OperDate, "
@@ -1535,6 +1513,7 @@ void CSmallHorseApp::ModifyDingqi(DWORD recordId)
         }
         fdset.Close();
     }
+    set.Close();
 }
 
 /*******************************************
@@ -1922,16 +1901,6 @@ void CSmallHorseApp::SelectPeriod(CComboBox *pCmbBox, int nMonth)
 ********************************************/
 void CSmallHorseApp::ForceUpdateViews()
 {
-    CListSet* pListSet = theApp.GetListSet();
-    if(pListSet != NULL)
-    {
-        pListSet->Close();
-        pListSet->Open();
- //       pListSet->m_strFilter = _T("");
-//        pListSet->Requery();
-        
-        TRACE(_T("pListSet->m_strFilter = _T("");\n"));
-    }
         TRACE(_T("update start...;\n"));
     UpdateAllView();
         TRACE(_T("update end...;\n"));
@@ -2026,12 +1995,13 @@ void CSmallHorseApp::DeleteRecords(const CDWordArray &dbAry)
     strTip += _T("\n的记录吗?");
     if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
     {
-        CListSet* pItemSet = GetListSet();
-        if(pItemSet->m_pDatabase)
+        CDatabase* pdatabase = CDatabaseManager::GetInstance()->GetConnection();
+
+        if(pdatabase)
         {
             CString strSql;
             strSql.Format("delete from Items where Index in (%s)",strIDs);
-            pItemSet->m_pDatabase->ExecuteSQL(strSql);
+            pdatabase->ExecuteSQL(strSql);
             ForceUpdateViews();
         }
         else
@@ -2857,16 +2827,15 @@ void CSmallHorseApp::CopyRecordsTo(const CDWordArray &dbAry, const CString &strC
         i++;
     }
 	CListSet listSet;
-	listSet.Open();//select * from Items where 
 	listSet.m_strFilter.Format("Index in (%s)",strIDs);
 	TRACE("sql:%s\n",listSet.m_strFilter);
 	TRACE("copy to %s,%s,%s\n",strCount,strSubCount ,bTransfer?"TRUE":"FALSE");
-	listSet.Requery();
+	listSet.OpenEx();
 	if(!listSet.IsBOF())
 	{
 		listSet.MoveFirst();
 	}
-	CListSet* pListSet = GetListSet();
+
 	while (!listSet.IsEOF()) 
 	{
 	    BOOL bSameMainCount = (listSet.m_ID.Compare(strCount) == 0);
@@ -2956,29 +2925,29 @@ void CSmallHorseApp::OnAccountNew()
 
 int CSmallHorseApp::StaticDoubtItems(CString& nID)
 {
-	CListSet* set = GetListSet();
+	CListSet set;
 	CString strfil=_T("\'")+nID+_T("\'");
-	set->m_strFilter=_T("Item_Book_ID=")+ strfil;
+	set.m_strFilter=_T("Item_Book_ID=")+ strfil;
 //	set->m_strFilter+=_T(" and Type=\'0\'");
-	TRACE(set->m_strFilter);
+	TRACE(set.m_strFilter);
 	TRACE("\n");
+    set.OpenEx();
 
 //	set->m_strFilter =_T("Item_Book_ID=")+ nID+_T(" and Type=0");// '379 70052992*3'
 //	set->m_strFilter ="Type=0";
 //	set->m_strFilter ="Item_Book_ID=" + nID;// '379 70052992*3'
-	set->Requery();
 
-	set->MoveFirst();
+	set.MoveFirst();
 	int nCountAdd = 0;
 	int nCountDec = 0;
 	float fAdd =0.0;
 	float fDec =0.0;
 	int nCountTotal = 0;
-	while(!set->IsEOF())
+	while(!set.IsEOF())
 	{
-		if(set->m_bType == 0)
+		if(set.m_bType == 0)
 		{
-			float value = set->GetAddorSubValue();
+			float value = set.GetAddorSubValue();
 			if(value<0.0000000)
 			{
 				nCountDec++;
@@ -2991,7 +2960,7 @@ int CSmallHorseApp::StaticDoubtItems(CString& nID)
 			}
 		}
 		nCountTotal++;
-		set->MoveNext();
+		set.MoveNext();
 	}
 	CString strStatic;
 	strStatic.Format("ID:%s:\nTotal Item:%d\nIncome: %d items, total value %.2f\n Output: %d items, total value %.2f\n",nID,nCountTotal,nCountAdd,fAdd,nCountDec,fDec);

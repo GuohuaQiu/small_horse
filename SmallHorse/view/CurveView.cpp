@@ -73,13 +73,13 @@ void CCurveView::OnInitialUpdate()
 
 void CCurveView::OnDraw(CDC* pDC)
 {
-	CListSet* plistset = theApp.GetListSet();
-	if(plistset->m_strFilter != m_pParent->m_strFilter)
-	{
-		plistset->m_strFilter = m_pParent->m_strFilter;
-		plistset->m_strSort = m_pParent->m_strSort;
-		plistset->Requery();
-	}
+    CListSet listSet;
+
+
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+
 	int mode=pDC->SetBkMode(TRANSPARENT);
 
 	GetMaxValue();
@@ -261,15 +261,18 @@ int CCurveView::Get1999Days(COleDateTime time,BOOL bLocal)
 
 void CCurveView::DrawCurve(CDC *pDC)
 {
-	CListSet* pSet = theApp.GetListSet();
-	ClearAreaInfo();
+    CListSet listSet;
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+    ClearAreaInfo();
 
 	CString strtrace;
 
-	m_nAreaCount = pSet->GetRecordCount();
+	m_nAreaCount = listSet.GetRecordCount();
 	if(m_nAreaCount > 0)
 	{
-		pSet->MoveFirst();
+		listSet.MoveFirst();
 		m_pArea = new Area[m_nAreaCount];
 		
 		
@@ -280,14 +283,14 @@ void CCurveView::DrawCurve(CDC *pDC)
 		oldpen=pDC->SelectObject(&penred);
 		int nCount=0;
 		int thisvalue=0;
-		while(!pSet->IsEOF())
+		while(!listSet.IsEOF())
 		{
-			int thisdays=Get1999Days(pSet->m_day);
+			int thisdays=Get1999Days(listSet.m_day);
 			m_pArea[nCount].x_start = LEFTBEGIN+thisdays;
-			m_pArea[nCount].nID = pSet->m_arraynumber;
+			m_pArea[nCount].nID = listSet.m_arraynumber;
 			
-			thisvalue+=(int)pSet->GetAddorSubValue();//GetSumValue();
-			pSet->MoveNext();
+			thisvalue+=(int)listSet.GetAddorSubValue();//GetSumValue();
+			listSet.MoveNext();
 			
 			if(nCount ==0)
 			{
@@ -313,18 +316,21 @@ void CCurveView::DrawCurve(CDC *pDC)
 
 void CCurveView::GetMaxValue()
 {
-	CListSet* pSet = theApp.GetListSet();
-	if(pSet->GetRecordCount()>0)
+    CListSet listSet;
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+    if(listSet.GetRecordCount()>0)
 	{
 	int max=0;
   float positiveValue=0.0;
   float negativeValue=0.0;
   float tempValue;
 	int a=0;
-		pSet->MoveFirst();
-		while(!pSet->IsEOF())
+		listSet.MoveFirst();
+		while(!listSet.IsEOF())
 		{
-      tempValue = pSet->GetAddorSubValue();
+      tempValue = listSet.GetAddorSubValue();
       if(tempValue>=0.0)
       {
         positiveValue += tempValue;
@@ -336,7 +342,7 @@ void CCurveView::GetMaxValue()
 //			a+=(int)pSet->GetAddorSubValue()>0 ? (int)pSet->GetAddorSubValue() :0 ;
 //			if(a>max)
 //				max=a;
-			pSet->MoveNext();
+			listSet.MoveNext();
       tempValue = max(positiveValue,-negativeValue);
 		  m_denominator=CalDenoninator((int)(tempValue));
 		}
@@ -350,21 +356,24 @@ void CCurveView::GetMaxValue()
 
 void CCurveView::SetBeginYear()
 {
-	if(bDraw)
-	{
-		CListSet* pSet = theApp.GetListSet();
-		if(pSet->GetRecordCount()>0)
-		{
-			pSet->MoveFirst();
-            if(pSet->m_day.m_status == COleDateTime::valid)
+    CListSet listSet;
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+
+    if (bDraw)
+    {
+        if (listSet.GetRecordCount() > 0)
+        {
+            listSet.MoveFirst();
+            if (listSet.m_day.m_status == COleDateTime::valid)
             {
-			    m_beginyear=pSet->m_day.GetYear();
+                m_beginyear = listSet.m_day.GetYear();
             }
 
-			m_daysum=Get1999Days(COleDateTime::GetCurrentTime(),TRUE);
-		}
-	}
-	
+            m_daysum = Get1999Days(COleDateTime::GetCurrentTime(), TRUE);
+        }
+    }
 }
 
 void CCurveView::DrawName(CDC *pDC, CString strName)
@@ -383,11 +392,14 @@ void CCurveView::DrawName(CDC *pDC, CString strName)
 
 void CCurveView::DrawAllSaveCurve(CDC *pDC)
 {
-	CListSet* pSet = theApp.GetListSet();
-	CString strtrace;
-	if(pSet->GetRecordCount()>0)
+    CListSet listSet;
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+    CString strtrace;
+	if(listSet.GetRecordCount()>0)
 	{
-		pSet->MoveFirst();
+		listSet.MoveFirst();
 	}
 	else
 	{
@@ -402,13 +414,13 @@ void CCurveView::DrawAllSaveCurve(CDC *pDC)
 	int first=0;
 	int thisvalue=0;
 	int curvalue;
-	while(!pSet->IsEOF())
+	while(!listSet.IsEOF())
 	{
-		curvalue=(int)pSet->GetAddorSubValue();
+		curvalue=(int)listSet.GetAddorSubValue();
 		if(curvalue>0)
 		{
 			thisvalue+=curvalue;//GetSumValue();
-			int thisdays=Get1999Days(pSet->m_day);
+			int thisdays=Get1999Days(listSet.m_day);
 			if(first++==0)
 			{
 				pDC->MoveTo(LEFTBEGIN+thisdays,BOTTOMBEGIN);
@@ -421,7 +433,7 @@ void CCurveView::DrawAllSaveCurve(CDC *pDC)
 			}
 			prevalue=thisvalue;
 		}
-		pSet->MoveNext();
+		listSet.MoveNext();
 	}
 	if(prevalue>=0.01)
 	{
@@ -434,11 +446,14 @@ void CCurveView::DrawAllSaveCurve(CDC *pDC)
 
 void CCurveView::DrawAllExpenseCurve(CDC *pDC)
 {
-	CListSet* pSet = theApp.GetListSet();
-	CString strtrace;
-	if(pSet->GetRecordCount()>0)
+    CListSet listSet;
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.m_strSort = m_pParent->m_strSort;
+    listSet.OpenEx();
+    CString strtrace;
+	if(listSet.GetRecordCount()>0)
 	{
-		pSet->MoveFirst();
+		listSet.MoveFirst();
 	}
 	else
 	{
@@ -453,13 +468,13 @@ void CCurveView::DrawAllExpenseCurve(CDC *pDC)
 	int first=0;
 	int thisvalue=0;
 	int curvalue;
-	while(!pSet->IsEOF())
+	while(!listSet.IsEOF())
 	{
-		curvalue=(int)pSet->GetAddorSubValue();
+		curvalue=(int)listSet.GetAddorSubValue();
 		if(curvalue<0)
 		{
 			thisvalue-=curvalue;//GetSumValue();
-			int thisdays=Get1999Days(pSet->m_day);
+			int thisdays=Get1999Days(listSet.m_day);
 			if(first++==0)
 			{
 				pDC->MoveTo(LEFTBEGIN+thisdays,BOTTOMBEGIN);
@@ -472,7 +487,7 @@ void CCurveView::DrawAllExpenseCurve(CDC *pDC)
 			}
 			prevalue=thisvalue;
 		}
-		pSet->MoveNext();
+		listSet.MoveNext();
 	}
 	if(prevalue>=0.01)
 	{

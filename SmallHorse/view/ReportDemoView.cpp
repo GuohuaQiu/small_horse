@@ -290,7 +290,7 @@ ON_COMMAND_RANGE(ID_THIS_YEAR, ID_THIS_YEAR_7,OnBrowseYear)
 ON_UPDATE_COMMAND_UI(ID_ADD_RETURN_RECORD, OnUpdateAddReturnRecord)
 ON_UPDATE_COMMAND_UI(ID_TRANSFER_DINGQI, OnUpdateTransferDingqi)
 ON_UPDATE_COMMAND_UI(ID_CAL_CREDIT, OnUpdateCalCredit)
-ON_COMMAND(ID_CHECK_BILL, OnCheckBill)
+// ON_COMMAND(ID_CHECK_BILL, OnCheckBill)
 ON_COMMAND_RANGE(IDM_COPY_RECORDS_TO, IDM_COPY_RECORDS_TO_END,OnCopyRecordsTo)
 ON_COMMAND_RANGE(IDM_MOVE_RECORDS_TO, IDM_MOVE_RECORDS_TO_END,OnMoveRecordsTo)
 //}}AFX_MSG_MAP
@@ -639,40 +639,40 @@ void CReportDemoView::DisplayRecord()
 	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
 	pReportCtrl->RemoveAll ();
 	
-    CListSet* pListSet = theApp.GetListSet();
-	if(pListSet->m_strFilter != m_pParent->m_strFilter)
-	{
-        TRACE("oH, refresh me..........\n");
-		pListSet->m_strFilter = m_pParent->m_strFilter;
-		pListSet->m_strSort = m_pParent->m_strSort;
-		pListSet->Requery();
-        pListSet->GetGenerationInfo(&(m_pParent->mInformation));
-	}
+    CListSet listSet;
+    listSet.EnsureOpen();
+    if(listSet.m_strFilter != m_pParent->m_strFilter)
+    {
+        listSet.m_strFilter = m_pParent->m_strFilter;
+        listSet.m_strSort = m_pParent->m_strSort;
+        listSet.Requery();
+        listSet.GetGenerationInfo(&(m_pParent->mInformation));
+    }
 	
-	if(pListSet->GetRecordCount()==0)
+	if(listSet.GetRecordCount()==0)
     {
         TRACE(_T("\npListSet count is 0 return.\n"));
         return;
     }
-	pListSet->MoveFirst();
+	listSet.MoveFirst();
 	float sum=0.0;
 	int index = 1;
 	BOOL bHasSubCount = FALSE;
-	while(!pListSet->IsEOF())
+	while(!listSet.IsEOF())
 	{
 		if(VIEW_TYPE_RECORD_IN_ONE_COUNT != m_ViewType)
 		{
-			sum=AddMembertoList(pListSet,index,TRUE,sum);
+			sum=AddMembertoList(&listSet,index,TRUE,sum); // Pass reference
 		}
 		else
 		{
-			if(pListSet->m_strSubCount.GetLength()>0)
+			if(listSet.m_strSubCount.GetLength()>0)
 			{
 				bHasSubCount = TRUE;
 			}
-			AddMembertoList(pListSet,index);
+			AddMembertoList(&listSet,index);
 		}
-		pListSet->MoveNext();
+		listSet.MoveNext();
 		index++;
 	}
 	if(VIEW_TYPE_RECORD_IN_ONE_COUNT == m_ViewType)
@@ -774,42 +774,36 @@ void CReportDemoView::OnEditRecord()
     //cant use app default CListSet to edit. when CCurveView update, 
     //the object editMode change to noMode, this made the Update fail.
     //2012-06-04
-//#ifdef USE_APP_LIST_SET
-#if  1
-			CListSet* pListSet = theApp.GetListSet();
-#else
-            CListSet setEdit;
-            setEdit.Open();
-			CListSet* pListSet = &setEdit;
-#endif
-			
-			if(pListSet->MoveToID(dwRecordID,m_pParent->m_strFilter))
-			{
-                if(theApp.IsAccountLocked(pListSet->m_ID))
+            CListSet listSet;
+
+            if (listSet.FindByID(dwRecordID))
+            {
+                if (theApp.IsAccountLocked(listSet.m_ID))
                 {
                     return;
                 }
-				CAddNewItemDlg dlg;
-				dlg.m_bNewItem=FALSE;
-				dlg.m_date=pListSet->m_day;
-				dlg.m_id=pListSet->m_ID;
-				dlg.m_sum=pListSet->m_addorsub;
-				dlg.m_remain=pListSet->m_remain;
-				dlg.m_nType=pListSet->m_bType;
-                dlg.m_strSubCount = pListSet->m_strSubCount;
-                dlg.m_strSite = pListSet->m_strSite;
-				if(dlg.DoModal()!=IDOK)
-					return;
-				CListSet listData;
-//				pListSet->Edit();
-				listData.m_day=dlg.m_date;
-				listData.m_addorsub=dlg.m_sum;
-				listData.m_remain=dlg.m_remain;
-				listData.m_bType=dlg.m_nType;
-                listData.m_strSite =dlg.m_strSite;
+
+                CAddNewItemDlg dlg;
+                dlg.m_bNewItem = FALSE;
+                dlg.m_date = listSet.m_day;
+                dlg.m_id = listSet.m_ID;
+                dlg.m_sum = listSet.m_addorsub;
+                dlg.m_remain = listSet.m_remain;
+                dlg.m_nType = listSet.m_bType;
+                dlg.m_strSubCount = listSet.m_strSubCount;
+                dlg.m_strSite = listSet.m_strSite;
+                if (dlg.DoModal() != IDOK)
+                    return;
+                CListSet listData;
+                //				pListSet->Edit();
+                listData.m_day = dlg.m_date;
+                listData.m_addorsub = dlg.m_sum;
+                listData.m_remain = dlg.m_remain;
+                listData.m_bType = dlg.m_nType;
+                listData.m_strSite = dlg.m_strSite;
                 listData.m_strSubCount = dlg.m_strSubCount;
-				listData.m_ID = pListSet->m_ID;
-				BOOL b = pListSet->Modify_Record(&listData);
+                listData.m_ID = listSet.m_ID;
+                BOOL b = listSet.Modify_Record(&listData);
 //				BOOL b = pListSet->Update();
                 if(!b)
                 {
@@ -943,7 +937,7 @@ void CReportDemoView::OnEditPaste()
 	}
 	else if(IsClipboardFormatAvailable(CF_UNICODETEXT) )
 	{
-		CImportSheet sheet(theApp.GetListSet(),m_pParent->m_strID);
+		CImportSheet sheet(m_pParent->m_strID);
 		sheet.DoModal();
 		theApp.ForceUpdateViews();
 	}
@@ -971,12 +965,14 @@ void CReportDemoView::OnEditCopy()
 	if(pRow != NULL)
 	{
 		DWORD dwRecordID = pRow->GetData();
-		CListSet* pSet = theApp.GetListSet();
-		if(pSet->MoveToID(dwRecordID,m_pParent->m_strFilter))
+        CListSet listSet;
+        listSet.FindByID(dwRecordID);
+
+		if(listSet.FindByID(dwRecordID))
 		{
 			CSharedFile memFile;
 			CArchive ar(&memFile, CArchive::store|CArchive::bNoFlushOnDelete);
-			DoSerialize(ar,pSet,FALSE);
+			DoSerialize(ar,&listSet,FALSE);
 			ar.Flush();
 			HGLOBAL hData = memFile.Detach();
 #if _MFC_VER <= 0x0420
@@ -1014,10 +1010,11 @@ void CReportDemoView::OnLoadCsv()
 
 
 		TRACE("Will load to %s",m_pParent->m_strID);
-		CListSet* pSet = theApp.GetListSet();
-		pSet->m_strFilter = m_pParent->m_strFilter;
-		pSet->Requery();
-		CImportSheet sheet(_T(""),pSet,m_pParent->m_strID);
+		CListSet listSet;
+		listSet.EnsureOpen();
+		listSet.m_strFilter = m_pParent->m_strFilter;
+		listSet.Requery();
+		CImportSheet sheet(_T(""),m_pParent->m_strID);
 		sheet.DoModal();
         theApp.ForceUpdateViews();
 	}
@@ -1568,14 +1565,15 @@ void CReportDemoView::OnSmartSetType()
     CSmartSetDlg dlg;
 	if(dlg.DoModal() ==IDOK)
 	{
-		CListSet* pListSet = theApp.GetListSet();
+		CListSet listSet;
+        listSet.EnsureOpen();
 		if(dlg.m_bActiveSite)
 		{
-			pListSet->Modify_Site_ByComment(dlg.m_strSite,dlg.m_strNoString,dlg.m_strYesString,RowArray,nSelectedCount);
+			listSet.Modify_Site_ByComment(dlg.m_strSite,dlg.m_strNoString,dlg.m_strYesString,RowArray,nSelectedCount);
 		}
 		if(dlg.m_bActiveType)
 		{
-			pListSet->Modify_Type_ByComment(dlg.m_nTypeIndex,dlg.m_strNoString,dlg.m_strYesString,RowArray,nSelectedCount);
+			listSet.Modify_Type_ByComment(dlg.m_nTypeIndex,dlg.m_strNoString,dlg.m_strYesString,RowArray,nSelectedCount);
 		}
         theApp.ForceUpdateViews();
 	}
@@ -1606,8 +1604,8 @@ void CReportDemoView::OnReplaceComment()
     CReplaceStringDlg dlg;
 	if(dlg.DoModal() ==IDOK)
 	{
-		CListSet* pListSet = theApp.GetListSet();
-		pListSet->Replace_Comment(dlg.m_strOldString,dlg.m_strNewString,RowArray,nSelectedCount);
+        CListSet listSet;
+		listSet.Replace_Comment(dlg.m_strOldString,dlg.m_strNewString,RowArray,nSelectedCount);
         theApp.ForceUpdateViews();
 	}
 }
@@ -1670,29 +1668,30 @@ void CReportDemoView::ExportCreditRecord(const COleDateTime &timeBegin, const CO
 	CString strFile(_T("C:\\test.htm"));
 	CGridHtmlExporter exporter;
 //exporter.SetExportFile(strFile);
-    CListSet* pListSet = theApp.GetListSet();   
-    pListSet->m_strFilter = m_pParent->m_strFilter;
-    pListSet->Requery();
-    if(!pListSet->IsBOF())
+    CListSet listSet;
+    listSet.EnsureOpen();
+    listSet.m_strFilter = m_pParent->m_strFilter;
+    listSet.Requery();
+    if(!listSet.IsBOF())
     {
-        pListSet->MoveFirst();
+        listSet.MoveFirst();
     }
 	float fSum = 0.0;
 	float fThisSum;
 	CString str,str1;
 	UINT uColor = 0x6eb0ff;
-	while(!pListSet->IsEOF())
+	while(!listSet.IsEOF())
 	{
-		if(pListSet->m_day >= timeBegin && pListSet->m_day <= timeEnd)
+		if(listSet.m_day >= timeBegin && listSet.m_day <= timeEnd)
 		{
-			fThisSum = pListSet->GetAddorSubValue();
+			fThisSum = listSet.GetAddorSubValue();
 			if(fThisSum<0)
 			{
 				fSum += fThisSum;
 			//exporter.ExportLine(pListSet->GetDate(),pListSet->m_addorsub,pListSet->m_remain,uColor);
 			}
 		}
-		pListSet->MoveNext();
+		listSet.MoveNext();
 	}
 	str = timePay.Format("%Y-%m-%d");
 	str1.Format("%8.2f",-fSum);
@@ -1711,7 +1710,7 @@ void CReportDemoView::OnAddReturnRecord()
 	}
 	
 	CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl ();
-    CListSet* pListSet = theApp.GetListSet();
+
 #if 0//no need to set a pay card.
     if(m_pParent->m_strID != g_strAutoReturnCard)
     {
@@ -1732,8 +1731,9 @@ void CReportDemoView::OnAddReturnRecord()
         return;
 	}
     DWORD thisIndex = pRow->GetData();
-	
-	BOOL b = pListSet->MoveToID(thisIndex);
+    CListSet listSet;
+    listSet.EnsureOpen();	
+	BOOL b = listSet.MoveToID(thisIndex);
 	
     if(!b)
     {
@@ -1741,7 +1741,7 @@ void CReportDemoView::OnAddReturnRecord()
         return;
     }
 	
-    CString	addorsub = pListSet->m_addorsub;
+    CString	addorsub = listSet.m_addorsub;
     if(addorsub.Left(1) != _T("-"))
     {
         AfxMessageBox(_T("必须为负数才可以!"));
@@ -1749,29 +1749,27 @@ void CReportDemoView::OnAddReturnRecord()
     }
 	
     addorsub.Delete(0,1);
-    COleDateTime  day = pListSet->m_day;
-    CString	strRemain = pListSet->m_remain;
-	CString strSite = pListSet->m_strSite;
+    COleDateTime  day = listSet.m_day;
+    CString	strRemain = listSet.m_remain;
+	CString strSite = listSet.m_strSite;
 	
     CString strTo;
     strTo.Format(_T("To %s"),g_strAutoReturnCreditCard);
 	
-    if(pListSet->m_remain.Left(3) != _T("To "))
+    if(listSet.m_remain.Left(3) != _T("To "))
     {
-		CString strPayId = pListSet->m_ID;
-		BOOL b = pListSet->Modify_Transfer(g_strAutoReturnCreditCard);
-		//        pListSet->Edit();
-		//        pListSet->m_remain = strTo + ";" + pListSet->m_remain;
-		//        pListSet->m_bType = bType;    
-		//        pListSet->Update();
+		CString strPayId = listSet.m_ID;
+		BOOL b = listSet.Modify_Transfer(g_strAutoReturnCreditCard);
+		//        listSet.Edit();
+		//        listSet.m_remain = strTo + ";" + listSet.m_remain;
+		//        listSet.m_bType = bType;    
+		//        listSet.Update();
 		if(!b)
 		{
 			AfxMessageBox(_T("转出修改失败！"));
 			return;			
 		}
         
-        pListSet->m_strFilter = "";
-        pListSet->Requery();
 		
 		CListSet listData;
 		listData.StartEdit();
@@ -1801,7 +1799,7 @@ void CReportDemoView::OnAddReturnRecord()
 		}
 		AfxMessageBox(str);
     }
-    else if(pListSet->m_remain.Left(strTo.GetLength()) != strTo)
+    else if(listSet.m_remain.Left(strTo.GetLength()) != strTo)
     {
         AfxMessageBox(_T("请确认是不是一条记录转到了两个账号里！"));
     }
@@ -2120,7 +2118,7 @@ void CReportDemoView::OnDropFiles(HDROP hDropInfo)
 		return;
 	}
 	//	CImportSheet sheet("C:\\Documents and Settings\\guohua.qiu\\Desktop\\Book1.csv",&pDoc->m_listset);
-    CImportSheet sheet(szFileName,theApp.GetListSet(),m_pParent->m_strID);
+    CImportSheet sheet(szFileName,m_pParent->m_strID);
     sheet.DoModal();
     theApp.ForceUpdateViews();
 }
@@ -2403,84 +2401,84 @@ void CReportDemoView::CheckBill(const COleDateTime &timeBegin, const COleDateTim
 	ShellExecute( AfxGetMainWnd()->m_hWnd, "open", strFile, NULL, NULL, SW_SHOWNORMAL );
 }
 #endif
-void CReportDemoView::OnCheckBill() 
-{
-	CString strFile(_T("C:\\test.htm"));
-	CGridHtmlExporter exporter;
-	exporter.SetExportFile(strFile);
+// void CReportDemoView::OnCheckBill() 
+// {
+// 	CString strFile(_T("C:\\test.htm"));
+// 	CGridHtmlExporter exporter;
+// 	exporter.SetExportFile(strFile);
 
-	int nYear = 2005;
-	int nMonth = 1;
-	COleDateTime date;
-	COleDateTime today;
-	COleDateTime tmBegin,tmEnd,tmPay;
-	float fUse, fPay;
-	today = COleDateTime::GetCurrentTime();
-    do
-    {
-		CheckBill(nYear,nMonth,tmBegin,tmEnd,tmPay, fUse,fPay);
-		exporter.ExportCheckLine(nYear,nMonth,tmBegin,tmEnd,tmPay, fUse,fPay);
+// 	int nYear = 2005;
+// 	int nMonth = 1;
+// 	COleDateTime date;
+// 	COleDateTime today;
+// 	COleDateTime tmBegin,tmEnd,tmPay;
+// 	float fUse, fPay;
+// 	today = COleDateTime::GetCurrentTime();
+//     do
+//     {
+// 		CheckBill(nYear,nMonth,tmBegin,tmEnd,tmPay, fUse,fPay);
+// 		exporter.ExportCheckLine(nYear,nMonth,tmBegin,tmEnd,tmPay, fUse,fPay);
 
-		nMonth++;
-		if(nMonth>12)
-		{
-			nYear++;
-			nMonth = 1;
-		}
+// 		nMonth++;
+// 		if(nMonth>12)
+// 		{
+// 			nYear++;
+// 			nMonth = 1;
+// 		}
 
-		date.SetDate(nYear,nMonth,1);
-	} while(date<today);
+// 		date.SetDate(nYear,nMonth,1);
+// 	} while(date<today);
 
-	exporter.ExportTail();
-	exporter.CloseFile();
-	ShellExecute( AfxGetMainWnd()->m_hWnd, "open", strFile, NULL, NULL, SW_SHOWNORMAL );
+// 	exporter.ExportTail();
+// 	exporter.CloseFile();
+// 	ShellExecute( AfxGetMainWnd()->m_hWnd, "open", strFile, NULL, NULL, SW_SHOWNORMAL );
 
-}
+// }
 
-BOOL CReportDemoView::CheckBill(int nYear, int nMonth, COleDateTime &timeBegin, COleDateTime &timeEnd, COleDateTime &timePay,float& fUse,float& fPay)
-{
-    CCreditPaySet set;
-    BOOL b = set.GetPayInfo(m_pParent->m_strID,nYear,nMonth,timeBegin,timeEnd,timePay);
-	if(!b)
-	{
-		return FALSE;
-	}
+// BOOL CReportDemoView::CheckBill(int nYear, int nMonth, COleDateTime &timeBegin, COleDateTime &timeEnd, COleDateTime &timePay,float& fUse,float& fPay)
+// {
+//     CCreditPaySet set;
+//     BOOL b = set.GetPayInfo(m_pParent->m_strID,nYear,nMonth,timeBegin,timeEnd,timePay);
+// 	if(!b)
+// 	{
+// 		return FALSE;
+// 	}
 
 
-    CListSet* pListSet = theApp.GetListSet();   
-    pListSet->m_strFilter = m_pParent->m_strFilter;
-    pListSet->Requery();
-    if(!pListSet->IsBOF())
-    {
-        pListSet->MoveFirst();
-    }
-	float fThisSum,fThisPaySum;
-	fUse = 0.0;
-	fPay = 0.0;
-	COleDateTime timePaylocal = timePay;
-	timePaylocal.SetDateTime(timePay.GetYear(),timePay.GetMonth(),timePay.GetDay(),23,59,59);
-	while(!pListSet->IsEOF())
-	{
-		if(pListSet->m_day >= timeBegin && pListSet->m_day <= timeEnd)
-		{
-			fThisSum = pListSet->GetAddorSubValue();
-			if(fThisSum<0)
-			{
-				fUse += fThisSum;
-			}
-		}
-		else if(pListSet->m_day > timeEnd && pListSet->m_day <= timePaylocal)
-		{
-			fThisPaySum = pListSet->GetAddorSubValue();
-			if(fThisPaySum>0)
-			{
-				fPay += fThisPaySum;
-			}
-		}
-		pListSet->MoveNext();
-	}
-	return TRUE;
-}
+//     CListSet* pListSet = theApp.GetListSet();   
+//     pListSet->m_strFilter = m_pParent->m_strFilter;
+//     pListSet->Requery();
+//     if(!pListSet->IsBOF())
+//     {
+//         pListSet->MoveFirst();
+//     }
+// 	float fThisSum,fThisPaySum;
+// 	fUse = 0.0;
+// 	fPay = 0.0;
+// 	COleDateTime timePaylocal = timePay;
+// 	timePaylocal.SetDateTime(timePay.GetYear(),timePay.GetMonth(),timePay.GetDay(),23,59,59);
+// 	while(!pListSet->IsEOF())
+// 	{
+// 		if(pListSet->m_day >= timeBegin && pListSet->m_day <= timeEnd)
+// 		{
+// 			fThisSum = pListSet->GetAddorSubValue();
+// 			if(fThisSum<0)
+// 			{
+// 				fUse += fThisSum;
+// 			}
+// 		}
+// 		else if(pListSet->m_day > timeEnd && pListSet->m_day <= timePaylocal)
+// 		{
+// 			fThisPaySum = pListSet->GetAddorSubValue();
+// 			if(fThisPaySum>0)
+// 			{
+// 				fPay += fThisPaySum;
+// 			}
+// 		}
+// 		pListSet->MoveNext();
+// 	}
+// 	return TRUE;
+// }
 
 
 BOOL CReportDemoView::DisplayTodo()
@@ -2510,8 +2508,18 @@ BOOL CReportDemoView::DisplayReport()
     CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
 	pReportCtrl->RemoveAll ();
 	
-	CListSet* pListSet = theApp.GetListSet();
-	theApp.SetBookFilter(m_pParent->m_strID);
+	// CListSet* pListSet = theApp.GetListSet();
+	// theApp.SetBookFilter(m_pParent->m_strID);
+    CString strID = m_pParent->m_strID;
+
+	CString strfil=_T("\'")+strID+_T("\'");
+    CListSet listSet;
+    listSet.m_strFilter =_T("Item_Book_ID=") + strfil;
+    listSet.m_strSort=_T("OperDate,Index");
+    listSet.OpenEx();
+    CListSet* pListSet = &listSet;
+
+    
 //	int start_y,start_m,start_d;
 //	int end_y,end_m,end_d;
 	CSmartDate start_date;
@@ -2654,8 +2662,8 @@ void CReportDemoView::MoveRecordsTo(const CString &strCount)
 	int count = pReportCtrl->GetSelectedRows(dbAry);
 	if(count>0)
 	{
-		CListSet* pListSet = theApp.GetListSet();
-		pListSet->MoveRecordsTo(strCount, dlg.m_SubCount,dbAry, count);
+		CListSet listSet;
+		listSet.MoveRecordsTo(strCount, dlg.m_SubCount,dbAry, count);
 	}
 }
 
