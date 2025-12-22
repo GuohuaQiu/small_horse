@@ -433,14 +433,13 @@ void CBankbookTree::AddTreeItem(HTREEITEM hparent, const CString& strId, BOOL bE
 #endif
 }
 
-void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill/*=FALSE*/)
+void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill)
 {
 #ifdef  LOAD_DATEBASE
 	
     CIDSet idSet;
     idSet.OpenEx();
-	CIDSet* pIdSet = &idSet;
-    CListSet* pListSet = theApp.GetListSet();
+    CIDSet* pIdSet = &idSet;
 	
 	CString strnamefil=_T("Book_Owner=\'");
 	strnamefil+=strname;
@@ -457,13 +456,15 @@ void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill/*=FALSE*/)
 		strfil+=_T("\'")+pIdSet->m_ID+_T("\',");
 		pIdSet->MoveNext();
 	}
+    CListSet listSet;
+
 	
 	strfil.Delete(strfil.ReverseFind(','));
 	if(bDisBill)
 	{
 		CQueryEndDlg dlg;
 		dlg.m_pidset=pIdSet;
-		dlg.m_plistset=pListSet;
+		dlg.m_plistset=&listSet;
 		dlg.DoModal();
 	}
 	

@@ -17,37 +17,40 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CListSet
 
-IMPLEMENT_DYNAMIC(CListSet, CRecordset)
+IMPLEMENT_DYNAMIC(CListSet, CBaseRecordset)
 
 CListSet::CListSet(CDatabase* pdb)
-	: CRecordset(pdb)
+    : CBaseRecordset(pdb, snapshot)
 {
-	//{{AFX_FIELD_INIT(CListSet)
-	m_ID = _T("");
-	m_sum = _T("");
-	m_addorsub = _T("");
-	m_remain = _T("");
-	m_arraynumber = 0;
-	m_bType = 0;
-	m_strSubCount = _T("");
+    //{{AFX_FIELD_INIT(CListSet)
+    m_ID = _T("");
+    m_sum = _T("");
+    m_addorsub = _T("");
+    m_remain = _T("");
+    m_arraynumber = 0;
+    m_bType = 0;
+    m_strSubCount = _T("");
     m_strSite = _T("");
-	m_nFields = 11;
-	//}}AFX_FIELD_INIT
-	m_nDefaultType = snapshot;
-	m_strSort=_T("OperDate,Index");
+    m_nFields = GetFieldCount();
+    //}}AFX_FIELD_INIT
+    m_nDefaultType = snapshot;
+    m_strSort=_T("OperDate,Index");
 
     m_bSetUpdateTime = TRUE;
 }
 
-
-CString CListSet::GetDefaultConnect()
-{
-	return DATA_SOURCE_NAME_ODBC;
-}
-
 CString CListSet::GetDefaultSQL()
 {
-	return _T("[Items]");
+    return GetTableName();
+}
+
+BOOL CListSet::EnsureOpen()
+{
+    if (IsOpen())
+    {
+        return TRUE;
+    }
+    return OpenEx();
 }
 
 
@@ -73,6 +76,19 @@ void CListSet::DoFieldExchange(CFieldExchange* pFX)
     {
         m_day.m_status = COleDateTime::valid;
     }
+}
+BOOL CListSet::FindByID(int nId)
+{
+    CString strFilter;
+    strFilter.Format(_T("Index = '%d'"), nId);
+    m_strFilter = strFilter;
+    
+    if (OpenEx())
+    {
+        return !IsEOF();
+    }
+    
+    return FALSE;
 }
 
 /////////////////////////////////////////////////////////////////////////////

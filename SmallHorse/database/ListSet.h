@@ -12,18 +12,26 @@
 
 #include "database_setup.h"
 #include "recordlist.h"
+#include "BaseRecordSet.h"
 //#include "ListCompare.h"	// Added by ClassView
 class CSmartDate;
 
 
-class CListSet : public CRecordset
+class CListSet : public CBaseRecordset
 {
 protected:
-	CCriticalSection m_LockModify;
+    CCriticalSection m_LockModify;
     BOOL m_bSetUpdateTime;
 public:
-// 	BOOL Modify_Site(const CString& strSite);
-	void Move(long nRows, WORD wFetchType);
+    CListSet(CDatabase* pDatabase = NULL);
+    DECLARE_DYNAMIC(CListSet)
+
+    virtual CString GetDefaultSQL();
+    virtual CString GetTableName() const override { return _T("[Items]"); }
+    virtual int GetFieldCount() const override { return 11; }
+    BOOL EnsureOpen();
+    BOOL FindByID(int nId);
+    void Move(long nRows, WORD wFetchType);
 	BOOL Modify_Transfer(const CString& strComment);
 #if 0
 	BOOL Modify_Type(BYTE type);
@@ -58,8 +66,7 @@ public:
 	void SetAddOrSubValue(float f);
 	float GetAddorSubValue();
 	float GetSumValue(BOOL bInt=TRUE);
-	CListSet(CDatabase* pDatabase = NULL);
-	DECLARE_DYNAMIC(CListSet)
+
 
 // Field/Param Data
 	//{{AFX_FIELD(CListSet, CRecordset)
@@ -82,7 +89,6 @@ public:
 	//{{AFX_VIRTUAL(CListSet)
 	public:
 	virtual CString GetDefaultConnect();    // Default connection string
-	virtual CString GetDefaultSQL();    // Default SQL for Recordset
 	virtual void DoFieldExchange(CFieldExchange* pFX);  // RFX support
 	virtual BOOL UpdateRequery();
 

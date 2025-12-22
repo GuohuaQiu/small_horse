@@ -46,8 +46,7 @@ public:
 	void QueryDate(COleDateTime centerDay, int nRoundDay);
 	
 	BOOL OpenBankbook(const CString& strID);
-	// CIDSet* GetIDSet();
-	CListSet* GetListSet();
+
 	CTodoSet* GetTodoSet();
 	static UINT  m_DataFormat;
 	int GetTypeIndex(const CString& strType);

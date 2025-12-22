@@ -52,7 +52,7 @@ protected: // create from serialization only
 // Attributes
 public:
     BOOL GetPeriod(CString strid,int nYear, int nMonth,COleDateTime& timeBegin,COleDateTime& timeEnd);
-	BOOL CheckBill(int nYear, int nMonth, COleDateTime &timeBegin, COleDateTime &timeEnd, COleDateTime &timePay,float& fUse,float& fPay);
+	// BOOL CheckBill(int nYear, int nMonth, COleDateTime &timeBegin, COleDateTime &timeEnd, COleDateTime &timePay,float& fUse,float& fPay);
 	void ExportCreditRecord(const COleDateTime &timeBegin, const COleDateTime &timeEnd,const COleDateTime& timePay);
 	void DisplayCreditDetail(int nYear, int nMonth);
 	void SelectMaxIndexItem();
@@ -179,7 +179,7 @@ protected:
 	afx_msg void OnUpdateAddReturnRecord(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateTransferDingqi(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateCalCredit(CCmdUI* pCmdUI);
-	afx_msg void OnCheckBill();
+	// afx_msg void OnCheckBill();
 	afx_msg void OnCopyRecordsTo(UINT nID);
 	afx_msg void OnMoveRecordsTo(UINT nID);
 	//}}AFX_MSG
