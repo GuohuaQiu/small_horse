@@ -1,7 +1,5 @@
 #include "stdafx.h"
-
 #include "CDbConfigure.h"
-
 
 CDbConfigure::CDbConfigure()
 {
@@ -13,52 +11,66 @@ CString GetIniFile()
 {
     TCHAR path[MAX_PATH];
     ZeroMemory(path, MAX_PATH);
-    GetModuleFileName(NULL, path, MAX_PATH); // E:\Repository\Public\Debug\MainDisplay.exe
+    GetModuleFileName(NULL, path, MAX_PATH); 
     CString strPath = _T(path);
     int pos = strPath.ReverseFind('\\');
     strPath = strPath.Left(pos+1); 
-    strPath += L"config.ini";
+    strPath += _T("config.ini"); // Ensure _T macro is used for consistency
     TRACE(strPath);
-	return strPath;
+    return strPath;
 }
 
 CString CDbConfigure::mStrDataSource = _T("");
 
-void _Append(CString &strConfig, char *sGroup, char *sField, const CString &IniFile)
+// Helper to read string from INI
+CString GetIniString(const CString& section, const CString& key, const CString& defaultVal, const CString& iniPath)
 {
-	char cTarget[MAX_PATH];
-
-    GetPrivateProfileString(sGroup, sField, "", cTarget, MAX_PATH, IniFile);
-    strConfig += _T(sField);
-    strConfig += _T("=");
-    strConfig += _T(cTarget);
-    strConfig += _T(";");
-    // DSN = test;
+    TCHAR result[MAX_PATH];
+    GetPrivateProfileString(section, key, defaultVal, result, MAX_PATH, iniPath);
+    return CString(result);
 }
 
 #ifdef _DEBUG
-#define DB_GROUP "0.1"
+#define DB_GROUP _T("0.1")
 #else
-#define DB_GROUP "1.0"
+#define DB_GROUP _T("1.0")
 #endif
 
 void CDbConfigure::OpenIni()
 {
     CString IniFile = GetIniFile();
     CDbConfigure::mStrDataSource = _T("");
-    CString &strSource = CDbConfigure::mStrDataSource;
+    
+    // Read the database file path from INI (DBQ)
+    // Assuming your INI has:
+    // [1.0]
+    // DBQ=C:\path\to\your\database.mdb
+    CString strDBQ = GetIniString(DB_GROUP, _T("DBQ"), _T(""), IniFile);
+    
+    if (strDBQ.IsEmpty())
+    {
+        // Fallback or error handling if needed
+        TRACE("Error: No DBQ found in config.ini\n");
+        return;
+    }
 
-    _Append(strSource, DB_GROUP, "DSN", IniFile);
-    _Append(strSource, DB_GROUP, "DBQ", IniFile);
-    _Append(strSource, DB_GROUP, "DriverId", IniFile);
-    _Append(strSource, DB_GROUP, "FIL", IniFile);
-    _Append(strSource, DB_GROUP, "MaxBufferSize", IniFile);
-    _Append(strSource, DB_GROUP, "PageTimeout", IniFile);
-    _Append(strSource, DB_GROUP, "PWD", IniFile);
-    _Append(strSource, DB_GROUP, "UID", IniFile);
-    TRACE(strSource);
+    // Construct DSN-less connection string for Microsoft Access Driver
+    // Note: You might need to adjust the Driver string depending on installed drivers (e.g., *.mdb vs *.accdb)
+    // For older .mdb files: "Driver={Microsoft Access Driver (*.mdb)};"
+    // For newer .accdb files: "Driver={Microsoft Access Driver (*.mdb, *.accdb)};"
+    
+    CString strDriver = _T("Driver={Microsoft Access Driver (*.mdb, *.accdb)};");
+    
+    // Build the full connection string
+    // Format: Driver={...};DBQ=c:\path\to\db.mdb;Uid=admin;Pwd=;
+    
+    CString strUid = GetIniString(DB_GROUP, _T("UID"), _T("admin"), IniFile);
+    CString strPwd = GetIniString(DB_GROUP, _T("PWD"), _T(""), IniFile);
 
-    //	_T("DSN=test_a_64;DBQ=D:\\test\\bankbook_a.mdb;DriverId=25;FIL=MS Access;MaxBufferSize=2048;PageTimeout=5;PWD=rgb;UID=admin;");
+    CDbConfigure::mStrDataSource.Format(_T("%sDBQ=%s;Uid=%s;Pwd=%s;"), 
+        strDriver, strDBQ, strUid, strPwd);
+
+    TRACE(_T("Connection String: %s\n"), CDbConfigure::mStrDataSource);
 }
 
 CString CDbConfigure::GetDataSource()

@@ -206,12 +206,14 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pA
 	COleDateTime time = COleDateTime::GetCurrentTime();
 	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
 
-	CListSet listData;
-	listData.StartEdit();
-		
+    // 修改处：使用主程序的数据库连接，确保数据更新能被立即看到
+    // 原代码：CListSet listData;
+    CListSet listData(theApp.GetListSet()->m_pDatabase);
+    listData.StartEdit();
+        
 
-	BOOL bRet = TRUE;
-	for(int i = 0;i<nCount;i++)
+    BOOL bRet = TRUE;
+    for(int i = 0;i<nCount;i++)
 	{
 		if(pctrl->GetCheck(i))
 		{

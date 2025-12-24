@@ -1,10 +1,9 @@
-
 #if !defined(DATABASE_SETUP_H)
 #define DATABASE_SETUP_H
 
 #include "CDbConfigure.h"
 
-
+// This macro will now return the full connection string instead of just "ODBC;DSN=..."
 #define DATA_SOURCE_NAME_ODBC  CDbConfigure::GetDataSource()
 #define DATA_SOURCE_NAME DATA_SOURCE_NAME_ODBC
 
