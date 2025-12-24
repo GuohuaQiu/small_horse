@@ -7,6 +7,8 @@
 // SelFilePage.h : header file
 //
 #include "QiuHeadCtrl.h"
+#include "..\database\ListSet.h" // 引入 IMPORT_ITEM 定义
+#include "..\database\SubCountSet.h" // 引入 SUBCOUNT_IMPORT_ITEM
 
 /////////////////////////////////////////////////////////////////////////////
 // CImportListPage dialog
@@ -14,19 +16,26 @@ class CImportSheet;
 
 class CImportListPage : public CPropertyPage
 {
-	DECLARE_DYNCREATE(CImportListPage)
+    DECLARE_DYNCREATE(CImportListPage)
 
 // Construction
 public:
-	void ReFillbyPaste();
-	int FindSubCountConflict(int nType[]);
-	int FindConflict(int nType[5]);
-	BOOL SaveDataToDataLib();
-	void ReFill();
-	CImportListPage();
-	CImportListPage(CImportSheet* pParent);
-	~CImportListPage();
-	CImportSheet* m_pParent;
+    void ReFillbyPaste();
+    int FindSubCountConflict(int nType[]);
+    int FindConflict(int nType[5]);
+    BOOL SaveDataToDataLib();
+    
+    // 新增：负责将 UI 数据转换为中间结构
+    void PrepareImportData(std::vector<IMPORT_ITEM>& items, int nType[], const CString& strId, int pATC[], int column_count);
+
+    // 新增：负责将 UI 数据转换为中间结构 (SubCountSet)
+    void PrepareSubCountImportData(std::vector<SUBCOUNT_IMPORT_ITEM>& items, int nType[], const CString& strMainCount);
+
+    void ReFill();
+    CImportListPage();
+    CImportListPage(CImportSheet* pParent);
+    ~CImportListPage();
+    CImportSheet* m_pParent;
 
 // Dialog Data
 	//{{AFX_DATA(CImportListPage)

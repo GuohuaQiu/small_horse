@@ -104,37 +104,37 @@ TCHAR pFieldName[VALUE_SUBCOUNT_TYPE_number][16]=
     Return type  : 
     Argument      : 
 ********************************************/
-BOOL CSubCountSet::AddItems(CListCtrl *pctrl, int nType[],CString strMainCount,int pATC[],int column_count)
-{
-	int nCount = pctrl->GetItemCount();
+// BOOL CSubCountSet::AddItems(CListCtrl *pctrl, int nType[],CString strMainCount,int pATC[],int column_count)
+// {
+// 	int nCount = pctrl->GetItemCount();
 
-	BOOL bRet = TRUE;
-	CString strSQL,strField,strValue;
-	for(int i = 0;i<nCount;i++)
-	{
-		if(pctrl->GetCheck(i))
-		{
-			strField = "CountID";
-			strValue = "\'" + strMainCount + "\'";
-			CString strTmp;
-			for(int j = 0;j<VALUE_SUBCOUNT_TYPE_number;j++)
-			{
-				if(nType[j]>=0)
-				{
-					strField += ",";
-					strField += pFieldName[j];
-					strTmp = pctrl->GetItemText(i,nType[j]);
-					strValue += ",\'" + strTmp + "\'"; 
-				}
-			}
-			//INSERT INTO php_table( `id`, `username`, `others` ) VALUES( '$id', '$username', '$others' )
-			strSQL.Format("insert into Sub_Count_Table(%s) values(%s)",strField,strValue);
-			m_pDatabase->ExecuteSQL(strSQL);
-		}
-	}
-	AddFirstRecordforSubCount(strMainCount);
-	return bRet;
-}
+// 	BOOL bRet = TRUE;
+// 	CString strSQL,strField,strValue;
+// 	for(int i = 0;i<nCount;i++)
+// 	{
+// 		if(pctrl->GetCheck(i))
+// 		{
+// 			strField = "CountID";
+// 			strValue = "\'" + strMainCount + "\'";
+// 			CString strTmp;
+// 			for(int j = 0;j<VALUE_SUBCOUNT_TYPE_number;j++)
+// 			{
+// 				if(nType[j]>=0)
+// 				{
+// 					strField += ",";
+// 					strField += pFieldName[j];
+// 					strTmp = pctrl->GetItemText(i,nType[j]);
+// 					strValue += ",\'" + strTmp + "\'"; 
+// 				}
+// 			}
+// 			//INSERT INTO php_table( `id`, `username`, `others` ) VALUES( '$id', '$username', '$others' )
+// 			strSQL.Format("insert into Sub_Count_Table(%s) values(%s)",strField,strValue);
+// 			m_pDatabase->ExecuteSQL(strSQL);
+// 		}
+// 	}
+// 	AddFirstRecordforSubCount(strMainCount);
+// 	return bRet;
+// }
 
 BOOL CSubCountSet::Find(const CString &strMainCount, const CString &strSubCount)
 {
@@ -294,4 +294,77 @@ BOOL CSubCountSet::Modify(CSubCountSet* pInData)
 	TRACE("No any change....\n");
 	return FALSE;
 
+}
+
+// 对应 pFieldName 的索引，用于参考
+// 0:SubCountID, 1:BeginValue, 2:StartDate, 3:EndDate, 4:YearRate, 5:TimeSpan, 6:Comment
+
+BOOL CSubCountSet::AddItems(const std::vector<SUBCOUNT_IMPORT_ITEM>& items)
+{
+    if (items.empty()) return TRUE;
+
+    // 使用主程序的数据库连接 (或者传入的连接)
+    // 注意：这里假设 CSubCountSet 已经连接了数据库，或者像 CListSet 那样创建一个临时的
+    // 为了安全起见，我们创建一个新的 Set 绑定到当前的 m_pDatabase
+    CSubCountSet subSet(m_pDatabase);
+    
+    // 确保打开表以便插入
+    try {
+        if (!subSet.IsOpen())
+            subSet.Open(); 
+    } catch (CDBException* e) {
+        e->Delete();
+        // 如果打开失败，可能需要处理
+    }
+
+    BOOL bRet = TRUE;
+    CDatabase* pDB = m_pDatabase;
+    
+    if(pDB->CanTransact()) {
+        pDB->BeginTrans(); 
+    }
+
+    try {
+        for(const auto& item : items)
+        {
+            subSet.AddNew();
+            
+            subSet.m_Count_ID = item.strMainCount;
+            subSet.m_Sub_Count_ID = item.strSubCountID;
+
+            if (item.bHasBeginValue) subSet.m_BeginValue = (float)item.fBeginValue;
+            if (item.bHasStartDate) subSet.m_Start_Date = item.dtStartDate;
+            if (item.bHasEndDate) subSet.m_End_Date = item.dtEndDate;
+            if (item.bHasYearRate) subSet.m_Year_Rate = item.fYearRate;
+            if (item.bHasTimeSpan) subSet.m_Time_Span = item.nTimeSpan;
+            if (item.bHasComment) subSet.m_Comment = item.strComment;
+            
+            // 默认值
+            subSet.m_bExist = TRUE; 
+
+            subSet.Update();
+        }
+
+        if(pDB->CanTransact()) {
+            pDB->CommitTrans(); 
+        }
+    }
+    catch(CDBException* e) {
+        if(pDB->CanTransact()) {
+            pDB->Rollback(); 
+        }
+        e->ReportError();
+        e->Delete();
+        subSet.Close();
+        return FALSE;
+    }
+
+    subSet.Close();
+
+    // 处理首条记录逻辑 (保持原有逻辑)
+    if (!items.empty()) {
+        AddFirstRecordforSubCount(items[0].strMainCount);
+    }
+
+    return bRet;
 }

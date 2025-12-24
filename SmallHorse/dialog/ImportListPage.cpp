@@ -254,11 +254,18 @@ BOOL CImportListPage::SaveDataToDataLib()
 
 	if(m_pParent->m_nImportType == IMPORT_TYPE_RECORD)
 	{
-		return CListSet::AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount,pATC,totalColumn);
+		// 修改处：先准备数据，再调用数据库接口
+		std::vector<IMPORT_ITEM> items;
+		PrepareImportData(items, nTypeArry, m_pParent->m_strMainCount, pATC, totalColumn);
+		// 调用静态方法批量插入
+		return CListSet::AddItems(items);
 	}
 	else
 	{
-		return m_pParent->m_pSubCountSet->AddItems(&m_listctrl,nTypeArry,m_pParent->m_strMainCount,pATC,totalColumn);
+		// 修改处：使用新的 PrepareSubCountImportData 和 AddItems
+		std::vector<SUBCOUNT_IMPORT_ITEM> items;
+		PrepareSubCountImportData(items, nTypeArry, m_pParent->m_strMainCount);
+		return m_pParent->m_pSubCountSet->AddItems(items);
 	}
 }
 
@@ -438,4 +445,203 @@ void CImportListPage::ReFillbyPaste()
 		return;
 	}
 	loader.FillListCtrl(&m_listctrl);
+}
+
+// 新增函数的实现：解析 UI 数据
+void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nType[], const CString& strId, int pATC[], int column_count)
+{
+    int nCount = m_listctrl.GetItemCount();
+    CString strDate, strAdd, strComment;
+    int nYear, nMonth, nDay, nHour, nMinute, nSec;
+    double fIncome;
+    
+    CString strStamp;
+    COleDateTime time = COleDateTime::GetCurrentTime();
+    strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
+
+    for(int i = 0; i < nCount; i++)
+    {
+        if(m_listctrl.GetCheck(i))
+        {
+            IMPORT_ITEM item;
+            item.strBookID = strId;
+
+            // 1. 解析日期
+            if(nType[VALUE_TYPE_DATE] >= 0)
+            {
+                strDate = m_listctrl.GetItemText(i, nType[VALUE_TYPE_DATE]);
+                if(nType[VALUE_TYPE_ONLYTIME] >= 0)
+                {
+                    strDate += " ";
+                    strDate += m_listctrl.GetItemText(i, nType[VALUE_TYPE_ONLYTIME]);
+                }
+                nHour = 8; nMinute = 0; nSec = 0;
+                
+                // 使用全局 theApp 解析日期
+                int ret = theApp.GetDate(strDate, nYear, nMonth, nDay, nHour, nMinute, nSec);
+                if(ret != 0)
+                {
+                    item.dtDate = COleDateTime(nYear, nMonth, nDay, nHour, nMinute, nSec);
+                }
+                else 
+                {
+                    CString msg;
+                    msg.Format("Below format cant be read:\n %s", strDate);
+                    AfxMessageBox(msg);
+                    // 解析失败默认使用当前时间，防止崩溃
+                    item.dtDate = COleDateTime::GetCurrentTime();
+                }
+            }
+            else
+            {
+                item.dtDate = COleDateTime::GetCurrentTime();
+            }
+
+            // 2. 解析金额
+            fIncome = 0.0;
+            TCHAR *pTempTchar;
+            if(nType[VALUE_TYPE_INCOME] >= 0)
+            {
+                strAdd = m_listctrl.GetItemText(i, nType[VALUE_TYPE_INCOME]);
+                strAdd.Remove(',');
+                fIncome = _tcstod(strAdd, &pTempTchar);
+            }
+            if(nType[VALUE_TYPE_PAY] >= 0)
+            {
+                strAdd = m_listctrl.GetItemText(i, nType[VALUE_TYPE_PAY]);
+                strAdd.Remove(',');
+                fIncome -= _tcstod(strAdd, &pTempTchar);
+            }
+            item.fAmount = fIncome;
+
+            // 3. 解析子账户
+            if(nType[VALUE_TYPE_SUBCOUNT] >= 0)
+            {
+                item.strSubCount = m_listctrl.GetItemText(i, nType[VALUE_TYPE_SUBCOUNT]);
+            }
+
+            // 4. 解析备注 (包含 Add To Comments 逻辑)
+            if(nType[VALUE_TYPE_COMMENT] >= 0)
+            {
+                strComment = m_listctrl.GetItemText(i, nType[VALUE_TYPE_COMMENT]);
+            }
+            else
+            {
+                strComment = _T("");
+            }
+
+            // 处理附加列到备注
+            for(int j = 0; j < column_count; j++)
+            {
+                if(pATC[j] == 1)
+                {
+                    strComment += " ";
+                    strComment += m_listctrl.GetItemText(i, j);
+                }
+            }
+            
+            strComment.TrimLeft(); // 去除前导空格
+            item.strComment = strComment;
+
+            // 处理 Sum 列到备注
+            if(nType[VALUE_TYPE_SUM] >= 0)
+            {
+                CString str = m_listctrl.GetItemText(i, nType[VALUE_TYPE_SUM]);
+                CString strSum;
+                strSum.Format("(R:%s)", str);
+                item.strComment += strSum;
+            }
+            item.strComment += strStamp;
+
+            // 5. 解析地点
+            if(nType[VALUE_TYPE_SITE] >= 0)
+            {
+                item.strSite = m_listctrl.GetItemText(i, nType[VALUE_TYPE_SITE]);
+            }
+
+            items.push_back(item);
+        }
+    }
+}
+
+// 假设这些宏定义在某处，或者根据 pFieldName 的顺序硬编码
+// pFieldName: SubCountID, BeginValue, StartDate, EndDate, YearRate, TimeSpan, Comment
+#define IDX_SC_SUBID    0
+#define IDX_SC_BEGINVAL 1
+#define IDX_SC_START    2
+#define IDX_SC_END      3
+#define IDX_SC_RATE     4
+#define IDX_SC_SPAN     5
+#define IDX_SC_COMMENT  6
+
+void CImportListPage::PrepareSubCountImportData(std::vector<SUBCOUNT_IMPORT_ITEM>& items, int nType[], const CString& strMainCount)
+{
+    int nCount = m_listctrl.GetItemCount();
+    CString strTemp;
+    TCHAR* pTempTchar;
+    int nYear, nMonth, nDay, nHour, nMinute, nSec;
+
+    for(int i = 0; i < nCount; i++)
+    {
+        if(m_listctrl.GetCheck(i))
+        {
+            SUBCOUNT_IMPORT_ITEM item;
+            item.strMainCount = strMainCount;
+
+            // 0. SubCountID
+            if (nType[IDX_SC_SUBID] >= 0) {
+                item.strSubCountID = m_listctrl.GetItemText(i, nType[IDX_SC_SUBID]);
+            }
+
+            // 1. BeginValue
+            if (nType[IDX_SC_BEGINVAL] >= 0) {
+                strTemp = m_listctrl.GetItemText(i, nType[IDX_SC_BEGINVAL]);
+                strTemp.Remove(',');
+                item.fBeginValue = _tcstod(strTemp, &pTempTchar);
+                item.bHasBeginValue = TRUE;
+            }
+
+            // 2. StartDate
+            if (nType[IDX_SC_START] >= 0) {
+                strTemp = m_listctrl.GetItemText(i, nType[IDX_SC_START]);
+                nHour=0; nMinute=0; nSec=0;
+                if (theApp.GetDate(strTemp, nYear, nMonth, nDay, nHour, nMinute, nSec) != 0) {
+                    item.dtStartDate = COleDateTime(nYear, nMonth, nDay, nHour, nMinute, nSec);
+                    item.bHasStartDate = TRUE;
+                }
+            }
+
+            // 3. EndDate
+            if (nType[IDX_SC_END] >= 0) {
+                strTemp = m_listctrl.GetItemText(i, nType[IDX_SC_END]);
+                nHour=0; nMinute=0; nSec=0;
+                if (theApp.GetDate(strTemp, nYear, nMonth, nDay, nHour, nMinute, nSec) != 0) {
+                    item.dtEndDate = COleDateTime(nYear, nMonth, nDay, nHour, nMinute, nSec);
+                    item.bHasEndDate = TRUE;
+                }
+            }
+
+            // 4. YearRate
+            if (nType[IDX_SC_RATE] >= 0) {
+                strTemp = m_listctrl.GetItemText(i, nType[IDX_SC_RATE]);
+                item.fYearRate = (float)_tcstod(strTemp, &pTempTchar);
+                item.bHasYearRate = TRUE;
+            }
+
+            // 5. TimeSpan
+            if (nType[IDX_SC_SPAN] >= 0) {
+                strTemp = m_listctrl.GetItemText(i, nType[IDX_SC_SPAN]);
+                item.nTimeSpan = _ttol(strTemp);
+                item.bHasTimeSpan = TRUE;
+            }
+
+            // 6. Comment
+            if (nType[IDX_SC_COMMENT] >= 0) {
+                item.strComment = m_listctrl.GetItemText(i, nType[IDX_SC_COMMENT]);
+                item.bHasComment = TRUE;
+            }
+
+            items.push_back(item);
+        }
+    }
 }

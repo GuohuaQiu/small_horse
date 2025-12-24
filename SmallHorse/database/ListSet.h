@@ -12,6 +12,19 @@
 
 #include "database_setup.h"
 #include "recordlist.h"
+#include <vector> // 添加 vector 支持
+
+// 定义中间数据结构，用于解耦 UI 和 数据库
+struct IMPORT_ITEM
+{
+    COleDateTime dtDate;
+    double fAmount;
+    CString strSubCount;
+    CString strComment;
+    CString strSite;
+    CString strBookID;
+};
+
 //#include "ListCompare.h"	// Added by ClassView
 class CSmartDate;
 
@@ -47,9 +60,12 @@ public:
 	BOOL Find(const COleDateTime& time,float fRecord,const CString& strSubCount);
 	BOOL IsOnlyOneBook();
 	BOOL GetCurrentBookId(CString &strID);
-	static BOOL AddItems(CListCtrl* pctrl,int nType[],const CString& strId,int pATC[],int column_count);
+    
+    // 修改处：参数改为 const std::vector<IMPORT_ITEM>&
+    static BOOL AddItems(const std::vector<IMPORT_ITEM>& items);
+
 // 	void SetNetIncome(BYTE bType);
-	CString GetDate();
+    CString GetDate();
 	CString GetArray();
 	CString GetSum();
 	CString GetAddorSub();

@@ -7,23 +7,66 @@
 // SubCountSet.h : header file
 //
 
+#include <vector>
+
+// 定义子账户导入数据的中间结构
+struct SUBCOUNT_IMPORT_ITEM
+{
+    CString strMainCount;
+    CString strSubCountID;
+    
+    // 数据值
+    double fBeginValue;
+    COleDateTime dtStartDate;
+    COleDateTime dtEndDate;
+    float fYearRate;
+    long nTimeSpan;
+    CString strComment;
+
+    // 有效性标志 (对应原代码中的 nType[j] >= 0 判断)
+    BOOL bHasBeginValue;
+    BOOL bHasStartDate;
+    BOOL bHasEndDate;
+    BOOL bHasYearRate;
+    BOOL bHasTimeSpan;
+    BOOL bHasComment;
+
+    SUBCOUNT_IMPORT_ITEM()
+    {
+        fBeginValue = 0.0;
+        fYearRate = 0.0f;
+        nTimeSpan = 0;
+        bHasBeginValue = FALSE;
+        bHasStartDate = FALSE;
+        bHasEndDate = FALSE;
+        bHasYearRate = FALSE;
+        bHasTimeSpan = FALSE;
+        bHasComment = FALSE;
+    }
+};
+
 /////////////////////////////////////////////////////////////////////////////
 // CSubCountSet recordset
 
 class CSubCountSet : public CRecordset
 {
 public:
-	BOOL Modify(CSubCountSet* pInData);
-	void MakeDataCopy(CSubCountSet& subSet);
-	void SetNoExist();
+    BOOL Modify(CSubCountSet* pInData);
+    void MakeDataCopy(CSubCountSet& subSet);
+    void SetNoExist();
     void SetAllExist();
-	void GetTipString(CString& strTip);
-	void AddFirstRecordforSubCount(const CString& strMainCount);
-	BOOL Find(const CString& strMainCount,const CString& strSubCount);
-	BOOL AddItems(CListCtrl *pctrl,int nType[],CString strMainCount,int pATC[],int column_count);
-	void RequeryCount(const CString& strCount);
-	CSubCountSet(CDatabase* pDatabase = NULL);
-	DECLARE_DYNAMIC(CSubCountSet)
+    void GetTipString(CString& strTip);
+    void AddFirstRecordforSubCount(const CString& strMainCount);
+    BOOL Find(const CString& strMainCount,const CString& strSubCount);
+    
+    // 修改处：使用结构体向量作为参数
+    BOOL AddItems(const std::vector<SUBCOUNT_IMPORT_ITEM>& items);
+    // 保留旧接口声明如果需要，或者直接删除
+    // BOOL AddItems(CListCtrl *pctrl,int nType[],CString strMainCount,int pATC[],int column_count);
+    
+    void RequeryCount(const CString& strCount);
+    CSubCountSet(CDatabase* pDatabase = NULL);
+    DECLARE_DYNAMIC(CSubCountSet)
 
 // Field/Param Data
 	//{{AFX_FIELD(CSubCountSet, CRecordset)

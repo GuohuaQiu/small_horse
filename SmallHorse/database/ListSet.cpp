@@ -190,151 +190,151 @@ CString CListSet::GetDate()
 // }
 
 
-BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pATC[],int column_count)
-{
-	int nCount = pctrl->GetItemCount();
-	CString strDate;
-	CString strAdd;
-	CString strComment;
-	CString strType;
-	double  fIncome;
-	int nYear,nMonth,nDay,nHour, nMinute,nSec;
-	nHour = 0;
-	nMinute = 0;
-	nSec = 0;
-    CString strStamp;
-	COleDateTime time = COleDateTime::GetCurrentTime();
-	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
+// BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pATC[],int column_count)
+// {
+// 	int nCount = pctrl->GetItemCount();
+// 	CString strDate;
+// 	CString strAdd;
+// 	CString strComment;
+// 	CString strType;
+// 	double  fIncome;
+// 	int nYear,nMonth,nDay,nHour, nMinute,nSec;
+// 	nHour = 0;
+// 	nMinute = 0;
+// 	nSec = 0;
+//     CString strStamp;
+// 	COleDateTime time = COleDateTime::GetCurrentTime();
+// 	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
 
-    // 修改处：使用主程序的数据库连接，确保数据更新能被立即看到
-    // 原代码：CListSet listData;
-    CListSet listData(theApp.GetListSet()->m_pDatabase);
-    listData.StartEdit();
+//     // 修改处：使用主程序的数据库连接，确保数据更新能被立即看到
+//     // 原代码：CListSet listData;
+//     CListSet listData(theApp.GetListSet()->m_pDatabase);
+//     listData.StartEdit();
         
 
-    BOOL bRet = TRUE;
-    CDatabase* pDB = listData.m_pDatabase;
-    if(pDB->CanTransact()) {
-        pDB->BeginTrans(); // 开启事务
-    }
+//     BOOL bRet = TRUE;
+//     CDatabase* pDB = listData.m_pDatabase;
+//     if(pDB->CanTransact()) {
+//         pDB->BeginTrans(); // 开启事务
+//     }
 
-    try {
-        for(int i = 0; i < nCount; i++)
-		{
-			if(pctrl->GetCheck(i))
-			{
-				listData.AddNew();
-				listData.m_ID = strId;
-				if(nType[VALUE_TYPE_DATE]>=0)
-				{
-					strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
-					if(nType[VALUE_TYPE_ONLYTIME]>=0)
-					{
-						strDate += " ";
-						strDate += pctrl->GetItemText(i,nType[VALUE_TYPE_ONLYTIME]);
-					}
-					nHour = 8;
-					nMinute = 0;
-					nSec = 0;
+//     try {
+//         for(int i = 0; i < nCount; i++)
+// 		{
+// 			if(pctrl->GetCheck(i))
+// 			{
+// 				listData.AddNew();
+// 				listData.m_ID = strId;
+// 				if(nType[VALUE_TYPE_DATE]>=0)
+// 				{
+// 					strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
+// 					if(nType[VALUE_TYPE_ONLYTIME]>=0)
+// 					{
+// 						strDate += " ";
+// 						strDate += pctrl->GetItemText(i,nType[VALUE_TYPE_ONLYTIME]);
+// 					}
+// 					nHour = 8;
+// 					nMinute = 0;
+// 					nSec = 0;
 
-					int ret = theApp.GetDate(strDate,nYear,nMonth,nDay,nHour, nMinute,nSec);
+// 					int ret = theApp.GetDate(strDate,nYear,nMonth,nDay,nHour, nMinute,nSec);
 
-					if(ret == 0)
-					{
-						CString msg;
-						msg.Format("Below format cant be read:\n %s",strDate);
+// 					if(ret == 0)
+// 					{
+// 						CString msg;
+// 						msg.Format("Below format cant be read:\n %s",strDate);
 
-						AfxMessageBox(msg);
-						return FALSE;
-					}
+// 						AfxMessageBox(msg);
+// 						return FALSE;
+// 					}
 
-					listData.m_day = COleDateTime(nYear,nMonth,nDay,nHour,nMinute,nSec);
-				}
-				fIncome = 0.0;
+// 					listData.m_day = COleDateTime(nYear,nMonth,nDay,nHour,nMinute,nSec);
+// 				}
+// 				fIncome = 0.0;
 
-				TCHAR *pTempTchar;
-				if(nType[VALUE_TYPE_INCOME]>=0)
-				{
-					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_INCOME]);
-					if(strAdd.Remove(','))
-					{
-						TRACE(_T("%s"),strAdd);
-					}
-					fIncome = _tcstod(strAdd,&pTempTchar);
-				}
-				if(nType[VALUE_TYPE_PAY]>=0)
-				{
-					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_PAY]);
-					if(strAdd.Remove(','))
-					{
-						TRACE(_T("%s"),strAdd);
-					}
-					fIncome -= _tcstod(strAdd,&pTempTchar);
-				}
-				listData.SetAddOrSubValue(fIncome);
-				if(nType[VALUE_TYPE_SUBCOUNT]>=0)
-				{
-					listData.m_strSubCount = pctrl->GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
-				}
-				CString strComment;
-				if(nType[VALUE_TYPE_COMMENT]>=0)
-				{
-					strComment = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
-				}
+// 				TCHAR *pTempTchar;
+// 				if(nType[VALUE_TYPE_INCOME]>=0)
+// 				{
+// 					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_INCOME]);
+// 					if(strAdd.Remove(','))
+// 					{
+// 						TRACE(_T("%s"),strAdd);
+// 					}
+// 					fIncome = _tcstod(strAdd,&pTempTchar);
+// 				}
+// 				if(nType[VALUE_TYPE_PAY]>=0)
+// 				{
+// 					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_PAY]);
+// 					if(strAdd.Remove(','))
+// 					{
+// 						TRACE(_T("%s"),strAdd);
+// 					}
+// 					fIncome -= _tcstod(strAdd,&pTempTchar);
+// 				}
+// 				listData.SetAddOrSubValue(fIncome);
+// 				if(nType[VALUE_TYPE_SUBCOUNT]>=0)
+// 				{
+// 					listData.m_strSubCount = pctrl->GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
+// 				}
+// 				CString strComment;
+// 				if(nType[VALUE_TYPE_COMMENT]>=0)
+// 				{
+// 					strComment = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
+// 				}
 
-				//ADD TO COMMENTS
-				for(int j = 0;j< column_count;j++)
-				{
-					if(pATC[j]==1)
-					{
-						strComment += " ";
-						strComment += pctrl->GetItemText(i,j);
-					}
-				}
+// 				//ADD TO COMMENTS
+// 				for(int j = 0;j< column_count;j++)
+// 				{
+// 					if(pATC[j]==1)
+// 					{
+// 						strComment += " ";
+// 						strComment += pctrl->GetItemText(i,j);
+// 					}
+// 				}
 
-				int len = strComment.GetLength();
+// 				int len = strComment.GetLength();
 
-				while(len > 0 && strComment.GetAt(0) == _TCHAR(' '))
-				{
-					len--;
-					strComment = strComment.Right(len);
-				}
-				listData.m_remain = strComment;
+// 				while(len > 0 && strComment.GetAt(0) == _TCHAR(' '))
+// 				{
+// 					len--;
+// 					strComment = strComment.Right(len);
+// 				}
+// 				listData.m_remain = strComment;
 
 
-				if(nType[VALUE_TYPE_SUM]>=0)
-				{
-					CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
-					CString strSum;
-					strSum.Format("(R:%s)",str);
-					listData.m_remain += strSum;
-				}
-				listData.m_remain += strStamp;
-				if(nType[VALUE_TYPE_SITE]>=0)
-				{
-					listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
-				}
+// 				if(nType[VALUE_TYPE_SUM]>=0)
+// 				{
+// 					CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
+// 					CString strSum;
+// 					strSum.Format("(R:%s)",str);
+// 					listData.m_remain += strSum;
+// 				}
+// 				listData.m_remain += strStamp;
+// 				if(nType[VALUE_TYPE_SITE]>=0)
+// 				{
+// 					listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
+// 				}
 
-				listData.Update(); 
-			}
-		}
+// 				listData.Update(); 
+// 			}
+// 		}
         
-        if(pDB->CanTransact()) {
-            pDB->CommitTrans(); // 一次性提交所有更改
-        }
-    }
-    catch(CDBException* e) {
-        if(pDB->CanTransact()) {
-            pDB->Rollback(); // 出错回滚，保证数据一致性
-        }
-        e->ReportError();
-        e->Delete();
-        return FALSE;
-    }
+//         if(pDB->CanTransact()) {
+//             pDB->CommitTrans(); // 一次性提交所有更改
+//         }
+//     }
+//     catch(CDBException* e) {
+//         if(pDB->CanTransact()) {
+//             pDB->Rollback(); // 出错回滚，保证数据一致性
+//         }
+//         e->ReportError();
+//         e->Delete();
+//         return FALSE;
+//     }
 
-	listData.EndEdit();
-	return bRet;
-}
+// 	listData.EndEdit();
+// 	return bRet;
+// }
 
 BOOL CListSet::GetCurrentBookId(CString &strID)
 {
@@ -1072,5 +1072,54 @@ int CListSet::EndEdit()
 	theApp.ForceUpdateViews();
 	return 0;
 
+}
+
+// 修改后的 AddItems，只负责数据库操作
+BOOL CListSet::AddItems(const std::vector<IMPORT_ITEM>& items)
+{
+    if (items.empty()) return TRUE;
+
+    // 使用主程序的数据库连接
+    CListSet listData(theApp.GetListSet()->m_pDatabase);
+    listData.StartEdit();
+
+    BOOL bRet = TRUE;
+    CDatabase* pDB = listData.m_pDatabase;
+    
+    // 开启事务
+    if(pDB->CanTransact()) {
+        pDB->BeginTrans(); 
+    }
+
+    try {
+        for(const auto& item : items)
+        {
+            listData.AddNew();
+            listData.m_ID = item.strBookID;
+            listData.m_day = item.dtDate;
+            listData.SetAddOrSubValue(item.fAmount);
+            listData.m_strSubCount = item.strSubCount;
+            listData.m_remain = item.strComment;
+            listData.m_strSite = item.strSite;
+            
+            listData.Update(); 
+        }
+        
+        if(pDB->CanTransact()) {
+            pDB->CommitTrans(); 
+        }
+    }
+    catch(CDBException* e) {
+        if(pDB->CanTransact()) {
+            pDB->Rollback(); 
+        }
+        e->ReportError();
+        e->Delete();
+
+        return FALSE;
+    }
+
+    listData.EndEdit();
+    return bRet;
 }
 
