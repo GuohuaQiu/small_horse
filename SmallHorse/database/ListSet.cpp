@@ -213,113 +213,125 @@ BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pA
         
 
     BOOL bRet = TRUE;
-    for(int i = 0;i<nCount;i++)
-	{
-		if(pctrl->GetCheck(i))
+    CDatabase* pDB = listData.m_pDatabase;
+    if(pDB->CanTransact()) {
+        pDB->BeginTrans(); // 开启事务
+    }
+
+    try {
+        for(int i = 0; i < nCount; i++)
 		{
-			listData.AddNew();
-			listData.m_ID = strId;
-			if(nType[VALUE_TYPE_DATE]>=0)
+			if(pctrl->GetCheck(i))
 			{
-				strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
-				if(nType[VALUE_TYPE_ONLYTIME]>=0)
+				listData.AddNew();
+				listData.m_ID = strId;
+				if(nType[VALUE_TYPE_DATE]>=0)
 				{
-					strDate += " ";
-					strDate += pctrl->GetItemText(i,nType[VALUE_TYPE_ONLYTIME]);
+					strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
+					if(nType[VALUE_TYPE_ONLYTIME]>=0)
+					{
+						strDate += " ";
+						strDate += pctrl->GetItemText(i,nType[VALUE_TYPE_ONLYTIME]);
+					}
+					nHour = 8;
+					nMinute = 0;
+					nSec = 0;
+
+					int ret = theApp.GetDate(strDate,nYear,nMonth,nDay,nHour, nMinute,nSec);
+
+					if(ret == 0)
+					{
+						CString msg;
+						msg.Format("Below format cant be read:\n %s",strDate);
+
+						AfxMessageBox(msg);
+						return FALSE;
+					}
+
+					listData.m_day = COleDateTime(nYear,nMonth,nDay,nHour,nMinute,nSec);
 				}
-				nHour = 8;
-				nMinute = 0;
-				nSec = 0;
+				fIncome = 0.0;
 
-				int ret = theApp.GetDate(strDate,nYear,nMonth,nDay,nHour, nMinute,nSec);
-
-				if(ret == 0)
+				TCHAR *pTempTchar;
+				if(nType[VALUE_TYPE_INCOME]>=0)
 				{
-					CString msg;
-					msg.Format("Below format cant be read:\n %s",strDate);
-
-					AfxMessageBox(msg);
-					return FALSE;
+					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_INCOME]);
+					if(strAdd.Remove(','))
+					{
+						TRACE(_T("%s"),strAdd);
+					}
+					fIncome = _tcstod(strAdd,&pTempTchar);
 				}
-
-				listData.m_day = COleDateTime(nYear,nMonth,nDay,nHour,nMinute,nSec);
-			}
-			fIncome = 0.0;
-
-			TCHAR *pTempTchar;
-			if(nType[VALUE_TYPE_INCOME]>=0)
-			{
-				strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_INCOME]);
-				if(strAdd.Remove(','))
+				if(nType[VALUE_TYPE_PAY]>=0)
 				{
-					TRACE(_T("%s"),strAdd);
+					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_PAY]);
+					if(strAdd.Remove(','))
+					{
+						TRACE(_T("%s"),strAdd);
+					}
+					fIncome -= _tcstod(strAdd,&pTempTchar);
 				}
-				fIncome = _tcstod(strAdd,&pTempTchar);
-			}
-			if(nType[VALUE_TYPE_PAY]>=0)
-			{
-				strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_PAY]);
-				if(strAdd.Remove(','))
+				listData.SetAddOrSubValue(fIncome);
+				if(nType[VALUE_TYPE_SUBCOUNT]>=0)
 				{
-					TRACE(_T("%s"),strAdd);
+					listData.m_strSubCount = pctrl->GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
 				}
-				fIncome -= _tcstod(strAdd,&pTempTchar);
-			}
-			listData.SetAddOrSubValue(fIncome);
-			if(nType[VALUE_TYPE_SUBCOUNT]>=0)
-			{
-				listData.m_strSubCount = pctrl->GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
-			}
-			CString strComment;
-			if(nType[VALUE_TYPE_COMMENT]>=0)
-			{
-				strComment = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
-			}
-
-			//ADD TO COMMENTS
-			for(int j = 0;j< column_count;j++)
-			{
-				if(pATC[j]==1)
+				CString strComment;
+				if(nType[VALUE_TYPE_COMMENT]>=0)
 				{
-					strComment += " ";
-					strComment += pctrl->GetItemText(i,j);
+					strComment = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
 				}
-			}
 
-			int len = strComment.GetLength();
+				//ADD TO COMMENTS
+				for(int j = 0;j< column_count;j++)
+				{
+					if(pATC[j]==1)
+					{
+						strComment += " ";
+						strComment += pctrl->GetItemText(i,j);
+					}
+				}
 
-			while(len > 0 && strComment.GetAt(0) == _TCHAR(' '))
-			{
-				len--;
-				strComment = strComment.Right(len);
-			}
-			listData.m_remain = strComment;
+				int len = strComment.GetLength();
+
+				while(len > 0 && strComment.GetAt(0) == _TCHAR(' '))
+				{
+					len--;
+					strComment = strComment.Right(len);
+				}
+				listData.m_remain = strComment;
 
 
-			if(nType[VALUE_TYPE_SUM]>=0)
-			{
-				CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
-				CString strSum;
-				strSum.Format("(R:%s)",str);
-				listData.m_remain += strSum;
-			}
-			listData.m_remain += strStamp;
-			if(nType[VALUE_TYPE_SITE]>=0)
-			{
-				listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
-			}
+				if(nType[VALUE_TYPE_SUM]>=0)
+				{
+					CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
+					CString strSum;
+					strSum.Format("(R:%s)",str);
+					listData.m_remain += strSum;
+				}
+				listData.m_remain += strStamp;
+				if(nType[VALUE_TYPE_SITE]>=0)
+				{
+					listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
+				}
 
-			int ret = listData.SubmitNew();
-
-			//bRet = New_Item(&listData);
-
-			if(ret)
-			{
-				bRet = FALSE;
-				break;
+				listData.Update(); 
 			}
 		}
-	}
+        
+        if(pDB->CanTransact()) {
+            pDB->CommitTrans(); // 一次性提交所有更改
+        }
+    }
+    catch(CDBException* e) {
+        if(pDB->CanTransact()) {
+            pDB->Rollback(); // 出错回滚，保证数据一致性
+        }
+        e->ReportError();
+        e->Delete();
+        return FALSE;
+    }
+
 	listData.EndEdit();
 	return bRet;
 }
