@@ -5,10 +5,11 @@
 
 IMPLEMENT_DYNAMIC(CBaseRecordset, CRecordset)
 
-CBaseRecordset::CBaseRecordset(CDatabase* pDatabase, UINT nOpenType, DWORD dwOptions)
+CBaseRecordset::CBaseRecordset(CDatabase* pDatabase, BOOL bShareDatabaseConnection, UINT nOpenType, DWORD dwOptions)
     : CRecordset(pDatabase)
     , m_eState(RS_CLOSED)
     , m_bDirty(FALSE)
+    , m_bShareDatabaseConnection(bShareDatabaseConnection)
     , m_strLastSQL(_T(""))
 {
     m_nDefaultType = nOpenType;
@@ -28,6 +29,23 @@ CBaseRecordset::~CBaseRecordset()
         {
             // 忽略析构时的异常
         }
+    }
+    if(m_bShareDatabaseConnection == FALSE && m_pDatabase != NULL)
+    {
+        // 如果不共享连接，关闭并删除数据库连接
+        try
+        {
+            if (m_pDatabase->IsOpen())
+            {
+                m_pDatabase->Close();
+            }
+        }
+        catch(...)
+        {
+            // 忽略异常
+        }
+        delete m_pDatabase;
+        m_pDatabase = NULL;
     }
 }
 
@@ -62,11 +80,11 @@ BOOL CBaseRecordset::OpenEx(const CString& strSQL, DWORD dwOptions)
         
         if (strSQL.IsEmpty())
         {
-            bSuccess = Open(m_nDefaultType, NULL, dwOptions);
+            bSuccess = Open(CRecordset::snapshot, NULL, CRecordset::readOnly);
         }
         else
         {
-            bSuccess = Open(m_nDefaultType, strSQL, dwOptions);
+            bSuccess = Open(CRecordset::snapshot, strSQL, CRecordset::readOnly);
         }
         
         if (bSuccess)
@@ -197,22 +215,28 @@ BOOL CBaseRecordset::EnsureDatabaseConnection()
     {
         return TRUE;
     }
-    
-    // 尝试从数据库管理器获取连接
-    m_pDatabase = CDatabaseManager::GetInstance()->GetConnection();
-    
+    if (m_bShareDatabaseConnection)
+    {
+        // 尝试从数据库管理器获取连接
+        m_pDatabase = CDatabaseManager::GetInstance()->GetConnection();
+    }
+    else
+    {
+        // 尝试从数据库管理器获取连接
+        m_pDatabase = CDatabaseManager::NewConnection();
+    }
     if (m_pDatabase == NULL)
     {
         TRACE(_T("数据库管理器返回NULL连接\n"));
         return FALSE;
     }
-    
+
     if (!m_pDatabase->IsOpen())
     {
         TRACE(_T("获取的数据库连接未打开\n"));
         return FALSE;
     }
-    
+    // 如果不共享连接，直接返回TRUE
     return TRUE;
 }
 

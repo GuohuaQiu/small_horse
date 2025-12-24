@@ -54,27 +54,23 @@ void CDatabaseManager::Release()
 // }
 
 
-
-CDatabaseManager::CDatabaseManager()
-    : m_pDatabase(nullptr)
-    , m_strDbPath(_T(""))
-    , m_strLastError(_T(""))
+CString CDatabaseManager::m_strDbPath = _T("");
+void CDatabaseManager::LoadEnvSetting()
 {
     TCHAR szExePath[MAX_PATH] = {0};
     GetModuleFileName(nullptr, szExePath, MAX_PATH);
     PathRemoveFileSpec(szExePath);
-    
+
     CString strIniPath = CString(szExePath) + _T("\\config.ini");
     TCHAR szPath[MAX_PATH] = {0};
-    
-    
+
     // 读取配置
-    GetPrivateProfileString(DB_GROUP, _T("DBQ"), 
-                          _T(""), szPath, MAX_PATH, strIniPath);
-    
+    GetPrivateProfileString(DB_GROUP, _T("DBQ"),
+                            _T(""), szPath, MAX_PATH, strIniPath);
+
     m_strDbPath = szPath;
     m_strDbPath.Trim();
-    
+
     if (!m_strDbPath.IsEmpty())
     {
         TRACE(_T("从[%s]节加载数据库路径: %s\n"), DB_GROUP, m_strDbPath);
@@ -83,6 +79,11 @@ CDatabaseManager::CDatabaseManager()
     {
         TRACE(_T("未找到[%s]节的PATH配置\n"), DB_GROUP);
     }
+}
+CDatabaseManager::CDatabaseManager()
+    : m_pDatabase(nullptr)
+    , m_strLastError(_T(""))
+{
 }
 
 
@@ -104,7 +105,7 @@ BOOL CDatabaseManager::SetDatabasePath(const CString& strPath)
     // 检查文件是否存在
     if (GetFileAttributes(strPath) == INVALID_FILE_ATTRIBUTES)
     {
-        m_strLastError = _T("数据库文件不存在: ") + strPath;
+        //m_strLastError = _T("数据库文件不存在: ") + strPath;
         return FALSE;
     }
     
@@ -143,7 +144,7 @@ BOOL CDatabaseManager::InitializeDatabase()
     return TRUE;
 }
 
-CString CDatabaseManager::BuildConnectionString() const
+CString CDatabaseManager::BuildConnectionString(BOOL bExclusive, BOOL bReadOnly)
 {
     CString strConnect;
     
@@ -156,9 +157,11 @@ CString CDatabaseManager::BuildConnectionString() const
         _T("PageTimeout=5;")
         _T("PWD=rgb;")
         _T("UID=admin;")
-        _T("READONLY=FALSE;")
-        _T("EXCLUSIVE=FALSE;"),
-        m_strDbPath
+        _T("READONLY=%s;")
+        _T("EXCLUSIVE=%s;"),
+        m_strDbPath,
+        bReadOnly ? _T("TRUE") : _T("FALSE"),
+        bExclusive ? _T("TRUE") : _T("FALSE")
     );
     
     return strConnect;
@@ -248,6 +251,35 @@ CDatabase* CDatabaseManager::GetConnection()
         }
     }
     return m_pDatabase;
+}
+CDatabase* CDatabaseManager::NewConnection()
+{
+    if (m_strDbPath.IsEmpty())
+    {
+        TRACE( _T("数据库路径未设置"));
+        return nullptr;
+    }
+    
+    try
+    {
+        CDatabase* pdb = new CDatabase();
+        CString strConnect = BuildConnectionString(TRUE,TRUE);
+        
+        if (!pdb->OpenEx(strConnect, CDatabase::noOdbcDialog))
+        {
+            TRACE( _T("无法打开数据库连接"));
+            delete pdb;
+            return nullptr;
+        }
+        
+        return pdb;
+    }
+    catch(CDBException* e)
+    {
+        TRACE(e->m_strError);
+        e->Delete();
+        return FALSE;
+    }
 }
 
 BOOL CDatabaseManager::ExecuteSQL(const CString& strSQL)

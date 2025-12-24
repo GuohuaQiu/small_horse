@@ -20,7 +20,7 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CListSet, CBaseRecordset)
 
 CListSet::CListSet(CDatabase* pdb)
-    : CBaseRecordset(pdb, snapshot)
+    : CBaseRecordset(pdb, 0)
 {
     //{{AFX_FIELD_INIT(CListSet)
     m_ID = _T("");

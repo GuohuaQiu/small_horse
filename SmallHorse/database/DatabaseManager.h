@@ -11,7 +11,6 @@ private:
     static std::mutex m_mutex;
     
     CDatabase* m_pDatabase;
-    CString m_strDbPath;
     CString m_strLastError;
     
     // 私有构造函数，单例模式
@@ -22,9 +21,8 @@ private:
     CDatabaseManager& operator=(const CDatabaseManager&) = delete;
     
     BOOL InitializeDatabase();
-    CString BuildConnectionString() const;
     
-public:
+    public:
     ~CDatabaseManager();
     
     // 单例获取
@@ -41,8 +39,11 @@ public:
     CDatabase* GetConnection();
     
     // 获取/设置数据库路径
-    CString GetDatabasePath() const { return m_strDbPath; }
-    BOOL SetDatabasePath(const CString& strPath);
+    static CString m_strDbPath;
+    static CString BuildConnectionString(BOOL bExclusive = FALSE, BOOL bReadOnly = FALSE);
+    static BOOL SetDatabasePath(const CString& strPath);
+    static void LoadEnvSetting();
+    static CDatabase* NewConnection();
     
     // 执行SQL
     BOOL ExecuteSQL(const CString& strSQL);

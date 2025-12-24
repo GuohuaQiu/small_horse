@@ -143,6 +143,7 @@ BOOL CSmallHorseApp::InitInstance()
 		&params);
 
 #ifdef  LOAD_DATEBASE
+    CDatabaseManager::LoadEnvSetting();
 
 	CTypeSet typeset;
 	if(!typeset.Open())

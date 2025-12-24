@@ -18,8 +18,8 @@ public:
     };
     
     // 构造函数
-    CBaseRecordset(CDatabase* pDatabase = NULL, 
-                   UINT nOpenType = dynaset, 
+    CBaseRecordset(CDatabase *pDatabase = NULL, BOOL bShareDatabaseConnection = TRUE,
+                   UINT nOpenType = dynaset,
                    DWORD dwOptions = none);
     virtual ~CBaseRecordset();
     
@@ -46,6 +46,9 @@ public:
     // 状态管理
     RecordsetState GetState() const { return m_eState; }
     BOOL IsOpen() const { return m_eState == RS_OPEN; }
+    void SetShareDatabase(BOOL bShare) {
+        m_bShareDatabaseConnection = bShare;
+    }
     
 protected:
     // 子类需要重写的函数
@@ -73,6 +76,7 @@ protected:
     // 内部状态
     RecordsetState m_eState;
     BOOL m_bDirty;
+    BOOL m_bShareDatabaseConnection = TRUE;
     
 private:
     // 禁止拷贝和赋值

@@ -473,15 +473,7 @@ void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill/*=FALSE*/)
 	
 	
 	
-#if 0/*Qiu Simon*/
-	CCurveView * pLineView = (CCurveView*)pFWnd->m_wndSplitter.GetPane(1,0);
-	ASSERT( pLineView != NULL);
-	pLineView->bDraw=TRUE;//Invalidate();
-	pLineView->m_curvename=strname;
-	
-	pLineView->Invalidate();
-#else
-#endif
+
 	DisplayStaticInfo();
 #endif
 }
