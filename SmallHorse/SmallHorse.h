@@ -34,6 +34,7 @@ public:
 	BOOL OpenView(const CString &strFilter,const CString &strOrder,BOOL bSaveHistory = FALSE,LPCTSTR lpstrName = NULL);
 	void GenIDList(const CStringList& namelist,CStringList& idlist);
 	void Search(const CStringList& idlist,const CStringList& typelist,COleDateTime* pBeginTime=NULL,COleDateTime* pEndTime=NULL, LPCTSTR lpstrName = NULL,LPCTSTR  lpstrCommentLike = NULL);
+	void SetBookFilter(const CString strID);
 	void CalSum(const CString& strID);
 	BOOL ShowAccountInfo(const CString& strID);
     BOOL ShowStaticInfo(const CStringList &sl);
@@ -45,7 +46,8 @@ public:
 	void QueryDate(COleDateTime centerDay, int nRoundDay);
 	
 	BOOL OpenBankbook(const CString& strID);
-
+	CIDSet* GetIDSet();
+	CListSet* GetListSet();
 	CTodoSet* GetTodoSet();
 	static UINT  m_DataFormat;
 	int GetTypeIndex(const CString& strType);
@@ -82,7 +84,7 @@ public:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 private:
-    //CIDSet m_IDSet;
+    CIDSet m_IDSet;
     CListSet m_listset;
 	CSubCountSet m_subCountSet;
 	CRateSet m_rateSet;

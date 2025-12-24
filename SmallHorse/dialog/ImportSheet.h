@@ -35,8 +35,8 @@ public:
 	CFileSelPage    m_FilePage;
 	CImportSheet(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 //	CImportSheet(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-    CImportSheet(LPCTSTR pszFullPath,const CString& strId,int nImportType = IMPORT_TYPE_RECORD);
-	CImportSheet(const CString& strId);//for paste usage.
+    CImportSheet(LPCTSTR pszFullPath,CRecordset* pSet,const CString& strId,int nImportType = IMPORT_TYPE_RECORD);
+	CImportSheet(CRecordset* pSet,const CString& strId);//for paste usage.
 	CCSVLoader      m_loader;
 	CString         m_strMainCount;
 	BOOL            m_bFromFile;

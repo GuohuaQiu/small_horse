@@ -5,12 +5,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 // IDSet.h : header file
-#include "BaseRecordset.h"
+//
 
 /////////////////////////////////////////////////////////////////////////////
 // CIDSet recordset
 
-class CIDSet : public CBaseRecordset
+class CIDSet : public CRecordset
 {
 public:
 	void RevertExist();
@@ -43,25 +43,17 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CIDSet)
-    public:
-    virtual CString GetTableName() const override { return _T("[Books]"); }
-    virtual int GetFieldCount() const override { return 10; }
-    virtual CString GetDefaultSQL();    // Default SQL for Recordset
-    virtual void DoFieldExchange(CFieldExchange* pFX);  // RFX support
+	public:
+	virtual CString GetDefaultConnect();    // Default connection string
+	virtual CString GetDefaultSQL();    // Default SQL for Recordset
+	virtual void DoFieldExchange(CFieldExchange* pFX);  // RFX support
 	//}}AFX_VIRTUAL
-    // ¸¨Öúº¯Êý
-    BOOL UpdateAndRefresh(BOOL bRefresh = TRUE);
-    
-    // ±ã½Ýº¯Êý
-    BOOL FindByID(const CString& strID);
 
-    
 // Implementation
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
-
 public:
 	void MakeDataCopy(CIDSet& idSet);
 public:

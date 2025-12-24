@@ -22,7 +22,6 @@
 #include "CDbConfigure.h"
 #include "FixedDepositSet.h"
 #include "CFixedDepositManagerDlg.h"
-#include "DatabaseManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -143,7 +142,6 @@ BOOL CSmallHorseApp::InitInstance()
 		&params);
 
 #ifdef  LOAD_DATEBASE
-    CDatabaseManager::LoadEnvSetting();
 
 	CTypeSet typeset;
 	if(!typeset.Open())
@@ -494,21 +492,21 @@ int ParseDate(CString strDate, int &y, int &m, int &d)
 	// 09/21 08:51:02		9	291988.45		N5CP	娌规潯
 	// 09-22 08:49:28		5.1	291997.45		N5CP	涓濈摐
 	// 0923 08:49:28		5.1	291997.45		N5CP	涓濈摐
-	// 20210724 09:44:44		100	291888.45	寰?娉㈢??		璐?浠橀?? - 寰?淇＄孩鍖?
+	// 20210724 09:44:44		100	291888.45	寰尝鐐?		璐粯閫? - 寰俊绾㈠寘
 	// 2021-07-25 08:51:02		9	291988.45		N5CP	娌规潯
 	// 2021/07/26 08:49:28		5.1	291997.45		N5CP	涓濈摐
 
 	// 01/21		08:21:02		9	291988.45		N5CP	娌规潯
 	// 02-22		08:22:28		5.1	291997.45		N5CP	涓濈摐
 	// 0323		08:23:28		5.1	291997.45		N5CP	涓濈摐
-	// 20190424		09:24:44		100	291888.45	寰?娉㈢??		璐?浠橀?? - 寰?淇＄孩鍖?
+	// 20190424		09:24:44		100	291888.45	寰尝鐐?		璐粯閫? - 寰俊绾㈠寘
 	// 2019-05-25		08:25:02		9	291988.45		N5CP	娌规潯
 	// 2019/06/26		08:26:28		5.1	291997.45		N5CP	涓濈摐
 
 	// 05/21		08:51		9	291988.45		N5CP	娌规潯
 	// 06-22		08:49		5.1	291997.45		N5CP	涓濈摐
 	// 0723		08:49		5.1	291997.45		N5CP	涓濈摐
-	// 20210824		09:44		100	291888.45	寰?娉㈢??		璐?浠橀?? - 寰?淇＄孩鍖?
+	// 20210824		09:44		100	291888.45	寰尝鐐?		璐粯閫? - 寰俊绾㈠寘
 	// 2021-09-25		08:51		9	291988.45		N5CP	娌规潯
 	// 2021/10/26		08:49		5.1	291997.45		N5CP	涓濈摐
 	
@@ -542,15 +540,18 @@ int CSmallHorseApp::GetDate(CString strDate, int &y, int &m, int &d, int &hh, in
 
 int CSmallHorseApp::GetYear(int arrayIndex,CString strFilter)
 {
+#ifdef USE_APP_LIST_SET
+	CListSet* pListSet = GetListSet();
+#else
 	CListSet setEdit;
 	setEdit.Open();
 	CListSet* pListSet = &setEdit;
-    
+#endif
+	
 	if(pListSet->MoveToID(arrayIndex,strFilter))
 	{
 		return pListSet->m_day.GetYear();
 	}
-    return 0; // or appropriate default
 }
  
 
@@ -572,20 +573,37 @@ int CSmallHorseApp::GetTypeIndex(const CString &strType)
     Description   :   
     Date          :   2009-2-4 10:57:44
 ********************************************/
-// CIDSet* CSmallHorseApp::GetIDSet()
-// {
-// #ifdef  LOAD_DATEBASE
-//     if(!m_IDSet.IsOpen())
-//     {
-//     	m_IDSet.Open();
-//     }
+CIDSet* CSmallHorseApp::GetIDSet()
+{
+#ifdef  LOAD_DATEBASE
+    if(!m_IDSet.IsOpen())
+    {
+    	m_IDSet.Open();
+    }
 
-//     return &m_IDSet;
-// #else
-//     return NULL;
-// #endif
-// }
+    return &m_IDSet;
+#else
+    return NULL;
+#endif
+}
 
+
+/*******************************************
+    Function Name :	 
+    Create by     :	  Qiu Simon
+    Input         :   
+    Output        :   
+    Description   :   
+    Date          :   2009-2-4 11:11:42
+********************************************/
+CListSet* CSmallHorseApp::GetListSet()
+{
+    if(!m_listset.IsOpen())
+    {
+        m_listset.Open(AFX_DB_USE_DEFAULT_TYPE,  NULL, CRecordset::skipDeletedRecords  );
+    }
+    return &m_listset;
+}
 
 
 
@@ -621,15 +639,8 @@ CDocument* CSmallHorseApp::GetDoc()
 ********************************************/
 BOOL CSmallHorseApp::IsAccountLocked(const CString &strID)
 {
-    // CIDSet* pidset = GetIDSet();
-    CIDSet idset;
-    BOOL ret = idset.FindByID(strID);
-    if(!ret)
-    {
-        return FALSE;
-    }
-    int status = idset.m_EditStatus;
-    // int status = pidset->GetEditStatus(strID);
+    CIDSet* pidset = GetIDSet();
+    int status = pidset->GetEditStatus(strID);
 
     if(status == 0)
     {
@@ -651,9 +662,7 @@ BOOL CSmallHorseApp::AddNewItem(const CString &strID)
 	CAddNewItemDlg dlg;
 	dlg.m_id = strID;
 	/**** Add by Qiu Guohua on 2004-07-19 09:50:39 **********************/
-    dlg.m_nType = 0;
-    //dlg.m_nType = m_IDSet.m_bDefaultNetIncome;
-
+	dlg.m_nType = m_IDSet.m_bDefaultNetIncome;
 	/**************************2004-07-19 09:50:39 **********************/
 	// CListSet* plistset = GetListSet();
 	CListSet listData;
@@ -703,21 +712,24 @@ void CSmallHorseApp::DeleteRecord(int nRecordID)
 	strTip.Format(_T("确定要删除序号为 %d 的记录吗?"),nRecordID);
 	if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
 	{
-        CListSet listset;
-        BOOL bSuccess = listset.FindByID(nRecordID);
-
-        if(!bSuccess)
-        {
-            ASSERT(FALSE);
-            listset.Reopen();
-            bSuccess = listset.MoveToID(nRecordID);
-            if(!bSuccess)
-            {
-                TRACE(_T("\nFALSE TO  MOVE TO  ID."));
-                return;
-            }
-        }
-        listset.Delete();
+		CListSet* plistset = GetListSet();
+		BOOL bSuccess = plistset->MoveToID(nRecordID);
+		if(!bSuccess)
+		{
+			ASSERT(FALSE);
+			CString strID;
+			strID.Format(_T("%d"),nRecordID);
+			plistset->m_strFilter =_T("Index = ") + strID;// '379 70052992*3'
+			plistset->Requery();
+			bSuccess = plistset->MoveToID(nRecordID);
+			if(!bSuccess)
+			{
+				TRACE(_T("\nFALSE TO  MOVE TO  ID."));
+				return;
+			}
+		}
+		plistset->Delete();
+		plistset->Requery();
 		UpdateAllView();
 	}
 }
@@ -734,11 +746,11 @@ void CSmallHorseApp::DeleteRecord(int nRecordID)
 BOOL CSmallHorseApp::Rectifypassword(const CString& strID)
 {
 #ifdef  LOAD_DATEBASE
-    // CIDSet* pIdSet = theApp.GetIDSet();
-    // if(!pIdSet->MovetoCurID(strID))
-    // {
-    //     return FALSE;
-    // }
+    CIDSet* pIdSet = theApp.GetIDSet();
+    if(!pIdSet->MovetoCurID(strID))
+    {
+        return FALSE;
+    }
 
     CString strpw0,strpw1;
 	CPassWordDlg pwdlg;
@@ -755,21 +767,17 @@ BOOL CSmallHorseApp::Rectifypassword(const CString& strID)
 			return FALSE;
 		strpw1=pwdlg.m_password;
 	}while(strpw0!=strpw1);
-    CIDSet idset;
-    BOOL ret = idset.FindByID(strID);
-
-    if (!ret)
-    {
-        return FALSE;
-    }
+	
 // 	pIdSet->Edit();
 // 	pIdSet->m_password=strpw1;
 // 	pIdSet->Update();
-	if(idset.Change_Pwd(strpw1))
+	if(pIdSet->Change_Pwd(strpw1))
 	{
-        idset.Reopen();
-		if(idset.m_password==strpw1)
+		pIdSet->Requery();
+		pIdSet->MovetoCurID(strID);
+		if(pIdSet->m_password==strpw1)
 			AfxMessageBox(_T("您的新密码已经确认,谢谢使用!"));
+
 	}
 	return TRUE;
 #else
@@ -788,13 +796,9 @@ BOOL CSmallHorseApp::Rectifypassword(const CString& strID)
 ********************************************/
 BOOL CSmallHorseApp::ShowAccountInfo(const CString &strID)
 {
-    CMainFrame* pMainFrame = DYNAMIC_DOWNCAST(CMainFrame, m_pMainWnd);
-    if (pMainFrame == NULL)
-    {
-        return FALSE;
-    }
-
-    return pMainFrame->ShowAccountInfo(strID);
+	if (!m_IDSet.MovetoCurID(strID))
+		return FALSE;
+	return ((CMainFrame*)m_pMainWnd)->ShowAccountInfo(&m_IDSet);
 }
 
 BOOL CSmallHorseApp::ShowStaticInfo(const CStringList &sl)
@@ -822,45 +826,42 @@ void CSmallHorseApp::CalSum(const CString &strID)
 
     CMapStringToPtr map;
 	map.InitHashTable(16);
-    
-    CListSet plistset;
-    plistset.Open(AFX_DB_USE_DEFAULT_TYPE, NULL, CRecordset::skipDeletedRecords);
-    CString strfil=_T("\'")+strID+_T("\'");
-    plistset.m_strFilter =_T("Item_Book_ID=") + strfil;
-    plistset.m_strSort=_T("OperDate,Index");
-    plistset.Requery();
-    if(!plistset.IsBOF())
+	
+    CListSet* pListSet = GetListSet();
+	SetBookFilter(strID);
+    if(!pListSet->IsBOF())
     {
-        plistset.MoveFirst();
+        pListSet->MoveFirst();
     }
-    plistset.SetUpdateTime(FALSE);
-    float fBaseSum = 0.0;
-    while(!plistset.IsEOF())
-    {
-        if(plistset.m_strSubCount == "")
-        {
-            plistset.Edit_CalSum(&fBaseSum);
-        } 
-        else
-        {
-            float *pf;
-            if(map.Lookup(plistset.m_strSubCount,(void*&)pf))
-            {
-                plistset.Edit_CalSum(pf);
-                TRACE(_T("MAP[%s] = %f\n"),plistset.m_strSubCount,*pf);
-            }
-            else
-            {//first record for a subcount.
-                float *pff = new float;
-                *pff = 0.0;
-                plistset.Edit_CalSum(pff);
-                map[plistset.m_strSubCount] = pff;
-                TRACE(_T("MAP[%s] = %f init\n"),plistset.m_strSubCount,*pff);
-            }
-        }
-        plistset.MoveNext();
-    }
-    plistset.SetUpdateTime(TRUE);
+    pListSet->SetUpdateTime(FALSE);
+	float fBaseSum = 0.0;
+	while(!pListSet->IsEOF())
+	{
+		if(pListSet->m_strSubCount == "")
+		{
+			pListSet->Edit_CalSum(&fBaseSum);
+		} 
+		else
+		{
+			float *pf;
+			if(map.Lookup(pListSet->m_strSubCount,(void*&)pf))
+			{
+				pListSet->Edit_CalSum(pf);
+				TRACE(_T("MAP[%s] = %f\n"),pListSet->m_strSubCount,*pf);
+			}
+			else
+			{//first record for a subcount.
+				float *pff = new float;
+				*pff = 0.0;
+				pListSet->Edit_CalSum(pff);
+				map[pListSet->m_strSubCount] = pff;
+				TRACE(_T("MAP[%s] = %f init\n"),pListSet->m_strSubCount,*pff);
+			}
+		}
+		pListSet->MoveNext();
+	}
+    pListSet->SetUpdateTime(TRUE);
+	pListSet->Requery();
 	UpdateAllView();
 	
 	POSITION pos;
@@ -875,6 +876,13 @@ void CSmallHorseApp::CalSum(const CString &strID)
 	map.RemoveAll();
 }
 
+void CSmallHorseApp::SetBookFilter(const CString strID)
+{
+	CString strfil=_T("\'")+strID+_T("\'");
+	m_listset.m_strFilter =_T("Item_Book_ID=") + strfil;
+	m_listset.m_strSort=_T("OperDate,Index");
+    m_listset.Requery();
+}
 
 
 /*******************************************
@@ -917,25 +925,16 @@ void CSmallHorseApp::OnQuery()
 	dlg.m_pNameList=&strNameList;
 	dlg.m_pTypeList=&strTypeList;
 
-    CIDSet idSet;
-    if (!idSet.OpenEx())
-    {
-        AfxMessageBox(_T("数据库装载错误(Books)!"));
-        return;
-    }
-    dlg.m_pgName.m_pIDSet = &idSet;
-
-    if(dlg.DoModal()!=ID_WIZFINISH )
-    {
-        return;
-    }
-    CStringList strIDList;
-    GenIDList(strNameList,strIDList);
-    CString strQueryName = AutoNameforQuery(strNameList,strTypeList);
-    if(dlg.m_bUseTime)
+	dlg.m_pgName.m_pIDSet=&(m_IDSet);
+	if(dlg.DoModal()!=ID_WIZFINISH )
+		return;
+	CStringList strIDList;
+	GenIDList(strNameList,strIDList);
+	CString strQueryName = AutoNameforQuery(strNameList,strTypeList);
+	if(dlg.m_bUseTime)
         Search(strIDList,strTypeList,&dlg.m_beginTime,&dlg.m_endTime,strQueryName,dlg.m_strCommentLike.GetLength()>0 ? (LPCTSTR)dlg.m_strCommentLike : NULL);
-    else
-        Search(strIDList,strTypeList,NULL,NULL,strQueryName,dlg.m_strCommentLike.GetLength()>0 ? (LPCTSTR)dlg.m_strCommentLike : NULL);
+	else
+		Search(strIDList,strTypeList,NULL,NULL,strQueryName,dlg.m_strCommentLike.GetLength()>0 ? (LPCTSTR)dlg.m_strCommentLike : NULL);
 
 }
 
@@ -1057,14 +1056,12 @@ void CSmallHorseApp::GenIDList(const CStringList &namelist, CStringList &idlist)
 		}
 		strfil+=_T(")");
 
-        CIDSet idset;
-        idset.m_strFilter = strfil;
-        idset.OpenEx();
-
-        while(!idset.IsEOF())
+        m_IDSet.m_strFilter=strfil;
+        m_IDSet.Requery();
+        while(!m_IDSet.IsEOF())
         {
-            idlist.AddTail(idset.m_ID);
-            idset.MoveNext();
+            idlist.AddTail(m_IDSet.m_ID);
+            m_IDSet.MoveNext();
         }
 	}
     else
@@ -1137,8 +1134,8 @@ BOOL CSmallHorseApp::OpenView(const CString &strFilter, const CString &strOrder,
 ********************************************/
 BOOL CSmallHorseApp::GetRecordInfo(int nRecordID,CString &strDescription)
 {
-    CListSet listset;
-	BOOL b = listset.FindByID(nRecordID);
+    CListSet* pListSet = GetListSet();
+	BOOL b = pListSet->MoveToID(nRecordID);
 	if(!b)
 	{
 		return FALSE;
@@ -1163,13 +1160,12 @@ BOOL CSmallHorseApp::GetBookInfo(int nRecordID, CString &strDescription)
 	{
 		return FALSE;
 	}
-    CIDSet idset;
-    b = idset.FindByID(m_listset.m_ID);
+	b = m_IDSet.MovetoCurID(m_listset.m_ID);
 	if(!b)
 	{
 		return FALSE;
 	}
-	strDescription.Format(_T("%s\n\n%s\n\n%s"),m_listset.m_ID,idset.m_name, idset.m_bank);
+	strDescription.Format(_T("%s\n\n%s\n\n%s"),m_listset.m_ID,m_IDSet.m_name,m_IDSet.m_bank);
 	return TRUE;
 }
 
@@ -1314,16 +1310,13 @@ void CSmallHorseApp::TransferDingqi(const CString& strID)
 ********************************************/
 void CSmallHorseApp::ManageDingqi(DWORD recordId) 
 {
-
-    CListSet listset;
-	BOOL b = listset.FindByID(recordId);
-	if(!b)
-	{
-		return ;
-	}
-
-
-    if (IsAccountLocked(listset.m_ID))
+    CListSet* pSet = GetListSet();
+    BOOL b = pSet->MoveToID(recordId);
+    if (!b)
+    {
+        return;
+    }
+    if (IsAccountLocked(pSet->m_ID))
     {
         return;
     }
@@ -1337,7 +1330,7 @@ void CSmallHorseApp::ManageDingqi(DWORD recordId)
     //7. 子账户名 从LISTSET中提取，不可修改
     //1. LISTSET_ID，作为键值对应LISTSET中的一项
 
-    //4. 利率，按年化显示，比如年化5 就??5.0
+    //4. 利率，按年化显示，比如年化5 就是5.0
     //2. 存期，字符串型，根据字符串转数字使用，来推算结束日期
     CDatabase dtbs;
     b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
@@ -1417,21 +1410,20 @@ void CSmallHorseApp::ManageDingqi(DWORD recordId)
 // 与新增不同：修改时不改变主键 ID，只更新可修改字段并保存。
 void CSmallHorseApp::ModifyDingqi(DWORD recordId)
 {
-    CListSet listset;
-	BOOL b = listset.FindByID(recordId);
-	if(!b)
-	{
-		return ;
-	}
-
-    if (IsAccountLocked(listset.m_ID))
+    CListSet *pSet = GetListSet();
+    BOOL b = pSet->MoveToID(recordId);
+    if (!b)
+    {
+        return;
+    }
+    if (IsAccountLocked(pSet->m_ID))
     {
         return;
     }
 
-    CDatabase* pdatabase = CDatabaseManager::GetInstance()->GetConnection();
-    b = pdatabase->OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
-    CRecordset set(pdatabase);
+    CDatabase dtbs;
+    b = dtbs.OpenEx(DATA_SOURCE_NAME, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+    CRecordset set(&dtbs);
 
     CString strFilter;
     strFilter.Format("select Books.Book_Bank, Books.Book_Owner, Books.Book_ID,Items.SubCountID, Items.Comment,Items.Oper, Items.OperDate, "
@@ -1514,7 +1506,6 @@ void CSmallHorseApp::ModifyDingqi(DWORD recordId)
         }
         fdset.Close();
     }
-    set.Close();
 }
 
 /*******************************************
@@ -1773,16 +1764,17 @@ COleDateTime CSmallHorseApp::CalEndDate(COleDateTime time, int month)
 ********************************************/
 BOOL CSmallHorseApp::DeleteBook(const CString &strID)
 {
-#ifdef  LOAD_DATEBASE
+
+    CIDSet* pIdSet = theApp.GetIDSet();
+
     CString strmsg;
     strmsg=_T("确定要将帐号为：")+strID+_T("  的存折从数据库中去掉吗？");
     if(MessageBox(NULL,strmsg,_T("请谨慎操作!"),MB_OKCANCEL|MB_ICONWARNING)==IDOK)
     {
-        CIDSet idSet;
-        if(idSet.FindByID(strID))
+        if(pIdSet->MovetoCurID(strID))
         {
-            idSet.Delete();
-            if(idSet.Requery())
+            pIdSet->Delete();
+            if(pIdSet->Requery())
             {
                 strmsg=strID+_T("  已经被成功删除！");
                 AfxMessageBox(strmsg);
@@ -1792,7 +1784,6 @@ BOOL CSmallHorseApp::DeleteBook(const CString &strID)
         strmsg=_T("删除 ")+strID+_T("  失败！");
         AfxMessageBox(strmsg);
     }
-#endif
     return FALSE;
 }
 BOOL CSmallHorseApp::ShowPopupMenu (UINT uiMenuResId, const CPoint& point, CWnd* pWnd)
@@ -1833,17 +1824,17 @@ BOOL CSmallHorseApp::ShowPopupMenu (HMENU hMenu, const CPoint& point, CWnd* pWnd
 ********************************************/
 BOOL CSmallHorseApp::RectifyBookInfo(const CString &strID)
 {
-#ifdef  LOAD_DATEBASE
-    CIDSet idSet;
-    if(idSet.FindByID(strID))
+    CIDSet* pIdSet = theApp.GetIDSet();
+    
+    
+    if(pIdSet && pIdSet->MovetoCurID(strID))
     {
-        CNewBook dlg(&idSet,FALSE);
+        CNewBook dlg(pIdSet,FALSE);
         if(dlg.DoModal()==IDOK)
         {
             return TRUE;
         }
     }
-#endif
     return FALSE;
 }
 
@@ -1861,11 +1852,16 @@ BOOL CSmallHorseApp::RectifyBookInfo(const CString &strID)
 BOOL CSmallHorseApp::FreeBook(const CString &strID)
 {
 #ifdef  LOAD_DATEBASE
-    CIDSet idSet;
-    if(idSet.FindByID(strID))
+    CIDSet* pIdSet = theApp.GetIDSet();
+    
+    if(pIdSet && pIdSet->MovetoCurID(strID))
     {
-        idSet.RevertExist();
-        return TRUE;
+		pIdSet->RevertExist();
+		return TRUE;
+// 		
+//         pIdSet->Edit();
+//         pIdSet->m_bExist=!pIdSet->m_bExist;
+//         return pIdSet->Update();
     }
 #endif
     return FALSE;
@@ -1902,6 +1898,16 @@ void CSmallHorseApp::SelectPeriod(CComboBox *pCmbBox, int nMonth)
 ********************************************/
 void CSmallHorseApp::ForceUpdateViews()
 {
+    CListSet* pListSet = theApp.GetListSet();
+    if(pListSet != NULL)
+    {
+        pListSet->Close();
+        pListSet->Open();
+ //       pListSet->m_strFilter = _T("");
+//        pListSet->Requery();
+        
+        TRACE(_T("pListSet->m_strFilter = _T("");\n"));
+    }
         TRACE(_T("update start...;\n"));
     UpdateAllView();
         TRACE(_T("update end...;\n"));
@@ -1996,13 +2002,12 @@ void CSmallHorseApp::DeleteRecords(const CDWordArray &dbAry)
     strTip += _T("\n的记录吗?");
     if(IDYES == ::MessageBox(NULL,strTip,_T("确认"),MB_YESNO|MB_ICONEXCLAMATION))
     {
-        CDatabase* pdatabase = CDatabaseManager::GetInstance()->GetConnection();
-
-        if(pdatabase)
+        CListSet* pItemSet = GetListSet();
+        if(pItemSet->m_pDatabase)
         {
             CString strSql;
             strSql.Format("delete from Items where Index in (%s)",strIDs);
-            pdatabase->ExecuteSQL(strSql);
+            pItemSet->m_pDatabase->ExecuteSQL(strSql);
             ForceUpdateViews();
         }
         else
@@ -2171,14 +2176,12 @@ void CSmallHorseApp::AddCreditPayInfo(const CString &strID)
 ********************************************/
 int CSmallHorseApp::GetBookType(const CString &strId)
 {
-    CIDSet idset;
-    BOOL b = idset.FindByID(m_listset.m_ID);
-    //b = m_IDSet.MovetoCurID(strId);
+    BOOL b = m_IDSet.MovetoCurID(strId);
     if(!b)
     {
         return -1;
     }
-    return idset.m_nType;
+    return m_IDSet.m_nType;
 }
 
 
@@ -2742,9 +2745,8 @@ float CSmallHorseApp::GetRepay(CListSet* pListSet,const CString &strid, const CO
 ********************************************/
 void CSmallHorseApp::LockCount(const CString &strid)
 {
-    CIDSet idset;
-    idset.FindByID(strid);
-    int status = idset.m_EditStatus;
+    CIDSet * pset = GetIDSet();
+    int status = pset->GetEditStatus(strid);
     if(status != -1)
     {
         if(status == 0)
@@ -2755,7 +2757,7 @@ void CSmallHorseApp::LockCount(const CString &strid)
         }
         else
         {
-            if(idset.LockEditStatus(strid))
+            if(pset->LockEditStatus(strid))
             {
                 CString strInfo;
                 strInfo.Format("%s 被成功锁定！", strid);
@@ -2828,15 +2830,16 @@ void CSmallHorseApp::CopyRecordsTo(const CDWordArray &dbAry, const CString &strC
         i++;
     }
 	CListSet listSet;
+	listSet.Open();//select * from Items where 
 	listSet.m_strFilter.Format("Index in (%s)",strIDs);
 	TRACE("sql:%s\n",listSet.m_strFilter);
 	TRACE("copy to %s,%s,%s\n",strCount,strSubCount ,bTransfer?"TRUE":"FALSE");
-	listSet.OpenEx();
+	listSet.Requery();
 	if(!listSet.IsBOF())
 	{
 		listSet.MoveFirst();
 	}
-
+	CListSet* pListSet = GetListSet();
 	while (!listSet.IsEOF()) 
 	{
 	    BOOL bSameMainCount = (listSet.m_ID.Compare(strCount) == 0);
@@ -2891,9 +2894,7 @@ void CSmallHorseApp::OnAccountNew()
 {
 
 #ifdef  LOAD_DATEBASE
-    CIDSet idset;
-    idset.OpenEx();
-	CIDSet* pIdSet =&idset;
+	CIDSet* pIdSet = GetIDSet();
 	CNewBook dlg(pIdSet);
 	if(dlg.DoModal()!=IDOK)
 		return;
@@ -2926,29 +2927,29 @@ void CSmallHorseApp::OnAccountNew()
 
 int CSmallHorseApp::StaticDoubtItems(CString& nID)
 {
-	CListSet set;
+	CListSet* set = GetListSet();
 	CString strfil=_T("\'")+nID+_T("\'");
-	set.m_strFilter=_T("Item_Book_ID=")+ strfil;
+	set->m_strFilter=_T("Item_Book_ID=")+ strfil;
 //	set->m_strFilter+=_T(" and Type=\'0\'");
-	TRACE(set.m_strFilter);
+	TRACE(set->m_strFilter);
 	TRACE("\n");
-    set.OpenEx();
 
 //	set->m_strFilter =_T("Item_Book_ID=")+ nID+_T(" and Type=0");// '379 70052992*3'
 //	set->m_strFilter ="Type=0";
 //	set->m_strFilter ="Item_Book_ID=" + nID;// '379 70052992*3'
+	set->Requery();
 
-	set.MoveFirst();
+	set->MoveFirst();
 	int nCountAdd = 0;
 	int nCountDec = 0;
 	float fAdd =0.0;
 	float fDec =0.0;
 	int nCountTotal = 0;
-	while(!set.IsEOF())
+	while(!set->IsEOF())
 	{
-		if(set.m_bType == 0)
+		if(set->m_bType == 0)
 		{
-			float value = set.GetAddorSubValue();
+			float value = set->GetAddorSubValue();
 			if(value<0.0000000)
 			{
 				nCountDec++;
@@ -2961,7 +2962,7 @@ int CSmallHorseApp::StaticDoubtItems(CString& nID)
 			}
 		}
 		nCountTotal++;
-		set.MoveNext();
+		set->MoveNext();
 	}
 	CString strStatic;
 	strStatic.Format("ID:%s:\nTotal Item:%d\nIncome: %d items, total value %.2f\n Output: %d items, total value %.2f\n",nID,nCountTotal,nCountAdd,fAdd,nCountDec,fDec);

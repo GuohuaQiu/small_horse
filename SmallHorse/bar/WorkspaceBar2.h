@@ -29,6 +29,8 @@ protected:
 	CInfoEdit   m_wndIdEdit;
 	CFont		m_Font;
 
+	CIDSet      m_idSet;
+
 // Operations
 public:
 

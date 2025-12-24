@@ -73,6 +73,11 @@ END_MESSAGE_MAP()
 void CBankbookTree::FillEmptyTree()
 {
 #ifdef  LOAD_DATEBASE
+    CIDSet* pIdSet = theApp.GetIDSet();
+    if(pIdSet == NULL)
+    {
+        return;
+    }
     // form the one and only tree root - the desktop
     TV_INSERTSTRUCT	strInsert;
     // must use a selectedimage even if same
@@ -114,7 +119,6 @@ void CBankbookTree::FillEmptyTree()
     strInsert.item.cChildren =1;
     m_hBank = InsertItem(&strInsert);
 
-    AddTreeGroup(m_hBank);
     
     
     // index of the image in the list
@@ -124,6 +128,7 @@ void CBankbookTree::FillEmptyTree()
     strInsert.item.pszText = (LPTSTR)_T("持有人");
     m_hPeople = InsertItem(&strInsert);
     
+    AddTreeGroup(m_hBank);
     AddTreeGroup(m_hPeople);
     Expand( hTop, TVE_EXPAND );
 #endif
@@ -133,9 +138,7 @@ void CBankbookTree::AddTreeGroup(HTREEITEM htree)
 {
 #ifdef  LOAD_DATEBASE
 	
-    CIDSet idSet;
-    idSet.OpenEx();
-    CIDSet* pIdSet = &idSet;
+    CIDSet* pIdSet = theApp.GetIDSet();
     if(pIdSet == NULL)
     {
         return;
@@ -166,7 +169,7 @@ void CBankbookTree::AddTreeGroup(HTREEITEM htree)
 				hcurBankTree = InsertItem(&strInsert);
 				strbank=pIdSet->m_bank;
 			}
-			AddTreeItem(hcurBankTree,pIdSet->m_ID,pIdSet->m_bExist);
+			AddTreeItem(hcurBankTree,pIdSet->m_ID);
 			pIdSet->MoveNext();
 		}
 	}
@@ -195,7 +198,7 @@ void CBankbookTree::AddTreeGroup(HTREEITEM htree)
 				hcurPeopleTree = InsertItem(&strInsert);
 				strpeople=pIdSet->m_name;
 			}
-			AddTreeItem(hcurPeopleTree,pIdSet->m_ID,pIdSet->m_bExist);
+			AddTreeItem(hcurPeopleTree,pIdSet->m_ID);
 			pIdSet->MoveNext();
 		}
 	}
@@ -297,18 +300,14 @@ BOOL CBankbookTree::ValidatePassWord()
 	if((dw&0x0001)!=0x0001)
 		return FALSE;
 	
+	CIDSet* pIdSet = theApp.GetIDSet();
 	CString strid=GetItemText(hItem);
-    CIDSet idSet;
-    if(!idSet.FindByID(strid))
-    {
-        return FALSE;
-    }
 	do{
 		CPassWordDlg pwdlg;
 		pwdlg.m_id=_T("ID:")+strid;
 		if(pwdlg.DoModal()!=IDOK)
 			return FALSE ;
-        if(pwdlg.m_password==idSet.m_password)
+		if(pwdlg.m_password==pIdSet->m_password)
 		{
 			SetItemData(hItem,0x1001);
 			return TRUE;
@@ -368,11 +367,13 @@ void CBankbookTree::OnDeletebook()
 void CBankbookTree::OnInfo() 
 {
 #ifdef  LOAD_DATEBASE
+    CIDSet* pIdSet = theApp.GetIDSet();
     if(IsBandbook(GetSelectedItem()))
     {
         CString strID = GetSelectedText();
         theApp.ShowAccountInfo(strID);
     }
+    return;
 #endif
 }	
 
@@ -418,18 +419,23 @@ BOOL CBankbookTree::IsBandbook()
 
 
 
-void CBankbookTree::AddTreeItem(HTREEITEM hparent, const CString& strId, BOOL bExist)
+void CBankbookTree::AddTreeItem(HTREEITEM hparent, CString str)
 {
 #ifdef  LOAD_DATEBASE
-    
-    TV_INSERTSTRUCT	structthis;
-    structthis.item.mask = TVIF_TEXT |TVIF_IMAGE |TVIF_SELECTEDIMAGE;
-    structthis.hParent = hparent;
-    structthis.item.pszText = (LPTSTR)(LPCTSTR)strId;
-    structthis.item.iImage = bExist ? 1 : 3;
-    structthis.item.iSelectedImage = 2;
-    HTREEITEM hBankBook= InsertItem(&structthis);
-    SetItemData(hBankBook,0x0001);
+	
+	CIDSet* pIdSet = theApp.GetIDSet();
+	TV_INSERTSTRUCT	structthis;
+	structthis.item.mask = TVIF_TEXT |TVIF_IMAGE |TVIF_SELECTEDIMAGE;
+	structthis.hParent = hparent;
+	structthis.item.pszText = (LPTSTR)(LPCTSTR)str;
+	structthis.item.iImage=pIdSet->m_bExist?1:3;
+//	if(atoi(pListSet->GetRemain(str))==0)
+//	structthis.item.iImage =3;
+//	else
+//	structthis.item.iImage =1;
+	structthis.item.iSelectedImage =2;
+	HTREEITEM hBankBook= InsertItem(&structthis);
+	SetItemData(hBankBook,0x0001);
 #endif
 }
 
@@ -437,9 +443,8 @@ void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill/*=FALSE*/)
 {
 #ifdef  LOAD_DATEBASE
 	
-    CIDSet idSet;
-    idSet.OpenEx();
-	CIDSet* pIdSet = &idSet;
+	CIDSet* pIdSet = theApp.GetIDSet();
+    CListSet* pListSet = theApp.GetListSet();
 	
 	CString strnamefil=_T("Book_Owner=\'");
 	strnamefil+=strname;
@@ -456,24 +461,31 @@ void CBankbookTree::QueryPeople(CString strname, BOOL bDisBill/*=FALSE*/)
 		strfil+=_T("\'")+pIdSet->m_ID+_T("\',");
 		pIdSet->MoveNext();
 	}
-    CListSet listSet;
 	
 	strfil.Delete(strfil.ReverseFind(','));
 	if(bDisBill)
 	{
 		CQueryEndDlg dlg;
 		dlg.m_pidset=pIdSet;
-		dlg.m_plistset=&listSet;
+		dlg.m_plistset=pListSet;
 		dlg.DoModal();
 	}
 	
-	// pListSet->m_strFilter =_T("Item_Book_ID IN")+ strfil+_T(") and (Type=1 or Type=2)");// '379 70052992*3'
-	// pListSet->m_strSort=_T("OperDate,Index");
-	// pListSet->Requery();
+	pListSet->m_strFilter =_T("Item_Book_ID IN")+ strfil+_T(") and (Type=1 or Type=2)");// '379 70052992*3'
+	pListSet->m_strSort=_T("OperDate,Index");
+	pListSet->Requery();
 	
 	
 	
-
+#if 0/*Qiu Simon*/
+	CCurveView * pLineView = (CCurveView*)pFWnd->m_wndSplitter.GetPane(1,0);
+	ASSERT( pLineView != NULL);
+	pLineView->bDraw=TRUE;//Invalidate();
+	pLineView->m_curvename=strname;
+	
+	pLineView->Invalidate();
+#else
+#endif
 	DisplayStaticInfo();
 #endif
 }
@@ -532,29 +544,27 @@ void CBankbookTree::DisplayStaticInfo()
 //to complete 2008-08-23
 void CBankbookTree::OnFindBook() 
 {
-#ifdef LOAD_DATEBASE
-    CFindBookDlg dlg;
-    if (dlg.DoModal() != IDOK)
-    {
-        return;
-    }
-    if (dlg.m_strFind == _T(""))
-    {
-        return;
-    }
+#ifdef  LOAD_DATEBASE
+	CIDSet* pIdSet = theApp.GetIDSet();
+	CFindBookDlg dlg;
+	if(dlg.DoModal() != IDOK)
+	{
+		return;
+	}
+	if(dlg.m_strFind==_T(""))
+	{
+		return;
+	}
 
-    CIDSet idSet;
-    idSet.OpenEx();
-    CString strID;
-    BOOL b = idSet.Find(dlg.m_strFind, strID);
-    if (b)
-    {
+	CString strID;
+	BOOL b = pIdSet->Find(dlg.m_strFind,strID);
+	if(b)
+	{
 		AfxMessageBox(strID);
 	}
 	else
 	{
 		AfxMessageBox(_T("Failed."));
-        return;
 	}
 
 
@@ -597,21 +607,13 @@ void CBankbookTree::OnSetAsAutoReturnCard()
 void CBankbookTree::OnSetAsAutoReturnCredit() 
 {
 #ifdef  LOAD_DATEBASE
-    HTREEITEM hItem = GetSelectedItem();
-    if(hItem == NULL || !IsBandbook(hItem))
+    CIDSet* pIdSet = theApp.GetIDSet();
+    if(!MovetoSelectedBankbook(pIdSet))
     {
         AfxMessageBox(_T("先选择一个账号!"));
-        return;
+        return ;
     }
-
-    CString strID = GetItemText(hItem);
-    CIDSet idSet;
-    if(!idSet.FindByID(strID))
-    {
-        AfxMessageBox(_T("先选择一个账号!"));
-        return;
-    }
-    theApp.SetAutoReturnCreditCard(strID);
+    theApp.SetAutoReturnCreditCard(pIdSet->m_ID);
 //    ::MessageBox(this->m_hWnd,g_strAutoReturnCreditCard,"CBankbookTree",IDOK);
 #endif	
 }

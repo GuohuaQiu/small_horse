@@ -24,11 +24,9 @@ CImportSheet::CImportSheet(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
 	AddPage(&m_ListPage);
 	SetWizardMode();
 	m_bFromFile = TRUE;
-    
-    m_pListSet = NULL;
 }
 
-CImportSheet::CImportSheet(LPCTSTR pszFullPath,const CString& strId,int nImportType)
+CImportSheet::CImportSheet(LPCTSTR pszFullPath,CRecordset* pSet,const CString& strId,int nImportType)
 :CPropertySheet(_T("导入数据"), NULL, 0),m_FilePage(this),m_ListPage(this)
 {
 	m_psh.dwFlags|=PSH_WIZARDHASFINISH|PSH_PROPSHEETPAGE;
@@ -39,22 +37,17 @@ CImportSheet::CImportSheet(LPCTSTR pszFullPath,const CString& strId,int nImportT
 	m_FilePage.m_strFile = pszFullPath;
 	if(nImportType == IMPORT_TYPE_RECORD)
 	{
-		// m_pListSet = (CListSet*)pSet;
+		m_pListSet = (CListSet*)pSet;
 	}
 	else
 	{
-        //TODO HANDLE SUBCOUNTSET. 2025-12-22
-		//m_pSubCountSet = (CSubCountSet*)pSet;
+		m_pSubCountSet = (CSubCountSet*)pSet;
 	}
 	m_nImportType = nImportType;
 	m_strMainCount = strId;
 	m_bFromFile=TRUE;
-
-    m_pListSet = new CListSet();
-    m_pListSet->m_strFilter = _T("Item_Book_ID='") + strId + _T("'");
-    m_pListSet->OpenEx();
 }
-CImportSheet::CImportSheet(const CString& strId)
+CImportSheet::CImportSheet(CRecordset* pSet,const CString& strId)
 	:CPropertySheet(_T("粘贴记录"), NULL, 0),m_ListPage(this)
 {
 	m_psh.dwFlags|=PSH_WIZARDHASFINISH|PSH_PROPSHEETPAGE;
@@ -62,24 +55,16 @@ CImportSheet::CImportSheet(const CString& strId)
 	SetWizardMode();
 	m_bLoadOK = FALSE;
 	m_nImportType = IMPORT_TYPE_RECORD;
+	m_pListSet = (CListSet*)pSet;
 	m_strMainCount = strId;
 
 	m_bFromFile=FALSE;
-
-    m_pListSet = new CListSet();
-    m_pListSet->m_strFilter = _T("Item_Book_ID='") + strId + _T("'");
-    m_pListSet->OpenEx();
-
 }
 
 CImportSheet::~CImportSheet()
 {
-    if (m_pListSet)
-    {
-        delete m_pListSet;
-        m_pListSet = NULL;
-    }
 }
+
 
 BEGIN_MESSAGE_MAP(CImportSheet, CPropertySheet)
 	//{{AFX_MSG_MAP(CImportSheet)
