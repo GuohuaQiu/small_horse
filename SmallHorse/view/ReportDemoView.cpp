@@ -520,6 +520,7 @@ float CReportDemoView::AddMembertoList(CListSet* pSet,int index,BOOL bCalSum,flo
 	pRow->GetItem (COLUMN_REASON)->SetValue ((LPCTSTR)pSet->m_remain, FALSE);
 	pRow->GetItem (COLUMN_REASON)->AllowEdit();
 	pRow->GetItem (COLUMN_TYPE__)->SetValue ((LPCTSTR)theApp.m_cType[pSet->m_bType], FALSE);
+
 	if(pSet->m_bType == 0)
 	{
 		CMailReportCtrl::SetRowBackColor(pRow, RGB(191,200,191));
@@ -682,6 +683,7 @@ void CReportDemoView::DisplayRecord()
 			pReportCtrl->RemoveGroupColumn(0);
 		}
 	}
+	pReportCtrl->Sort(0);
 	
 	AdjustColumnWidth();
 	pReportCtrl->AdjustLayout ();
