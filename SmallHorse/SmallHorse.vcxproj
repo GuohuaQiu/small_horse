@@ -397,6 +397,10 @@
     <Image Include="UserImages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="config.ini">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="res\handpoin.cur" />
     <None Include="res\SmallHorse.rc2" />
   </ItemGroup>
