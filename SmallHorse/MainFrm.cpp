@@ -83,22 +83,22 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// TODO: Define your own basic commands. Be sure, that each pulldown 
 	// menu have at least one basic command.
 
-	CList<UINT, UINT>	lstBasicCommands;
+	// CList<UINT, UINT>	lstBasicCommands;
 
-	lstBasicCommands.AddTail (ID_APP_EXIT);
-	lstBasicCommands.AddTail (ID_APP_ABOUT);
-	lstBasicCommands.AddTail (ID_VIEW_TOOLBAR);
-	lstBasicCommands.AddTail (ID_VIEW_CUSTOMIZE);
-	lstBasicCommands.AddTail (ID_COMMAND_HISTORY);
-	lstBasicCommands.AddTail (ID_VIEW_LARGEICON);
-	lstBasicCommands.AddTail (ID_VIEW_SMALLICON);
-	lstBasicCommands.AddTail (ID_VIEW_LIST);
-	lstBasicCommands.AddTail (ID_VIEW_DETAILS);
-	lstBasicCommands.AddTail (ID_EDIT_CUT);
-	lstBasicCommands.AddTail (ID_EDIT_COPY);
-	lstBasicCommands.AddTail (ID_EDIT_PASTE);
+	// lstBasicCommands.AddTail (ID_APP_EXIT);
+	// lstBasicCommands.AddTail (ID_APP_ABOUT);
+	// lstBasicCommands.AddTail (ID_VIEW_TOOLBAR);
+	// lstBasicCommands.AddTail (ID_VIEW_CUSTOMIZE);
+	// lstBasicCommands.AddTail (ID_COMMAND_HISTORY);
+	// lstBasicCommands.AddTail (ID_VIEW_LARGEICON);
+	// lstBasicCommands.AddTail (ID_VIEW_SMALLICON);
+	// lstBasicCommands.AddTail (ID_VIEW_LIST);
+	// lstBasicCommands.AddTail (ID_VIEW_DETAILS);
+	// lstBasicCommands.AddTail (ID_EDIT_CUT);
+	// lstBasicCommands.AddTail (ID_EDIT_COPY);
+	// lstBasicCommands.AddTail (ID_EDIT_PASTE);
 
-	CBCGPToolBar::SetBasicCommands (lstBasicCommands);
+	// CBCGPToolBar::SetBasicCommands (lstBasicCommands);
 
 	if (!m_wndMenuBar.Create (this))
 	{
@@ -441,7 +441,7 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 	CBCGPToolbarDateTimeCtrl btnDateCtrl(ID_SEARCH_DATETIME_MAIN,CImageHash::GetImageOfCommand (ID_SEARCH_DATETIME_MAIN));
 	m_wndToolBar.ReplaceButton(ID_SEARCH_DATETIME_MAIN,btnDateCtrl);
 
-	CBCGPToolbarSpinEditBoxButton editDayRound(ID_SEARCH_DAY_ROUND, CImageHash::GetImageOfCommand (ID_SEARCH_DAY_ROUND), 0, 50);
+	CBCGPToolbarSpinEditBoxButton editDayRound(ID_SEARCH_DAY_ROUND, CImageHash::GetImageOfCommand (ID_SEARCH_DAY_ROUND), 0, 70);
 	m_wndToolBar.ReplaceButton(ID_SEARCH_DAY_ROUND,editDayRound);
 	return 0;
 }
