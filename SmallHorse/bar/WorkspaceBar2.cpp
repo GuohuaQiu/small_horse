@@ -64,117 +64,128 @@ CWorkspaceBar2::~CWorkspaceBar2()
 
 int CWorkspaceBar2::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-	if (CBCGPDockingControlBar::OnCreate(lpCreateStruct) == -1)
-		return -1;
-	
+    if (CBCGPDockingControlBar::OnCreate(lpCreateStruct) == -1)
+        return -1;
+    
     if (!m_wndList.Create (WS_CHILD|WS_VISIBLE|LVS_REPORT   , 
-		CRect (0, 0, 0, 0), this, ID_LIST_ID_SET))
-	{
-		TRACE0("CWorkspaceBar2::OnCreate: cannot create LIST control\n");
-		return -1;
-	}
-    m_wndList.InsertColumn(0,"test");
-	if (!m_wndIdEdit.Create( WS_CHILD | WS_VISIBLE|ES_AUTOHSCROLL      , 
-		CRect (0, 0, 0, 0), this, ID_EDIT_ID_SET ))
-	{
-		TRACE0("CWorkspaceBar2::OnCreate: cannot create EDIT control\n");
-		return -1;
-	}
-	m_Font.CreateStockObject (DEFAULT_GUI_FONT);
-	m_wndIdEdit.SetFont (&m_Font);
-	return 0;
+        CRect (0, 0, 0, 0), this, ID_LIST_ID_SET))
+    {
+        TRACE0("CWorkspaceBar2::OnCreate: cannot create LIST control\n");
+        return -1;
+    }
+    m_wndList.InsertColumn(0,"¼ìË÷½á¹û");
+    if (!m_wndIdEdit.Create( WS_CHILD | WS_VISIBLE|ES_AUTOHSCROLL      , 
+        CRect (0, 0, 0, 0), this, ID_EDIT_ID_SET ))
+    {
+        TRACE0("CWorkspaceBar2::OnCreate: cannot create EDIT control\n");
+        return -1;
+    }
+
+    // enlarge font by 2 points
+    LOGFONT lf = {0};
+    ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+    if (lf.lfHeight < 0)
+        lf.lfHeight -= 2;
+    else
+        lf.lfHeight += 2;
+
+    m_Font.DeleteObject();
+    m_Font.CreateFontIndirect(&lf);
+    m_wndIdEdit.SetFont(&m_Font);
+
+    return 0;
 }
 
 void CWorkspaceBar2::OnSize(UINT nType, int cx, int cy) 
 {
-	CBCGPDockingControlBar::OnSize(nType, cx, cy);
-#define EDIT_HEIGHT  (20)
+    CBCGPDockingControlBar::OnSize(nType, cx, cy);
+#define EDIT_HEIGHT  (32) // was 28
 #define INTERFACE_EDIT    (1)
-	// Tab control should cover a whole client area:
-	int x,y,w,h;
-	x = nBorderSize;
-	y = nBorderSize;
-	w = cx - 2 * nBorderSize;
-	h = EDIT_HEIGHT;
-	m_wndIdEdit.SetWindowPos (NULL, x, y, w, h,
-		SWP_NOACTIVATE | SWP_NOZORDER);
-	y += h + INTERFACE_EDIT;
-	h = cy - 2 * nBorderSize - (h + INTERFACE_EDIT);
+    // Tab control should cover a whole client area:
+    int x,y,w,h;
+    x = nBorderSize;
+    y = nBorderSize;
+    w = cx - 2 * nBorderSize;
+    h = EDIT_HEIGHT;
+    m_wndIdEdit.SetWindowPos (NULL, x, y, w, h,
+        SWP_NOACTIVATE | SWP_NOZORDER);
+    y += h + INTERFACE_EDIT;
+    h = cy - 2 * nBorderSize - (h + INTERFACE_EDIT);
 
-	m_wndList.SetWindowPos (NULL, x, y, w, h,
-		SWP_NOACTIVATE | SWP_NOZORDER);
+    m_wndList.SetWindowPos (NULL, x, y, w, h,
+        SWP_NOACTIVATE | SWP_NOZORDER);
     m_wndList.SetColumnWidth(0,cx);
 }
 
 void CWorkspaceBar2::OnPaint() 
 {
-	CPaintDC dc(this); // device context for painting
-	
-	CRect rectEdit;
-	CRect rectList;
-  CRect rectThisWnd;
-	m_wndIdEdit.GetWindowRect (rectEdit);
-	m_wndList.GetWindowRect (rectList);
-  rectThisWnd = rectEdit;
-	rectThisWnd.bottom = rectList.bottom;
-	ScreenToClient (rectThisWnd);
+    CPaintDC dc(this); // device context for painting
+    
+    CRect rectEdit;
+    CRect rectList;
+    CRect rectThisWnd;
+    m_wndIdEdit.GetWindowRect (rectEdit);
+    m_wndList.GetWindowRect (rectList);
+    rectThisWnd = rectEdit;
+    rectThisWnd.bottom = rectList.bottom;
+    ScreenToClient (rectThisWnd);
 
-	rectThisWnd.InflateRect (nBorderSize, nBorderSize);
-	dc.Draw3dRect (rectThisWnd,	::GetSysColor (COLOR_3DSHADOW), 
+    rectThisWnd.InflateRect (nBorderSize, nBorderSize);
+    dc.Draw3dRect (rectThisWnd,	::GetSysColor (COLOR_3DSHADOW), 
 								::GetSysColor (COLOR_3DSHADOW));
 
-  int y = rectThisWnd.top + rectEdit.Height() +1;
+    int y = rectThisWnd.top + rectEdit.Height() +1;
 
-	CPen penred,*oldpen;
-	penred.CreatePen(PS_SOLID   ,1,::GetSysColor (COLOR_3DSHADOW));
-	oldpen=dc.SelectObject(&penred);
+    CPen penred,*oldpen;
+    penred.CreatePen(PS_SOLID   ,1,::GetSysColor (COLOR_3DSHADOW));
+    oldpen=dc.SelectObject(&penred);
 
-  dc.MoveTo(rectThisWnd.left,y);
-  dc.LineTo(rectThisWnd.right,y);
-	dc.SelectObject(oldpen);
+    dc.MoveTo(rectThisWnd.left,y);
+    dc.LineTo(rectThisWnd.right,y);
+    dc.SelectObject(oldpen);
 }
 
 void CWorkspaceBar2::OnIDEditChanged() 
 {
-  if(m_wndIdEdit.m_bWaiting)
-  {
-    return;
-  }
-	CString strID;
-	m_wndIdEdit.GetWindowText(strID);
-  if(strID.GetLength()==0)
-  {
-    return;
-  }
+    if(m_wndIdEdit.m_bWaiting)
+    {
+        return;
+    }
+    CString strID;
+    m_wndIdEdit.GetWindowText(strID);
+    if(strID.GetLength()==0)
+    {
+        return;
+    }
     CIDSet* pIdSet = new CIDSet();
-	pIdSet->Open();
-	if(strID.GetLength()>0)
-	{
-		pIdSet->m_strFilter = "Book_ID LIKE \'%";
-		pIdSet->m_strFilter += strID;
-		pIdSet->m_strFilter += "%\'";
-	}
-	else
-	{
-		pIdSet->m_strFilter = "";
+    pIdSet->Open();
+    if(strID.GetLength()>0)
+    {
+        pIdSet->m_strFilter = "Book_ID LIKE \'%";
+        pIdSet->m_strFilter += strID;
+        pIdSet->m_strFilter += "%\'";
+    }
+    else
+    {
+        pIdSet->m_strFilter = "";
 
-	}
-	pIdSet->Requery();
-	int nCount = pIdSet->GetRecordCount();
-	if(nCount > 0)
-	{
-		pIdSet->MoveFirst();
-		m_wndList.DeleteAllItems();
-		int i = 0;
-		while(!pIdSet->IsEOF())
-		{
-			m_wndList.InsertItem(i, pIdSet->m_ID );
+    }
+    pIdSet->Requery();
+    int nCount = pIdSet->GetRecordCount();
+    if(nCount > 0)
+    {
+        pIdSet->MoveFirst();
+        m_wndList.DeleteAllItems();
+        int i = 0;
+        while(!pIdSet->IsEOF())
+        {
+            m_wndList.InsertItem(i, pIdSet->m_ID );
             m_wndList.SetItemData(i,(DWORD)pIdSet->m_nType);
-			pIdSet->MoveNext();
-		}
-	}
-	pIdSet->Close();
-	delete pIdSet;
+            pIdSet->MoveNext();
+        }
+    }
+    pIdSet->Close();
+    delete pIdSet;
 }
 
 
@@ -188,14 +199,14 @@ void CWorkspaceBar2::OnIDEditChanged()
 ********************************************/
 void CWorkspaceBar2::OnDblclkList2(NMHDR* pNMHDR, LRESULT* pResult) 
 {
-	LPNMITEMACTIVATE pActive = (LPNMITEMACTIVATE)pNMHDR;
-	if(pActive->iItem != -1)
-	{
-		CString strID = m_wndList.GetItemText(pActive->iItem,0);
-		theApp.OpenBankbook(strID);
-	}
+    LPNMITEMACTIVATE pActive = (LPNMITEMACTIVATE)pNMHDR;
+    if(pActive->iItem != -1)
+    {
+        CString strID = m_wndList.GetItemText(pActive->iItem,0);
+        theApp.OpenBankbook(strID);
+    }
 
-	*pResult = 0;
+    *pResult = 0;
 }
 
 
