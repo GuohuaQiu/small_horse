@@ -41,6 +41,9 @@ protected:
 	afx_msg void OnDatetimechangeDatetimepicker(NMHDR* pNMHDR, LRESULT* pResult);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+    virtual BOOL OnInitDialog();
+    virtual void OnOK();
 };
 
 //{{AFX_INSERT_LOCATION}}

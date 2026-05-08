@@ -21,7 +21,7 @@ CQueryFromDateDlg::CQueryFromDateDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CQueryFromDateDlg)
 	m_dateMid = COleDateTime::GetCurrentTime();
 	m_strInfo = _T("");
-	m_nBound = 1;
+	m_nBound = 5;
 	//}}AFX_DATA_INIT
 }
 
@@ -79,4 +79,39 @@ void CQueryFromDateDlg::OnDatetimechangeDatetimepicker(NMHDR* pNMHDR, LRESULT* p
     UpdateData(FALSE);
 	
 	*pResult = 0;
+}
+
+BOOL CQueryFromDateDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+
+    // 读取上次值（注册表）
+    m_nBound = AfxGetApp()->GetProfileInt(_T("QueryFromDate"), _T("BoundDays"), 5);
+
+    CString lastDate = AfxGetApp()->GetProfileString(_T("QueryFromDate"), _T("MidDate"), _T(""));
+    if (!lastDate.IsEmpty())
+    {
+        COleDateTime dt;
+        if (dt.ParseDateTime(lastDate))
+            m_dateMid = dt;
+    }
+
+    UpdateData(FALSE);
+
+    CSpinButtonCtrl* pSpin = (CSpinButtonCtrl*)GetDlgItem(IDC_SPIN2);
+    if (pSpin)
+    {
+        pSpin->SetRange32(0, 365);
+        pSpin->SetPos32(m_nBound);
+    }
+
+    return TRUE;
+}
+
+void CQueryFromDateDlg::OnOK()
+{
+    UpdateData();
+    AfxGetApp()->WriteProfileInt(_T("QueryFromDate"), _T("BoundDays"), m_nBound);
+    AfxGetApp()->WriteProfileString(_T("QueryFromDate"), _T("MidDate"), m_dateMid.Format(_T("%Y-%m-%d")));
+    CDialog::OnOK();
 }
