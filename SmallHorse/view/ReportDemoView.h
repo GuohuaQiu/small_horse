@@ -195,6 +195,12 @@ protected:
 		 BOOL bHasAttachment = FALSE,
 		 int nFlag = 0);
 #endif
+	// 后台报表
+	afx_msg LRESULT OnReportDone(WPARAM wParam, LPARAM lParam);
+
+	void StartReportWorker();
+
+	BOOL m_bReportLoading;
 };
 
 

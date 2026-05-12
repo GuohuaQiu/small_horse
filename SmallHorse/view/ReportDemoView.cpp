@@ -25,6 +25,127 @@
 #include "CopyRecordsDlg.h"
 #include "ReplaceStringDlg.h"
 #include "DetailSubCountSet.h"
+#include <vector>
+#include <memory>
+
+#define WM_APP_REPORT_DONE (WM_APP + 101)
+
+struct ReportRowData
+{
+    COleDateTime begin;
+    COleDateTime end;
+    double pay;
+    double repay;
+    double gap;
+    double accGap;
+    COLORREF color;
+};
+
+struct ReportTaskParams
+{
+    CString bookId;
+    CString filter;
+    HWND hNotify;
+};
+
+static BOOL GetPeriodWorker(const CString& strid, int nYear, int nMonth, COleDateTime& timeBegin, COleDateTime& timeEnd)
+{
+    COleDateTime timePay;
+    CCreditPaySet set;
+    return set.GetPayInfo(strid, nYear, nMonth, timeBegin, timeEnd, timePay);
+}
+
+static UINT AFX_CDECL ReportWorkerProc(LPVOID pParam)
+{
+    std::unique_ptr<ReportTaskParams> params(static_cast<ReportTaskParams*>(pParam));
+    auto* pResult = new std::vector<ReportRowData>();
+
+    try
+    {
+        CDatabase db;
+        db.OpenEx(DATA_SOURCE_NAME_ODBC, CDatabase::openReadOnly | CDatabase::noOdbcDialog);
+
+        CListSet listSet(&db);
+        listSet.Open();
+        listSet.SetBookFilter(params->bookId);
+        // listSet.m_strFilter = params->filter;
+        listSet.Requery();
+
+        CSmartDate start_date;
+        CSmartDate end_date;
+
+        if (listSet.GetFirstDate(start_date) && listSet.GetLastDate(end_date))
+        {
+            COleDateTime timeB, timeE;
+            float account_gap = 0.0f;
+
+            for (int j = start_date.year; j <= end_date.year; j++)
+            {
+                int month_first = (j == start_date.year) ? start_date.month : 1;
+                int month_last  = (j == end_date.year)   ? end_date.month   : 12;
+
+                for (int i = month_first; i <= month_last; i++)
+                {
+                    if (GetPeriodWorker(params->bookId, j, i, timeB, timeE))
+                    {
+                        TRACE(_T("Report period: %s -> %s\n"),
+                              timeB.Format(_T("%Y-%m-%d %H:%M:%S")),
+                              timeE.Format(_T("%Y-%m-%d %H:%M:%S")));
+
+                        float fpay = theApp.GetPay(&listSet, params->bookId, timeB, timeE);
+                        float frepay = theApp.GetRepay(&listSet, params->bookId, timeE);
+
+                        TRACE(_T("fpay=%.2f, frepay=%.2f\n"), fpay, frepay);
+
+                        float f = fpay + frepay;
+                        account_gap += f;
+
+                        ReportRowData row;
+                        row.begin = timeB;
+                        row.end = timeE;
+                        row.pay = fpay;
+                        row.repay = frepay;
+                        row.gap = f;
+                        row.accGap = account_gap;
+
+                        if (f > 0.001f)
+                        {
+                            row.color = RGB(255, 200, 200);
+                        }
+                        else if (f < -0.001f)
+                        {
+                            row.color = RGB(128, 128, 255);
+                        }
+                        else
+                        {
+                            row.color = RGB(211, 255, 211);
+                        }
+
+                        pResult->push_back(row);
+                    }
+                }
+            }
+        }
+
+        listSet.Close();
+        db.Close();
+    }
+    catch (CDBException* e)
+    {
+        e->Delete();
+    }
+
+    if (::IsWindow(params->hNotify))
+    {
+        ::PostMessage(params->hNotify, WM_APP_REPORT_DONE, 0, (LPARAM)pResult);
+    }
+    else
+    {
+        delete pResult;
+    }
+
+    return 0;
+}
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -300,6 +421,7 @@ ON_COMMAND(ID_FILE_PRINT, CView::OnFilePrint)
 ON_COMMAND(ID_FILE_PRINT_DIRECT, CView::OnFilePrint)
 ON_COMMAND(ID_FILE_PRINT_PREVIEW, OnFilePrintPreview)
 ON_WM_DROPFILES()
+ON_MESSAGE(WM_APP_REPORT_DONE, OnReportDone)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -308,6 +430,7 @@ END_MESSAGE_MAP()
 CReportDemoView::CReportDemoView()
 {
 	m_bFirst = TRUE;
+	m_bReportLoading = FALSE;
 	// TODO: add construction code here
 	
 }
@@ -315,6 +438,82 @@ CReportDemoView::CReportDemoView()
 CReportDemoView::~CReportDemoView()
 {
 }
+
+
+
+
+
+// ...existing code...
+
+void CReportDemoView::StartReportWorker()
+{
+    if (m_bReportLoading)
+    {
+        return;
+    }
+
+    // 这里继续沿用已有过滤逻辑
+    //theApp.SetBookFilter(m_pParent->m_strID);
+
+    std::unique_ptr<ReportTaskParams> params(new ReportTaskParams());
+    params->bookId = m_pParent->m_strID;
+    params->filter = m_pParent->m_strFilter;
+    params->hNotify = this->GetSafeHwnd();
+
+    m_bReportLoading = TRUE;
+    AfxBeginThread(ReportWorkerProc, params.release());
+}
+
+LRESULT CReportDemoView::OnReportDone(WPARAM, LPARAM lParam)
+{
+    std::unique_ptr<std::vector<ReportRowData>> rows(reinterpret_cast<std::vector<ReportRowData>*>(lParam));
+    m_bReportLoading = FALSE;
+
+    if (!rows)
+    {
+        return 0;
+    }
+
+    CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
+    pReportCtrl->RemoveAll();
+
+    for (const auto& row : *rows)
+    {
+        CBCGPGridRow* pRow = pReportCtrl->CreateRow(CLOUMN_REPORT_COLOUMN_COUNT);
+
+        CString str = row.begin.Format("%Y-%m-%d");
+        pRow->GetItem(COLUMN_REPORT_START_TIME)->SetValue((LPCTSTR)str, FALSE);
+
+        CString stre = row.end.Format("%Y-%m-%d");
+        pRow->GetItem(COLUMN_REPORT_END_TIME)->SetValue((LPCTSTR)stre, FALSE);
+
+        CString strPay;
+        strPay.Format("%8.2f", row.pay);
+        pRow->GetItem(COLUMN_REPORT_EXPENSE)->SetValue((LPCTSTR)strPay, FALSE);
+
+        strPay.Format("%8.2f", row.repay);
+        pRow->GetItem(COLUMN_REPORT_REPAY)->SetValue((LPCTSTR)strPay, FALSE);
+
+        strPay.Format("%8.2f", row.gap);
+        pRow->GetItem(COLUMN_REPORT_GAP)->SetValue((LPCTSTR)strPay, FALSE);
+
+        strPay.Format("%8.2f", row.accGap);
+        pRow->GetItem(CLOUMN_REPORT_ACCOUNT_GAP)->SetValue((LPCTSTR)strPay, FALSE);
+
+        pReportCtrl->SetRowBackColor(pRow, row.color);
+        pReportCtrl->AddRow(pRow, FALSE);
+    }
+
+    AdjustColumnWidth();
+    pReportCtrl->AdjustLayout();
+    return 0;
+}
+
+
+
+
+
+
 
 BOOL CReportDemoView::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -2509,93 +2708,13 @@ BOOL CReportDemoView::DisplayTodo()
 
 BOOL CReportDemoView::DisplayReport()
 {
-    CMailReportCtrl* pReportCtrl = (CMailReportCtrl*)GetReportCtrl();
-	pReportCtrl->RemoveAll ();
-	
-	CListSet* pListSet = theApp.GetListSet();
-	theApp.SetBookFilter(m_pParent->m_strID);
-//	int start_y,start_m,start_d;
-//	int end_y,end_m,end_d;
-	CSmartDate start_date;
-	CSmartDate end_date;
-	
-	if(!pListSet->GetFirstDate(start_date))
-	{
-		return FALSE;
-	}
-	
-	if(!pListSet->GetLastDate(end_date))
-	{
-		return FALSE;
-	}
-	
-    COleDateTime timeB, timeE;
-    CString str,stre;
-	CString strPay;
-	float fpay,frepay;
-
-	int month_first,month_last;
-
-	float account_gap = 0.0;
-
-    for(int j=start_date.year;j<=end_date.year;j++)
-    {
-		month_first = (j==start_date.year)?start_date.month:1;
-		month_last = (j==end_date.year)?end_date.month:12;
-		for(int i = month_first;i<=month_last;i++)
-		{
-			if(GetPeriod(m_pParent->m_strID,j,i,timeB,timeE))
-			{
-				CBCGPGridRow* pRow = pReportCtrl->CreateRow (CLOUMN_REPORT_COLOUMN_COUNT);
-				
-				str = timeB.Format("%Y-%m-%d");
-				pRow->GetItem (COLUMN_REPORT_START_TIME)->SetValue ((LPCTSTR)str, FALSE);
-				
-				stre = timeE.Format("%Y-%m-%d");
-				pRow->GetItem (COLUMN_REPORT_END_TIME)->SetValue ((LPCTSTR)stre, FALSE);
-				
-				fpay = theApp.GetPay(pListSet,m_pParent->m_strID,timeB,timeE);
-				strPay.Format("%8.2f",fpay);
-				pRow->GetItem (COLUMN_REPORT_EXPENSE)->SetValue ((LPCTSTR)strPay, FALSE);
-				
-				frepay = theApp.GetRepay(pListSet,m_pParent->m_strID,timeE);
-				strPay.Format("%8.2f",frepay);
-				pRow->GetItem (COLUMN_REPORT_REPAY)->SetValue ((LPCTSTR)strPay, FALSE);
-				
-				float f = fpay+frepay;
-				strPay.Format("%8.2f",f);
-				pRow->GetItem (COLUMN_REPORT_GAP)->SetValue ((LPCTSTR)strPay, FALSE);
-
-				account_gap += f;
-				
-				strPay.Format("%8.2f", account_gap);
-				pRow->GetItem (CLOUMN_REPORT_ACCOUNT_GAP)->SetValue ((LPCTSTR)strPay, FALSE);
-				if(f >0.001)
-				{
-					pReportCtrl->SetRowBackColor(pRow,RGB(255,200,200));
-				}
-				else if(f <-0.001)
-				{
-					pReportCtrl->SetRowBackColor(pRow,RGB(128,128,255));
-				}
-				else
-				{
-					pReportCtrl->SetRowBackColor(pRow,RGB(211,255,211));
-				}
-				
-				pReportCtrl->AddRow (pRow, FALSE);
-				TRACE("ADD NEW LINE: %s-> %s\n",str,stre);
-			}
-		}
-    }
-	
-	AdjustColumnWidth();
-	pReportCtrl->AdjustLayout ();
-	return TRUE;
+    // 改为后台生成
+    StartReportWorker();
+    return TRUE;
 }
 BOOL CReportDemoView::GetPeriod(CString strid,int nYear, int nMonth,COleDateTime& timeBegin,COleDateTime& timeEnd)
 {
-	COleDateTime timePay;
+    COleDateTime timePay;
 
     CCreditPaySet set;
     BOOL b = set.GetPayInfo(strid,nYear,nMonth,timeBegin,timeEnd,timePay);

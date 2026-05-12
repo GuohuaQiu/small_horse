@@ -878,9 +878,10 @@ void CSmallHorseApp::CalSum(const CString &strID)
 
 void CSmallHorseApp::SetBookFilter(const CString strID)
 {
-	CString strfil=_T("\'")+strID+_T("\'");
-	m_listset.m_strFilter =_T("Item_Book_ID=") + strfil;
-	m_listset.m_strSort=_T("OperDate,Index");
+    m_listset.SetBookFilter(strID);
+	// CString strfil=_T("\'")+strID+_T("\'");
+	// m_listset.m_strFilter =_T("Item_Book_ID=") + strfil;
+	// m_listset.m_strSort=_T("OperDate,Index");
     m_listset.Requery();
 }
 

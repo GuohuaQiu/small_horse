@@ -1074,6 +1074,15 @@ int CListSet::EndEdit()
 
 }
 
+
+void CListSet::SetBookFilter(const CString& strID)
+{
+    CString strfil = _T("\'") + strID + _T("\'");
+    m_strFilter = _T("Item_Book_ID=") + strfil;
+    m_strSort = _T("OperDate,Index");
+}
+
+
 // 修改后的 AddItems，只负责数据库操作
 BOOL CListSet::AddItems(const std::vector<IMPORT_ITEM>& items)
 {

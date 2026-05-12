@@ -120,6 +120,8 @@ public:
 	int MoveRecordsTo(const CString& Count, const CString& SubCount,const CDWordArray& dbArray,int count);
 	int StartEdit();
 	int SubmitEdit();
+
+    void SetBookFilter(const CString& strID);
 	int EndEdit();
 	int SubmitNew();
 };
