@@ -271,7 +271,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
 		CBRS_TOOLTIPS | CBRS_FLYBY);
 
-	return 0;
+    InitQueryDateFromReg();
+    return 0;
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
@@ -440,9 +441,10 @@ afx_msg LRESULT CMainFrame::OnToolbarReset(WPARAM wp, LPARAM)
 
 	CBCGPToolbarDateTimeCtrl btnDateCtrl(ID_SEARCH_DATETIME_MAIN,CImageHash::GetImageOfCommand (ID_SEARCH_DATETIME_MAIN));
 	m_wndToolBar.ReplaceButton(ID_SEARCH_DATETIME_MAIN,btnDateCtrl);
-
 	CBCGPToolbarSpinEditBoxButton editDayRound(ID_SEARCH_DAY_ROUND, CImageHash::GetImageOfCommand (ID_SEARCH_DAY_ROUND), 0, 70);
 	m_wndToolBar.ReplaceButton(ID_SEARCH_DAY_ROUND,editDayRound);
+	editDayRound.SetRange(1, 360);
+
 	return 0;
 }
 
@@ -579,8 +581,39 @@ void CMainFrame::OnDayRoundQuery()
 	theApp.QueryDate(dt,x);
 }
 
-void CMainFrame::SetQueryDay(const COleDateTime& day)
+void CMainFrame::SetQueryDay(const COleDateTime &day)
 {
-	CBCGPToolbarDateTimeCtrl* pDateTimeCtrl = (CBCGPToolbarDateTimeCtrl*)m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex (ID_SEARCH_DATETIME_MAIN));
+	CBCGPToolbarDateTimeCtrl *pDateTimeCtrl = (CBCGPToolbarDateTimeCtrl *)m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex(ID_SEARCH_DATETIME_MAIN));
 	pDateTimeCtrl->SetTime(day);
+
+}
+
+void CMainFrame::SetQueryBoundDay(int boundDay)
+{
+	CBCGPToolbarSpinEditBoxButton *pSpinEditCtrl = (CBCGPToolbarSpinEditBoxButton *)m_wndToolBar.GetButton(m_wndToolBar.CommandToIndex(ID_SEARCH_DAY_ROUND));
+	CEdit* pEdit = pSpinEditCtrl->GetEditBox();
+	CString strDigit;
+	strDigit.Format("%d", boundDay);
+	pEdit->SetWindowTextA(strDigit);
+}
+
+void CMainFrame::SetQueryDayFromString(const CString& dateText)
+{
+    COleDateTime dt;
+    // YYYY-MM-DD
+    if (dt.ParseDateTime(dateText, VAR_DATEVALUEONLY | LOCALE_NOUSEROVERRIDE))
+    {
+        SetQueryDay(dt);
+    }
+}
+
+void CMainFrame::InitQueryDateFromReg()
+{
+    CString savedDate = AfxGetApp()->GetProfileString(_T("QueryFromDate"), _T("MidDate"), _T(""));
+    if (!savedDate.IsEmpty())
+    {
+        SetQueryDayFromString(savedDate);
+    }
+	int boundDay = AfxGetApp()->GetProfileInt(_T("QueryFromDate"), _T("BoundDays"), 5);
+	SetQueryBoundDay(boundDay);
 }

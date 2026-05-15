@@ -111,21 +111,22 @@ BOOL CSmallHorseApp::InitInstance()
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
 	}
-	AfxEnableControlContainer();
-	// Standard initialization
-	// If you are not using these features and wish to reduce the size
-	// of your final executable, you should remove from the following
-	// the specific initialization routines you do not need
-	// Change the registry key under which our settings are stored
-	// TODO: You should modify this string to be something appropriate
-	// such as the name of your company or organization
-	SetRegistryKey(_T("BCGP AppWizard-Generated Applications"));
-	LoadStdProfileSettings(4);  // Load standard INI file options (including MRU)
-	m_querylist.Load();
+    AfxEnableControlContainer();
+    // Standard initialization
+    // If you are not using these features and wish to reduce the size
+    // of your final executable, you should remove from the following
+    // the specific initialization routines you do not need
+    // Change the registry key under which our settings are stored
+    // TODO: You should modify this string to be something appropriate
+    // such as the name of your company or organization
+    m_bSaveState = FALSE; // ½ûÖ¹BCG±£´æ×´Ì¬µ½×¢²á±í
+    SetRegistryKey(_T("SmallHorse"));
+    LoadStdProfileSettings(4); // Load standard INI file options (including MRU)
+    m_querylist.Load();
 
-	SetRegistryBase (_T("Settings"));
+    // SetRegistryBase(_T("Settings"));
 
-	// Initialize all Managers for usage. They are automatically constructed
+    // Initialize all Managers for usage. They are automatically constructed
 	// if not yet present
 	InitContextMenuManager();
 	InitKeyboardManager();
@@ -2221,10 +2222,11 @@ void CSmallHorseApp::OnQueryDate()
     if(dlg.DoModal()==IDOK)
     {
         CString strSort;
-        strSort=_T("OperDate,Index");
-        OpenView(dlg.m_strInfo,strSort);
+        strSort = _T("OperDate,Index");
+        OpenView(dlg.m_strInfo, strSort);
+        CMainFrame *pfrm = (CMainFrame *)AfxGetMainWnd();
+        pfrm->InitQueryDateFromReg();
     }
-    
 }
 /*******************************************
 Function Name :	 
@@ -2244,7 +2246,8 @@ void CSmallHorseApp::QueryOneDay(COleDateTime day)
 	strSort=_T("OperDate,Index");
 	OpenView(strInfo,strSort);
 
-	//Modify Toolbar date control
+    AfxGetApp()->WriteProfileString(_T("QueryFromDate"), _T("MidDate"), strDay);
+    //Modify Toolbar date control
 	((CMainFrame*)m_pMainWnd)->SetQueryDay(day);
 }
 
@@ -3007,7 +3010,7 @@ BOOL CSmallHorseApp::OpenTodoView(void)
 void CSmallHorseApp::QueryDate(COleDateTime centerDay, int nRoundDay)
 {
 	CString strQueryInfo;
-
+	if (nRoundDay < 1) nRoundDay = 1;
 	COleDateTimeSpan span;
 	span.SetDateTimeSpan(nRoundDay,0,0,0);
 	COleDateTime timea = centerDay + span;
@@ -3015,6 +3018,8 @@ void CSmallHorseApp::QueryDate(COleDateTime centerDay, int nRoundDay)
 	// OperDate BETWEEN #2009-12-14# and #2009-12-31#
 	strQueryInfo=timeb.Format("OperDate BETWEEN #%Y-%m-%d# and ");
 	strQueryInfo+=timea.Format("#%Y-%m-%d#");
+	AfxGetApp()->WriteProfileInt(_T("QueryFromDate"), _T("BoundDays"), nRoundDay);
+	AfxGetApp()->WriteProfileString(_T("QueryFromDate"), _T("MidDate"), centerDay.Format(_T("%Y-%m-%d")));
 
 	CString strSort;
 	strSort=_T("OperDate,Index");
