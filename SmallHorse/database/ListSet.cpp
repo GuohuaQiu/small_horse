@@ -7,6 +7,7 @@
 #include "Convertdata.h"
 #include "database_setup.h"
 #include "SmartDate.h"
+#include <cmath>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -91,30 +92,31 @@ void CListSet::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 
-float CListSet::GetSumValue(BOOL bInt/*=TRUE*/)
+static double RoundTo4(double v)
 {
-    TCHAR* p;
-	return (float)_tcstod(m_sum,&p);
+    return std::round(v * 10000.0) / 10000.0;
 }
 
-float CListSet::GetAddorSubValue()
+double CListSet::GetSumValue(BOOL bInt/*=TRUE*/)
 {
-    TCHAR* p;
-	return (float)_tcstod(m_addorsub,&p);
+    TCHAR* p = nullptr;
+    const double v = _tcstod(m_sum, &p);
+	return v;
 }
 
-void CListSet::SetAddOrSubValue(float f)
+double CListSet::GetAddorSubValue()
 {
-	CString str;
-	str.Format(_T("%8.2f"),f);
-	m_addorsub=str;
+    TCHAR* p = nullptr;
+    TRACE("GetAddorSubValue():%s\n", m_addorsub);
+    const double v = _tcstod(m_addorsub, &p);
+	return v;
 }
 
-void CListSet::SetSumValue(float f)
+void CListSet::SetSumValue(double f)
 {
-	CString str;
-	str.Format(_T("%8.2f"),f);
-	m_sum=str;
+    CString str;
+    str.Format(_T("%8.4f"), f);
+    m_sum = str;
 }
 
 CString CListSet::GetRemain(CString strID)
@@ -164,178 +166,6 @@ CString CListSet::GetDate()
 }
 
 
-/*******************************************
-    Function Name : 
-    author        : Qiu Guohua
-    Date          : 2004-09-22 13:59:09
-    Description   : 
-    Return type   : 
-    Argument      : 
-********************************************/
-// void CListSet::SetNetIncome(BYTE bType)
-// {
-//     if(!IsBOF())
-//     {
-//         MoveFirst();
-//     }
-//     while(!IsEOF())
-// 	{
-// 		m_LockModify.Lock();
-// 		Edit();
-// 		m_bType=bType;
-// 		Update();
-// 		m_LockModify.Unlock();
-// 		MoveNext();
-// 	}
-// }
-
-
-// BOOL CListSet::AddItems(CListCtrl *pctrl,int nType[],const CString& strId,int pATC[],int column_count)
-// {
-// 	int nCount = pctrl->GetItemCount();
-// 	CString strDate;
-// 	CString strAdd;
-// 	CString strComment;
-// 	CString strType;
-// 	double  fIncome;
-// 	int nYear,nMonth,nDay,nHour, nMinute,nSec;
-// 	nHour = 0;
-// 	nMinute = 0;
-// 	nSec = 0;
-//     CString strStamp;
-// 	COleDateTime time = COleDateTime::GetCurrentTime();
-// 	strStamp = time.Format(_T("(%Y-%m-%d %H:%M)"));
-
-//     // 修改处：使用主程序的数据库连接，确保数据更新能被立即看到
-//     // 原代码：CListSet listData;
-//     CListSet listData(theApp.GetListSet()->m_pDatabase);
-//     listData.StartEdit();
-        
-
-//     BOOL bRet = TRUE;
-//     CDatabase* pDB = listData.m_pDatabase;
-//     if(pDB->CanTransact()) {
-//         pDB->BeginTrans(); // 开启事务
-//     }
-
-//     try {
-//         for(int i = 0; i < nCount; i++)
-// 		{
-// 			if(pctrl->GetCheck(i))
-// 			{
-// 				listData.AddNew();
-// 				listData.m_ID = strId;
-// 				if(nType[VALUE_TYPE_DATE]>=0)
-// 				{
-// 					strDate = pctrl->GetItemText(i,nType[VALUE_TYPE_DATE]);
-// 					if(nType[VALUE_TYPE_ONLYTIME]>=0)
-// 					{
-// 						strDate += " ";
-// 						strDate += pctrl->GetItemText(i,nType[VALUE_TYPE_ONLYTIME]);
-// 					}
-// 					nHour = 8;
-// 					nMinute = 0;
-// 					nSec = 0;
-
-// 					int ret = theApp.GetDate(strDate,nYear,nMonth,nDay,nHour, nMinute,nSec);
-
-// 					if(ret == 0)
-// 					{
-// 						CString msg;
-// 						msg.Format("Below format cant be read:\n %s",strDate);
-
-// 						AfxMessageBox(msg);
-// 						return FALSE;
-// 					}
-
-// 					listData.m_day = COleDateTime(nYear,nMonth,nDay,nHour,nMinute,nSec);
-// 				}
-// 				fIncome = 0.0;
-
-// 				TCHAR *pTempTchar;
-// 				if(nType[VALUE_TYPE_INCOME]>=0)
-// 				{
-// 					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_INCOME]);
-// 					if(strAdd.Remove(','))
-// 					{
-// 						TRACE(_T("%s"),strAdd);
-// 					}
-// 					fIncome = _tcstod(strAdd,&pTempTchar);
-// 				}
-// 				if(nType[VALUE_TYPE_PAY]>=0)
-// 				{
-// 					strAdd = pctrl->GetItemText(i,nType[VALUE_TYPE_PAY]);
-// 					if(strAdd.Remove(','))
-// 					{
-// 						TRACE(_T("%s"),strAdd);
-// 					}
-// 					fIncome -= _tcstod(strAdd,&pTempTchar);
-// 				}
-// 				listData.SetAddOrSubValue(fIncome);
-// 				if(nType[VALUE_TYPE_SUBCOUNT]>=0)
-// 				{
-// 					listData.m_strSubCount = pctrl->GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
-// 				}
-// 				CString strComment;
-// 				if(nType[VALUE_TYPE_COMMENT]>=0)
-// 				{
-// 					strComment = pctrl->GetItemText(i,nType[VALUE_TYPE_COMMENT]);
-// 				}
-
-// 				//ADD TO COMMENTS
-// 				for(int j = 0;j< column_count;j++)
-// 				{
-// 					if(pATC[j]==1)
-// 					{
-// 						strComment += " ";
-// 						strComment += pctrl->GetItemText(i,j);
-// 					}
-// 				}
-
-// 				int len = strComment.GetLength();
-
-// 				while(len > 0 && strComment.GetAt(0) == _TCHAR(' '))
-// 				{
-// 					len--;
-// 					strComment = strComment.Right(len);
-// 				}
-// 				listData.m_remain = strComment;
-
-
-// 				if(nType[VALUE_TYPE_SUM]>=0)
-// 				{
-// 					CString str = pctrl->GetItemText(i,nType[VALUE_TYPE_SUM]);
-// 					CString strSum;
-// 					strSum.Format("(R:%s)",str);
-// 					listData.m_remain += strSum;
-// 				}
-// 				listData.m_remain += strStamp;
-// 				if(nType[VALUE_TYPE_SITE]>=0)
-// 				{
-// 					listData.m_strSite = pctrl->GetItemText(i,nType[VALUE_TYPE_SITE]);
-// 				}
-
-// 				listData.Update(); 
-// 			}
-// 		}
-        
-//         if(pDB->CanTransact()) {
-//             pDB->CommitTrans(); // 一次性提交所有更改
-//         }
-//     }
-//     catch(CDBException* e) {
-//         if(pDB->CanTransact()) {
-//             pDB->Rollback(); // 出错回滚，保证数据一致性
-//         }
-//         e->ReportError();
-//         e->Delete();
-//         return FALSE;
-//     }
-
-// 	listData.EndEdit();
-// 	return bRet;
-// }
-
 BOOL CListSet::GetCurrentBookId(CString &strID)
 {
 	if(!IsOnlyOneBook())
@@ -356,7 +186,7 @@ BOOL CListSet::IsOnlyOneBook()
 	return TRUE;
 }
 
-BOOL CListSet::Find(const COleDateTime &time, float fRecord,const CString& strSubCount)
+BOOL CListSet::Find(const COleDateTime &time, double fRecord,const CString& strSubCount)
 {
     if(!IsBOF())
     {
@@ -562,7 +392,7 @@ void CListSet::GetGenerationInfo(LPGEN_INFO pinfo)
         return ;
     }
     MoveFirst();
-    float fThis;
+    double fThis;
     while(!IsEOF())
     {
         fThis = GetAddorSubValue();
@@ -649,7 +479,7 @@ void CListSet::GetGenerationInfo(LPGEN_INFO pinfo, const CString &strSubId)
         return ;
     }
     MoveFirst();
-    float fThis;
+    double fThis;
     while(!IsEOF())
     {
         if(this->m_strSubCount != strSubId)
@@ -814,10 +644,11 @@ BOOL CListSet::GetLastDate(CSmartDate &date)
 	
 }
 
-BOOL CListSet::Edit_CalSum(float* fSum)
+BOOL CListSet::Edit_CalSum(double* fSum)
 {
 	m_LockModify.Lock();
 	*fSum += GetAddorSubValue();
+	TRACE("FSUM:%f, ADD:%f\n", *fSum, GetAddorSubValue());
 
 	CString strSQL;
 
@@ -1084,51 +915,78 @@ void CListSet::SetBookFilter(const CString& strID)
 
 
 // 修改后的 AddItems，只负责数据库操作
+
 BOOL CListSet::AddItems(const std::vector<IMPORT_ITEM>& items)
 {
     if (items.empty()) return TRUE;
 
-    // 使用主程序的数据库连接
-    CListSet listData(theApp.GetListSet()->m_pDatabase);
-    listData.StartEdit();
+    CDatabase* pDB = theApp.GetListSet()->m_pDatabase;
+    if (!pDB) return FALSE;
 
     BOOL bRet = TRUE;
-    CDatabase* pDB = listData.m_pDatabase;
-    
-    // 开启事务
-    if(pDB->CanTransact()) {
-        pDB->BeginTrans(); 
+
+    if (pDB->CanTransact()) {
+        pDB->BeginTrans();
     }
 
     try {
-        for(const auto& item : items)
+        for (const auto& item : items)
         {
-            listData.AddNew();
-            listData.m_ID = item.strBookID;
-            listData.m_day = item.dtDate;
-            listData.SetAddOrSubValue(item.fAmount);
-            listData.m_strSubCount = item.strSubCount;
-            listData.m_remain = item.strComment;
-            listData.m_strSite = item.strSite;
-            
-            listData.Update(); 
+            InsertItemBySql(pDB, item);
         }
-        
-        if(pDB->CanTransact()) {
-            pDB->CommitTrans(); 
+
+        if (pDB->CanTransact()) {
+            pDB->CommitTrans();
         }
     }
-    catch(CDBException* e) {
-        if(pDB->CanTransact()) {
-            pDB->Rollback(); 
+    catch (CDBException* e) {
+        if (pDB->CanTransact()) {
+            pDB->Rollback();
         }
         e->ReportError();
         e->Delete();
-
         return FALSE;
     }
 
-    listData.EndEdit();
     return bRet;
 }
 
+CString EscapeSqlText(const CString& text)
+{
+    CString out = text;
+    out.Replace(_T("'"), _T("''"));
+    return out;
+}
+
+CString FormatAccessDate(const COleDateTime& dt)
+{
+    if (dt.GetStatus() != COleDateTime::valid)
+        return _T("NULL");
+
+    return _T("#") + dt.Format(_T("%Y-%m-%d %H:%M:%S")) + _T("#");
+}
+
+BOOL CListSet::InsertItemBySql(CDatabase* pDB, const IMPORT_ITEM& item)
+{
+    if (!pDB) return FALSE;
+
+    CString strSQL;
+
+    const CString strID      = EscapeSqlText(item.strBookID);
+    const CString strOper    = EscapeSqlText(item.fAmount);     // fAmount 现在是 CString
+    const CString strSub     = EscapeSqlText(item.strSubCount);
+    const CString strComment = EscapeSqlText(item.strComment);
+    const CString strSite    = EscapeSqlText(item.strSite);
+
+    const CString strDate = FormatAccessDate(item.dtDate);
+    const CString strNow  = FormatAccessDate(COleDateTime::GetCurrentTime());
+
+    strSQL.Format(
+        _T("INSERT INTO Items (OperDate, Item_Book_ID, Oper, SubCountID, Comment, Site, AddDate, ModifyDate) ")
+        _T("VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, %s)"),
+        strDate, strID, strOper, strSub, strComment, strSite, strNow, strNow
+    );
+
+    pDB->ExecuteSQL(strSQL);
+    return TRUE;
+}

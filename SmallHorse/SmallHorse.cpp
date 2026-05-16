@@ -835,7 +835,7 @@ void CSmallHorseApp::CalSum(const CString &strID)
         pListSet->MoveFirst();
     }
     pListSet->SetUpdateTime(FALSE);
-	float fBaseSum = 0.0;
+	double fBaseSum = 0.0;
 	while(!pListSet->IsEOF())
 	{
 		if(pListSet->m_strSubCount == "")
@@ -844,7 +844,7 @@ void CSmallHorseApp::CalSum(const CString &strID)
 		} 
 		else
 		{
-			float *pf;
+			double *pf;
 			if(map.Lookup(pListSet->m_strSubCount,(void*&)pf))
 			{
 				pListSet->Edit_CalSum(pf);
@@ -852,7 +852,7 @@ void CSmallHorseApp::CalSum(const CString &strID)
 			}
 			else
 			{//first record for a subcount.
-				float *pff = new float;
+				double *pff = new double;
 				*pff = 0.0;
 				pListSet->Edit_CalSum(pff);
 				map[pListSet->m_strSubCount] = pff;

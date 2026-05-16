@@ -18,7 +18,7 @@
 struct IMPORT_ITEM
 {
     COleDateTime dtDate;
-    double fAmount;
+    CString fAmount;
     CString strSubCount;
     CString strComment;
     CString strSite;
@@ -42,7 +42,7 @@ public:
 	BOOL Modify_Type(BYTE type);
 #endif
 	BOOL Modify_Record(CListSet* inData);
-	BOOL Edit_CalSum(float *fSum);
+	BOOL Edit_CalSum(double *fSum);
 	static BOOL New_Item(CListSet* pInData);
 	BOOL GetLastDate(CSmartDate &date);
 		
@@ -57,12 +57,15 @@ public:
 	void OpenOneRecord(int nID);
 	int RequerySubCount(const CString& strMainCount,const CString& strSubCount);
 	BOOL MoveToID(int nID,LPCTSTR lpFilter=NULL);
-	BOOL Find(const COleDateTime& time,float fRecord,const CString& strSubCount);
+	BOOL Find(const COleDateTime& time,double fRecord,const CString& strSubCount);
 	BOOL IsOnlyOneBook();
 	BOOL GetCurrentBookId(CString &strID);
     
     // 修改处：参数改为 const std::vector<IMPORT_ITEM>&
     static BOOL AddItems(const std::vector<IMPORT_ITEM>& items);
+
+    // 新增：插入单个项
+    static BOOL InsertItemBySql(CDatabase* pDB, const IMPORT_ITEM& item);
 
 // 	void SetNetIncome(BYTE bType);
     CString GetDate();
@@ -70,10 +73,9 @@ public:
 	CString GetSum();
 	CString GetAddorSub();
 	CString GetRemain(CString strID);
-	void SetSumValue(float f);
-	void SetAddOrSubValue(float f);
-	float GetAddorSubValue();
-	float GetSumValue(BOOL bInt=TRUE);
+	void SetSumValue(double f);
+	double GetAddorSubValue();
+	double GetSumValue(BOOL bInt=TRUE);
 	CListSet(CDatabase* pDatabase = NULL);
 	DECLARE_DYNAMIC(CListSet)
 

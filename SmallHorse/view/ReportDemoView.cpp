@@ -696,7 +696,7 @@ int CReportDemoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CBCGPReportCtrl* pReportCtrl = GetReportCtrl ();
 	pReportCtrl->SetSingleSel(FALSE);
 	//TODO_TODO only single card can accept imported items.
-   	DragAcceptFiles(TRUE);
+    DragAcceptFiles(TRUE);
 	
 	return 0;
 }
@@ -1890,7 +1890,6 @@ void CReportDemoView::ExportCreditRecord(const COleDateTime &timeBegin, const CO
 			if(fThisSum<0)
 			{
 				fSum += fThisSum;
-			//exporter.ExportLine(pListSet->GetDate(),pListSet->m_addorsub,pListSet->m_remain,uColor);
 			}
 		}
 		pListSet->MoveNext();

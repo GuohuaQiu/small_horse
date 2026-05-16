@@ -7,6 +7,7 @@
 #include "Importsheet.h"
 #include "GridHtmlExporter.h"
 #include "TableLoader.h"
+#include <cmath>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -343,27 +344,31 @@ int CImportListPage::FindSubCountConflict(int nType[])
 	ShellExecute( AfxGetMainWnd()->m_hWnd, "open", strFile, NULL, NULL, SW_SHOWNORMAL );
 	return nConflictCount;
 }
+static double Round2(double v)
+{
+    return std::round(v * 100.0) / 100.0;
+}
 
 int CImportListPage::FindConflict(int nType[5])
 {
-	//begin
-	COleDateTime day;
-	float fIncome;
-	CString strRemain,strDate,strAdd,strDec,strSubCount;
-	int nYear,nMonth,nDay,nHh, nMm, nSs;
-	CGridHtmlExporter exporter;
+    //begin
+    COleDateTime day;
+    double fIncome; // 改为 double
+    CString strRemain,strDate,strAdd,strDec,strSubCount;
+    int nYear,nMonth,nDay,nHh, nMm, nSs;
+    CGridHtmlExporter exporter;
     char path[MAX_PATH];
     CSmallHorseApp::GetCurrentPath(path);
     strcat(path, "info.htm");
-	CString strFile(_T(path));
-	exporter.SetExportFile(strFile);
-	int nConflictCount = 0;
-	int nCount = m_listctrl.GetItemCount();
-	m_listctrl.SetRedraw(FALSE);
-	for(int i = 0;i<nCount;i++)
-	{
-		if(m_listctrl.GetCheck(i))
-		{
+    CString strFile(_T(path));
+    exporter.SetExportFile(strFile);
+    int nConflictCount = 0;
+    int nCount = m_listctrl.GetItemCount();
+    m_listctrl.SetRedraw(FALSE);
+    for(int i = 0;i<nCount;i++)
+    {
+        if(m_listctrl.GetCheck(i))
+        {
 			if(nType[VALUE_TYPE_DATE]>=0)
 			{
 				strDate = m_listctrl.GetItemText(i,nType[VALUE_TYPE_DATE]);
@@ -378,62 +383,65 @@ int CImportListPage::FindConflict(int nType[5])
 
 					AfxMessageBox(msg);
 				}
-//				_stscanf(strDate,_T("%d-%d-%d"),&nYear,&nMonth,&nDay);
 				day = COleDateTime(nYear,nMonth,nDay,nHh,nMm,nSs);
 			}
-			fIncome = 0.0;
-			strAdd = _T("");
+            fIncome = 0.0;
+            CString strIncome;
             TCHAR* pTempTchar;
-			if(nType[VALUE_TYPE_INCOME]>=0)
-			{
-				strAdd = m_listctrl.GetItemText(i,nType[VALUE_TYPE_INCOME]);
-				if(strAdd.Remove(','))
-				{
-					TRACE("%s",strAdd);
-				}
-				strAdd.Remove(' ');
-				fIncome = _tcstod(strAdd,&pTempTchar);
-			}
-			if(nType[VALUE_TYPE_PAY]>=0 && ((fIncome - 0.0)<0.001&&(fIncome - 0.0)>-0.001))
-			{
-				strDec = m_listctrl.GetItemText(i,nType[VALUE_TYPE_PAY]);
-				if(strDec.Remove(','))
-				{
-					TRACE(_T("%s"),strDec);
-				}
-				strDec.Remove(' ');
-				strDec.Insert(0,_T("-"));
-				strAdd = strDec;//for output.
-				fIncome += _tcstod(strDec,&pTempTchar);
-			}
+            if(nType[VALUE_TYPE_INCOME]>=0)
+            {
+                strAdd = m_listctrl.GetItemText(i,nType[VALUE_TYPE_INCOME]);
+                if(strAdd.Remove(','))
+                {
+                    TRACE("%s",strAdd);
+                }
+                strAdd.Remove(' ');
+                fIncome = _tcstod(strAdd,&pTempTchar);
+            }
+            if(nType[VALUE_TYPE_PAY]>=0 && ((fIncome - 0.0)<0.001&&(fIncome - 0.0)>-0.001))
+            {
+                strDec = m_listctrl.GetItemText(i,nType[VALUE_TYPE_PAY]);
+                if(strDec.Remove(','))
+                {
+                    TRACE(_T("%s"),strDec);
+                }
+                strDec.Remove(' ');
+                strDec.Insert(0,_T("-"));
+                strAdd = strDec;//for output.
+                fIncome += _tcstod(strDec,&pTempTchar);
+            }
+
+            // 四舍五入到小数点后两位再比较
+            fIncome = Round2(fIncome);
+
             if(nType[VALUE_TYPE_SUBCOUNT]>=0)
             {
                 strSubCount = m_listctrl.GetItemText(i,nType[VALUE_TYPE_SUBCOUNT]);
             }
-            if(m_pParent->m_pListSet->Find(day,fIncome,strSubCount))
-			{
-				nConflictCount++;
-				if(nType[VALUE_TYPE_COMMENT]>=0)
-				{
-					strRemain = m_listctrl.GetItemText(i,nType[VALUE_TYPE_COMMENT]);
-				}
-				exporter.ExportLine(strDate,strAdd,strRemain,0x65ee89);
-				exporter.ExportLine(m_pParent->m_pListSet->GetDate(),m_pParent->m_pListSet->m_addorsub,m_pParent->m_pListSet->m_remain,0x99ff89);
-				m_listctrl.SetCheck(i,FALSE);
-			}
-		}
-	}
-	if (nConflictCount > 0) {
+            if(m_pParent->m_pListSet->Find(day, fIncome, strSubCount))
+            {
+                nConflictCount++;
+                if(nType[VALUE_TYPE_COMMENT]>=0)
+                {
+                    strRemain = m_listctrl.GetItemText(i,nType[VALUE_TYPE_COMMENT]);
+                }
+                exporter.ExportLine(strDate,strAdd,strRemain,0x65ee89);
+                exporter.ExportLine(m_pParent->m_pListSet->GetDate(),m_pParent->m_pListSet->m_addorsub,m_pParent->m_pListSet->m_remain,0x99ff89);
+                m_listctrl.SetCheck(i,FALSE);
+            }
+        }
+    }
+    if (nConflictCount > 0) {
 
-		strRemain.Format(_T("总共有%d项冲突."), nConflictCount);
-		exporter.ExportLine("", "", strRemain, 0x45dd45);
-		exporter.ExportTail();
-		ShellExecute(AfxGetMainWnd()->m_hWnd, _T("open"), strFile, NULL, NULL, SW_SHOWNORMAL);
-	}
-	exporter.CloseFile();
-	m_listctrl.SetRedraw(TRUE);
-	return nConflictCount;
-	//end
+        strRemain.Format(_T("总共有%d项冲突."), nConflictCount);
+        exporter.ExportLine("", "", strRemain, 0x45dd45);
+        exporter.ExportTail();
+        ShellExecute(AfxGetMainWnd()->m_hWnd, _T("open"), strFile, NULL, NULL, SW_SHOWNORMAL);
+    }
+    exporter.CloseFile();
+    m_listctrl.SetRedraw(TRUE);
+    return nConflictCount;
+    //end
 }
 
 void CImportListPage::ReFillbyPaste()
@@ -453,7 +461,6 @@ void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nTy
     int nCount = m_listctrl.GetItemCount();
     CString strDate, strAdd, strComment;
     int nYear, nMonth, nDay, nHour, nMinute, nSec;
-    double fIncome;
     
     CString strStamp;
     COleDateTime time = COleDateTime::GetCurrentTime();
@@ -477,7 +484,6 @@ void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nTy
                 }
                 nHour = 8; nMinute = 0; nSec = 0;
                 
-                // 使用全局 theApp 解析日期
                 int ret = theApp.GetDate(strDate, nYear, nMonth, nDay, nHour, nMinute, nSec);
                 if(ret != 0)
                 {
@@ -488,7 +494,6 @@ void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nTy
                     CString msg;
                     msg.Format("Below format cant be read:\n %s", strDate);
                     AfxMessageBox(msg);
-                    // 解析失败默认使用当前时间，防止崩溃
                     item.dtDate = COleDateTime::GetCurrentTime();
                 }
             }
@@ -497,22 +502,35 @@ void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nTy
                 item.dtDate = COleDateTime::GetCurrentTime();
             }
 
-            // 2. 解析金额
-            fIncome = 0.0;
-            TCHAR *pTempTchar;
+            // 2. 解析金额（改为原字符串）
+            CString strIncome, strPay, strAmount;
             if(nType[VALUE_TYPE_INCOME] >= 0)
             {
-                strAdd = m_listctrl.GetItemText(i, nType[VALUE_TYPE_INCOME]);
-                strAdd.Remove(',');
-                fIncome = _tcstod(strAdd, &pTempTchar);
+                strIncome = m_listctrl.GetItemText(i, nType[VALUE_TYPE_INCOME]);
             }
             if(nType[VALUE_TYPE_PAY] >= 0)
             {
-                strAdd = m_listctrl.GetItemText(i, nType[VALUE_TYPE_PAY]);
-                strAdd.Remove(',');
-                fIncome -= _tcstod(strAdd, &pTempTchar);
+                strPay = m_listctrl.GetItemText(i, nType[VALUE_TYPE_PAY]);
             }
-            item.fAmount = fIncome;
+
+            if(!strIncome.IsEmpty())
+            {
+                strAmount = strIncome; // 原样写入
+            }
+            else if(!strPay.IsEmpty())
+            {
+                strAmount = strPay;    // 原样写入（补负号）
+                if(strAmount[0] != _T('-'))
+                {
+                    strAmount.Insert(0, _T("-"));
+                }
+            }
+            else
+            {
+                strAmount = _T("0");
+            }
+
+            item.fAmount = strAmount;
 
             // 3. 解析子账户
             if(nType[VALUE_TYPE_SUBCOUNT] >= 0)
@@ -530,7 +548,6 @@ void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nTy
                 strComment = _T("");
             }
 
-            // 处理附加列到备注
             for(int j = 0; j < column_count; j++)
             {
                 if(pATC[j] == 1)
@@ -540,10 +557,9 @@ void CImportListPage::PrepareImportData(std::vector<IMPORT_ITEM>& items, int nTy
                 }
             }
             
-            strComment.TrimLeft(); // 去除前导空格
+            strComment.TrimLeft();
             item.strComment = strComment;
 
-            // 处理 Sum 列到备注
             if(nType[VALUE_TYPE_SUM] >= 0)
             {
                 CString str = m_listctrl.GetItemText(i, nType[VALUE_TYPE_SUM]);
